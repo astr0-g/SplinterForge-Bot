@@ -111,13 +111,14 @@ class log_info():
 
 
 def start_font():
-    f = Figlet(font='ntgreek', width=150)
+    f = Figlet(font='smkeyboard', width=150)
     text = f.renderText('SplinterForge\nBot-Beta\n@lil_astr_0')
     return f"{text}"
 
 
 def _init():
     global playingSummoners, playingMonster, userName, postingKey, timeSleepInMinute, bossId
+    log_info.alerts("Loading config.txt")
     playingSummoners = []
     playingMonster = []
     f = open('config.json')
@@ -158,7 +159,8 @@ def start():
     driver.get("chrome-extension://jcacnejopjdphbnjgfaaobbfafkihpep/popup.html")
     log_info.alerts(
         f"SplinterForge Bot is starting...")
-    log_info.alerts("PLEASE DONT MOVE OR CLICK ANYTHING untill chrome is minimized!")
+    log_info.alerts(
+        "PLEASE DONT MOVE OR CLICK ANYTHING untill chrome is minimized!")
     driver.set_window_size(350, 1200)
     WebDriverWait(driver, 5).until(
         EC.element_to_be_clickable((By.XPATH, "/html/body/div/div/div[4]/div[2]/div[5]/button"))).click()
