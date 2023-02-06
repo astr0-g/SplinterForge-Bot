@@ -132,7 +132,7 @@ def _init():
     userName = config['userName']
     postingKey = config['postingKey']
     if userName == "" or postingKey == "":
-        print(f"[{log_info.time()}] : error loading config.txt, please add user name or posting key.\n")
+        log_info.error("error loading config.txt, please add user name or posting key.\n")
         sys.exit()
     else:
         log_info.alerts("Loading config.txt")
