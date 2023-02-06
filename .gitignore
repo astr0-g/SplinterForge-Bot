@@ -1,3 +1,6 @@
 config.json
 pyinstaller.exe
+splinterforge.spec
+dist
+build
 __pycache__

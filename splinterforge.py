@@ -5,6 +5,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from pyfiglet import Figlet
 import datetime
 import json
 import time
@@ -109,6 +110,12 @@ class log_info():
         printDarkBlue(f"[{log_info.time()}] SF: {message}\n")
 
 
+def start_font():
+    f = Figlet(font='ntgreek', width=150)
+    text = f.renderText('SplinterForge\nBot-Beta\n@lil_astr_0')
+    return f"{text}"
+
+
 def _init():
     global playingSummoners, playingMonster, userName, postingKey, timeSleepInMinute, bossId
     playingSummoners = []
@@ -137,6 +144,7 @@ def check():
 
 def start():
     global driver
+
     _init()
     executable_path = "/webdrivers"
     os.environ["webdriver.chrome.driver"] = executable_path
@@ -148,6 +156,9 @@ def start():
     options.add_argument('--disable-blink-features=AutomationControlled')
     driver = webdriver.Chrome(options=options)
     driver.get("chrome-extension://jcacnejopjdphbnjgfaaobbfafkihpep/popup.html")
+    log_info.alerts(
+        f"SplinterForge Bot is starting...")
+    log_info.alerts("PLEASE DONT MOVE OR CLICK ANYTHING untill chrome is minimized!")
     driver.set_window_size(350, 1200)
     WebDriverWait(driver, 5).until(
         EC.element_to_be_clickable((By.XPATH, "/html/body/div/div/div[4]/div[2]/div[5]/button"))).click()
@@ -173,7 +184,7 @@ def start():
                 "login successful for account {}!".format(userName))
     except:
         log_info.error(
-            "login error! check your useranme or posting keys and retry.")
+            "login error! check your useranme or posting keys in config.txt file and retry.")
         driver.close()
     driver.get("https://splinterforge.io/#/")
     driver.set_window_size(1920, 1080)
@@ -211,6 +222,7 @@ def start():
                 EC.element_to_be_clickable((By.XPATH, bossId))).click()
             WebDriverWait(driver, 5).until(
                 EC.element_to_be_clickable((By.XPATH, "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/button"))).click()
+            log_info.alerts("Selecting summoners and monsters...")
             for i in playingSummoners:
                 driver.execute_script("window.scrollBy(0, -4000)")
                 WebDriverWait(driver, 5).until(
@@ -232,7 +244,8 @@ def start():
                 pass
             log_info.success("battle finished!")
             time.sleep(30)
-            log_info.alerts(f"sleep for {int(timeSleepInMinute/60)} mins")
+            if timeSleepInMinute != 0:
+                log_info.alerts(f"sleep for {int(timeSleepInMinute/60)} mins")
             time.sleep(timeSleepInMinute)
             while True:
                 try:
@@ -252,4 +265,5 @@ def start():
 
 
 if __name__ == '__main__':
+    printSkyBlue(start_font())
     start()
