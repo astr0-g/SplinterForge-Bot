@@ -48,6 +48,8 @@ def printGreen(message):
     resetColor()
 
 # sky blue
+
+
 def printSkyBlue(message):
     set_cmd_text_color(FOREGROUND_SKYBLUE)
     sys.stdout.write(message)
@@ -66,9 +68,10 @@ def printYellow(message):
     set_cmd_text_color(FOREGROUND_YELLOW)
     sys.stdout.write(message)
     resetColor()
-    # yellow
 
 # pink
+
+
 def printPinky(message):
     set_cmd_text_color(FOREGROUND_Pink)
     sys.stdout.write(message)
@@ -91,23 +94,23 @@ class log_info():
 
     @staticmethod
     def success(message):
-        printGreen(f"[{log_info.time()}] SF: {message}\n")
+        printGreen(f"[{log_info.time()}] {userName}: {message}\n")
 
     @staticmethod
     def error(message):
-        printRed(f"[{log_info.time()}] SF: {message}\n")
+        printRed(f"[{log_info.time()}] {userName}: {message}\n")
 
     @staticmethod
     def alerts(message):
-        print(f"[{log_info.time()}] SF: {message}")
+        print(f"[{log_info.time()}] {userName}: {message}")
 
     @staticmethod
     def status(message):
-        printYellow(f"[{log_info.time()}] SF: {message}\n")
+        printYellow(f"[{log_info.time()}] {userName}: {message}\n")
 
     @staticmethod
     def verify(message):
-        printDarkBlue(f"[{log_info.time()}] SF: {message}\n")
+        printDarkBlue(f"[{log_info.time()}] {userName}: {message}\n")
 
 
 def start_font():
@@ -118,7 +121,6 @@ def start_font():
 
 def _init():
     global playingSummoners, playingMonster, userName, postingKey, timeSleepInMinute, bossId
-    log_info.alerts("Loading config.txt")
     playingSummoners = []
     playingMonster = []
     f = open('config.json')
@@ -129,6 +131,11 @@ def _init():
         playingMonster.append(f"//div/img[@id='{i}']")
     userName = config['userName']
     postingKey = config['postingKey']
+    if userName == "" or postingKey == "":
+        print(f"[{log_info.time()}] : error loading config.txt, please add user name or posting key.\n")
+        sys.exit()
+    else:
+        log_info.alerts("Loading config.txt")
     bossId = f"//div[@tabindex='{config['bossId']}']"
     timeSleepInMinute = int(config['timeSleepInMinute']) * 60
     f.close()
@@ -183,7 +190,7 @@ def start():
         if WebDriverWait(driver, 5).until(
                 EC.presence_of_element_located((By.XPATH, "/html/body/div/div/div[4]/div"))).text == "HIVE KEYCHAIN":
             log_info.success(
-                "login successful for account {}!".format(userName))
+                "account successful login!".format(userName))
     except:
         log_info.error(
             "login error! check your useranme or posting keys in config.txt file and retry.")
