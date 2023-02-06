@@ -123,7 +123,13 @@ def _init():
     global playingSummoners, playingMonster, userName, postingKey, timeSleepInMinute, bossId
     playingSummoners = []
     playingMonster = []
-    f = open('config.json')
+    try:
+        f = open('config.json')
+    except:
+        print("error loading config.txt, please create config.txt by checking config-example.json")
+        print("Closing in 10 seconds...")
+        time.sleep(10)
+        sys.exit()
     config = json.load(f)
     for i in config['playingSummoners']:
         playingSummoners.append(f"//div/img[@id='{i}']")
@@ -132,7 +138,11 @@ def _init():
     userName = config['userName']
     postingKey = config['postingKey']
     if userName == "" or postingKey == "":
-        log_info.error("error loading config.txt, please add user name or posting key.\n")
+        log_info.error(
+            "error loading config.txt, please add user name or posting key.")
+        log_info.error(
+            "Closing in 10 seconds...")
+        time.sleep(10)
         sys.exit()
     else:
         log_info.alerts("Loading config.txt")
@@ -140,6 +150,7 @@ def _init():
     timeSleepInMinute = int(config['timeSleepInMinute']) * 60
     f.close()
     chromedriver_autoinstaller.install()
+    
 
 
 def check():
