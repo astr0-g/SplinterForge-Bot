@@ -244,7 +244,7 @@ def start():
                     time.sleep(1770)
             except:
                 pass
-            log_info.success("battle finished!")
+            log_info.success("battle finished! Sleep for 30s...")
             time.sleep(30)
             if timeSleepInMinute != 0:
                 log_info.alerts(f"sleep for {int(timeSleepInMinute/60)} mins")
