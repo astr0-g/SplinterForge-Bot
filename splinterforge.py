@@ -47,7 +47,7 @@ def printGreen(message):
     sys.stdout.write(message)
     resetColor()
 
-
+# sky blue
 def printSkyBlue(message):
     set_cmd_text_color(FOREGROUND_SKYBLUE)
     sys.stdout.write(message)
@@ -68,7 +68,7 @@ def printYellow(message):
     resetColor()
     # yellow
 
-
+# pink
 def printPinky(message):
     set_cmd_text_color(FOREGROUND_Pink)
     sys.stdout.write(message)
