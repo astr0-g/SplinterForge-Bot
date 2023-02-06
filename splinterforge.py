@@ -124,7 +124,7 @@ def _init():
     try:
         f = open('config.json')
     except:
-        print("error loading config.txt, please create config.txt by checking config-example.json")
+        print("error loading config.json, please create config.json by checking config-example.json")
         print("Closing in 10 seconds...")
         time.sleep(10)
         sys.exit()
@@ -137,13 +137,13 @@ def _init():
     postingKey = config['postingKey']
     if userName == "" or postingKey == "":
         log_info.error(
-            "error loading config.txt, please add user name or posting key.")
+            "error loading config.json, please add user name or posting key.")
         log_info.error(
             "Closing in 10 seconds...")
         time.sleep(10)
         sys.exit()
     else:
-        log_info.alerts("Loading config.txt")
+        log_info.alerts("Loading config.json")
     bossId = f"//div[@tabindex='{config['bossId']}']"
     timeSleepInMinute = int(config['timeSleepInMinute']) * 60
     f.close()
@@ -202,7 +202,7 @@ def start():
                 "account successful login!".format(userName))
     except:
         log_info.error(
-            "login error! check your useranme or posting keys in config.txt file and retry.")
+            "login error! check your useranme or posting keys in config.json file and retry.")
         driver.close()
     driver.get("https://splinterforge.io/#/")
     driver.set_window_size(1920, 1080)
