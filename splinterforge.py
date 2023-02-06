@@ -70,8 +70,6 @@ def printYellow(message):
     resetColor()
 
 # pink
-
-
 def printPinky(message):
     set_cmd_text_color(FOREGROUND_Pink)
     sys.stdout.write(message)
