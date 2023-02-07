@@ -209,7 +209,7 @@ def start():
     executable_path = "/webdrivers"
     os.environ["webdriver.chrome.driver"] = executable_path
     options = Options()
-    options.add_extension('hivekeychain.crx')
+    options.add_extension('data/hivekeychain.crx')
     options.add_argument("--mute-audio")
     options.add_argument("--window-size=350,1080")
     options.add_experimental_option('useAutomationExtension', False)
