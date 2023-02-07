@@ -14,7 +14,7 @@ this is an open-source bot for playing SplinterForge made by selenium, you could
 
 `postingKey`: put your posting key for the account
 
-`bossId`: choose the boss you want to battle by boss id(Raw Hyde:14,Talgris:15,Yaba the Hutt:16,Nartor:17)
+`bossId`: choose the boss you want to battle by boss id(Raw Hyde:14,Mighty Chicken:15,Yaba the Hutt:16,Nartor:17)
 
 `playingSummoners`: choose your summoners for the game by cardid
 
