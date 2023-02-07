@@ -12,11 +12,13 @@ import time
 import os
 import sys
 import ctypes
+
 from colorama import init
 
 init(convert=True)
 STD_OUTPUT_HANDLE = -11
 std_out_handle = ctypes.windll.kernel32.GetStdHandle(STD_OUTPUT_HANDLE)
+ctypes.windll.kernel32.SetConsoleTitleW("SplinterForge Bot")
 
 
 def set_cmd_text_color(color, handle=std_out_handle):
@@ -48,8 +50,6 @@ def printGreen(message):
     resetColor()
 
 # sky blue
-
-
 def printSkyBlue(message):
     set_cmd_text_color(FOREGROUND_SKYBLUE)
     sys.stdout.write(message)
@@ -118,7 +118,7 @@ def start_font():
 
 
 def _init():
-    global playingSummoners, playingMonster, userName, postingKey, timeSleepInMinute, bossId
+    global playingSummoners, playingMonster, userName, postingKey, timeSleepInMinute, bossId, skipCardIfSelectedError
     playingSummoners = []
     playingMonster = []
     try:
@@ -132,7 +132,10 @@ def _init():
     for i in config['playingSummoners']:
         playingSummoners.append(f"//div/img[@id='{i}']")
     for i in config['playingMonster']:
-        playingMonster.append(f"//div/img[@id='{i}']")
+        playingMonster.append({
+            "playingMonterDiv": f"//div/img[@id='{i}']",
+            "playingMonsterId": f"{i}"
+        })
     userName = config['userName']
     postingKey = config['postingKey']
     if userName == "" or postingKey == "":
@@ -145,16 +148,56 @@ def _init():
     else:
         log_info.alerts("Loading config.json")
     bossId = f"//div[@tabindex='{config['bossId']}']"
+    skipCardIfSelectedError = config['skipCardIfSelectedError']
     timeSleepInMinute = int(config['timeSleepInMinute']) * 60
     f.close()
     chromedriver_autoinstaller.install()
-    
+
+
+def selectMonsterCards(i, cardId, cardDiv):
+    selectMana(checkCardMana(cardId))
+    WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, cardDiv))).click()
+    selectMana(checkCardMana(cardId))
+    log_info.success(f"Monster card ID {cardId} selected successful!")
+
+
+def checkCard():
+    driver.set_window_size(1920, 1080)
+    for i in range(8):
+        driver.execute_script("window.scrollBy(0, 10000)")
+        time.sleep(0.4)
+    for i in range(2):
+        driver.execute_script("window.scrollBy(0, -10000)")
+    driver.minimize_window()
+
+
+def selectMana(mana):
+    if int(mana) < 10:
+        WebDriverWait(driver, 2).until(
+            EC.element_to_be_clickable((By.XPATH, f"/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[2]/div/div[1]/sl-card-filters/div[1]/div[{int(mana)+1}]"))).click()
+    else:
+        WebDriverWait(driver, 2).until(
+            EC.element_to_be_clickable((By.XPATH, f"/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[2]/div/div[1]/sl-card-filters/div[1]/div[11]"))).click()
+
+
+def checkCardMana(cardid):
+    f = open('data/cardsDetails.json')
+    mana = json.load(f)
+    for i in range(len(mana)):
+        if int(cardid) == int(mana[i]['id']):
+            return(mana[i]['stats']['mana'][0])
 
 
 def check():
     try:
         WebDriverWait(driver, 2).until(
             EC.element_to_be_clickable((By.XPATH, "/html/body/app/div[1]/div[1]/app-header/success-modal/section/div[1]/div[4]/div/button"))).click()
+    except:
+        pass
+    try:
+        WebDriverWait(driver, 2).until(
+            EC.element_to_be_clickable((By.XPATH, "/html/body/app/div[1]/login-modal/div/div/div/div[2]/div[3]/button"))).click()
     except:
         pass
 
@@ -168,6 +211,7 @@ def start():
     options = Options()
     options.add_extension('hivekeychain.crx')
     options.add_argument("--mute-audio")
+    options.add_argument("--window-size=350,1080")
     options.add_experimental_option('useAutomationExtension', False)
     options.add_experimental_option("excludeSwitches", ["enable-logging"])
     options.add_argument('--disable-blink-features=AutomationControlled')
@@ -177,7 +221,6 @@ def start():
         f"SplinterForge Bot is starting...")
     log_info.alerts(
         "PLEASE DONT MOVE OR CLICK ANYTHING untill chrome is minimized!")
-    driver.set_window_size(350, 1200)
     WebDriverWait(driver, 5).until(
         EC.element_to_be_clickable((By.XPATH, "/html/body/div/div/div[4]/div[2]/div[5]/button"))).click()
     WebDriverWait(driver, 5).until(
@@ -199,7 +242,7 @@ def start():
         if WebDriverWait(driver, 5).until(
                 EC.presence_of_element_located((By.XPATH, "/html/body/div/div/div[4]/div"))).text == "HIVE KEYCHAIN":
             log_info.success(
-                "account successful login!".format(userName))
+                "Account successful login!")
     except:
         log_info.error(
             "login error! check your useranme or posting keys in config.json file and retry.")
@@ -226,12 +269,15 @@ def start():
             break
         except:
             pass
+    finishRound = 0
     forgebalance = WebDriverWait(driver, 5).until(
         EC.presence_of_element_located((By.XPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[2]/div[1]/a[1]/div[1]/span"))).text
     log_info.success(
-        f"Your Forge Balance is {forgebalance}, sleeping for 30 seconds to start, minimizing the window now.")
+        f"Your Forge Balance is {forgebalance}, sleeping for 20 seconds to start, minimizing the window now.")
+    ctypes.windll.kernel32.SetConsoleTitleW(
+        f"SplinterForge Bot | Forge Balance : {forgebalance} | Finished Round : {finishRound}")
     driver.minimize_window()
-    time.sleep(30)
+    time.sleep(20)
     while True:
         try:
             driver.get("https://splinterforge.io/#/slcards")
@@ -246,25 +292,42 @@ def start():
                 WebDriverWait(driver, 5).until(
                     EC.element_to_be_clickable((By.XPATH, i))).click()
                 time.sleep(1)
+            log_info.success("Summoners selected successful!")
+            checkCard()
             for i in playingMonster:
-                driver.execute_script("window.scrollBy(0, -4000)")
+                cardId = i["playingMonsterId"]
+                cardDiv = i["playingMonterDiv"]
+                if skipCardIfSelectedError:
+                    try:
+                        selectMonsterCards(i, cardId, cardDiv)
+                    except:
+                        log_info.alerts(
+                            f"There is an error choosing card ID: {cardId}, because skipCardIfSelectedError is true, skipped this card...")
+                        pass
+                else:
+                    selectMonsterCards(i)
+            manaUsed = WebDriverWait(driver, 5).until(
+                EC.presence_of_element_located((By.XPATH, "/html/body/app/div[1]/slcards/div[5]/div[2]/div[1]/div[1]/button/span"))).text
+            totalManaHave = WebDriverWait(driver, 5).until(
+                EC.presence_of_element_located((By.XPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[2]/div[1]/a[2]/div[1]/span"))).text
+            if int(totalManaHave.split('/')[0]) > int(manaUsed):
                 WebDriverWait(driver, 5).until(
-                    EC.element_to_be_clickable((By.XPATH, i))).click()
-                time.sleep(1)
-            WebDriverWait(driver, 5).until(
-                EC.element_to_be_clickable((By.XPATH, "/html/body/app/div[1]/slcards/div[5]/button[1]/div[2]/span"))).click()
-            try:
-                if "Stamina" == WebDriverWait(driver, 5).until(
-                        EC.element_to_be_clickable((By.XPATH, "/html/body/app/div[1]/slcards/stamina-elixirs/section/div[1]/h1"))).text:
-                    log_info.alerts("Not Enough Stamina, sleep for 1 hour")
-                    time.sleep(1770)
-            except:
-                pass
-            log_info.success("battle finished! Sleep for 30s...")
-            time.sleep(30)
-            if timeSleepInMinute != 0:
-                log_info.alerts(f"sleep for {int(timeSleepInMinute/60)} mins")
-            time.sleep(timeSleepInMinute)
+                    EC.element_to_be_clickable((By.XPATH, "/html/body/app/div[1]/slcards/div[5]/button[1]/div[2]/span"))).click()
+                time.sleep(4)
+                log_info.success("battle finished! Sleep for 30s...")
+                finishRound += 1
+                forgebalance = WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.XPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[2]/div[1]/a[1]/div[1]/span"))).text
+                ctypes.windll.kernel32.SetConsoleTitleW(
+                    f"SplinterForge Bot | Forge Balance : {forgebalance} | Finished Round : {finishRound}")
+                time.sleep(30)
+                if timeSleepInMinute != 0:
+                    log_info.alerts(
+                        f"Sleep for {int(timeSleepInMinute/60)} mins")
+                time.sleep(timeSleepInMinute)
+            else:
+                log_info.alerts("Not Enough Stamina, sleep for 1 hour...")
+                time.sleep(1800)
             while True:
                 try:
                     driver.get("https://splinterforge.io/#/")
@@ -272,13 +335,14 @@ def start():
                     check()
                     forgebalance = WebDriverWait(driver, 5).until(
                         EC.presence_of_element_located((By.XPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[2]/div[1]/a[1]/div[1]/span"))).text
-                    log_info.success(f"Your Forge Balance is {forgebalance}.")
+                    log_info.success(f"Your Forge balance is {forgebalance}.")
                     break
                 except:
                     pass
         except:
             log_info.error(
                 "There might be some erros with the server or your playing cards, check config and retry.")
+            time.sleep(10)
             pass
 
 

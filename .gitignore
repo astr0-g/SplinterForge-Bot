@@ -3,4 +3,5 @@ pyinstaller.exe
 splinterforge.spec
 dist
 build
+dual_gold.ico
 __pycache__
