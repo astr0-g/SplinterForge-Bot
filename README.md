@@ -1,5 +1,5 @@
 # SplinterForge Bot
-![3](https://user-images.githubusercontent.com/57165451/217242902-d5159ff3-e133-4703-800e-f4d84e640642.png)
+![1](https://user-images.githubusercontent.com/57165451/217247998-1c66370d-8d28-435e-be8f-22a747032245.png)
 
 # Introduction
 
