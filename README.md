@@ -21,5 +21,5 @@ this is an open-source bot for playing SplinterForge made by selenium, you could
 
  `timeSleepInMinute`: set the time between battles in minutes
  
- # Download
-https://github.com/Astr0-G/SplinterForge-Bot/releases/tag/v0.1-beta.1
+ # Newest Download
+https://github.com/Astr0-G/SplinterForge-Bot/releases/tag/v0.1-beta.2
