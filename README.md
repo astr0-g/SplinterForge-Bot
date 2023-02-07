@@ -20,7 +20,7 @@ this is an open-source bot for playing SplinterForge made by selenium, you could
 
 `playingMonster`: choose your monster for the game by cardid, one "" means a card, you can add or delete "", but you CAN NOT leave it empty
 
-`skipCardIfSelectedError`: If skipCardIfSelectedError is true, it will skip card selecting error and select the rest.
+`skipCardIfSelectedError`: If skipCardIfSelectedError is true, it will skip card selecting error and select the rest, otherwide it will restart and try again.
 
 `timeSleepInMinute`: set the time between battles in minutes
 
