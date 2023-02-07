@@ -8,7 +8,7 @@ this is an open-source bot for playing SplinterForge made by selenium, you could
 
 # Bot configuration
 
-## make sure to create a config.json copy and paste from config-example.json
+## make sure to setup the config.json
 
 `userName`: put your user name for the account
 
