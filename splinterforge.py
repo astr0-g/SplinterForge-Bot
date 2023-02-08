@@ -163,7 +163,7 @@ def selectMonsterCards(i, cardId, cardDiv):
     WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.XPATH, cardDiv))).click()
     # ----------Speed up Process----------
-    # selectMana(checkCardMana(cardId))
+    selectMana(checkCardMana(cardId))
     # log_info.success(f"Monster card ID {cardId} selected successful!")
 
 
@@ -280,7 +280,9 @@ def start():
         f"Sleeping for 20 seconds to start...")
     ctypes.windll.kernel32.SetConsoleTitleW(
         f"SplinterForge Bot | Forge Balance : {forgebalance} | Finished Round : {finishRound}")
-    time.sleep(20)
+    time.sleep(1)
+    log_info.success(
+        f"Starting playing...")
     while True:
         try:
             driver.get("https://splinterforge.io/#/slcards")
