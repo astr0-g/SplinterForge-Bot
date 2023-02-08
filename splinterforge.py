@@ -277,6 +277,11 @@ def start():
             check()
             WebDriverWait(driver, 5).until(
                 EC.element_to_be_clickable((By.XPATH, bossId))).click()
+            if "BOSS IS DEAD" == WebDriverWait(driver, 5).until(
+                    EC.presence_of_element_located((By.XPATH, "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/button"))).text:
+                log_info.error(
+                    "Boss you selected is dead, please change your boss Id in config.json and restart the bot.")
+                time.sleep(10*18)
             WebDriverWait(driver, 5).until(
                 EC.element_to_be_clickable((By.XPATH, "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/button"))).click()
             log_info.alerts("Selecting summoners and monsters...")
