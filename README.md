@@ -24,4 +24,4 @@ this is an open-source bot for playing SplinterForge made by selenium, you could
 
 # Newest Download
 
-https://github.com/Astr0-G/SplinterForge-Bot/releases/tag/v0.1-beta.2
+https://github.com/Astr0-G/SplinterForge-Bot/releases/tag/v0.1-beta.3
