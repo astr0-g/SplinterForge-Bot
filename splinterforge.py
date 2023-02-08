@@ -161,37 +161,23 @@ def _init():
 
 
 def selectMonsterCards(i, cardId, cardDiv):
-    selectMana(checkCardMana(cardId))
-    WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.XPATH, cardDiv))).click()
-    # ----------Speed up Process----------
-    selectMana(checkCardMana(cardId))
+    scroolTime = 0
+    while True:
+        try:
+            if scroolTime < 9:
+                driver.find_element(By.XPATH, cardDiv).click()
+                break
+            else:
+                break
+        except:
+            for i in range(scroolTime):
+                driver.execute_script("window.scrollBy(0, 1800)")
+                time.sleep(0.4)
+            driver.execute_script("window.scrollBy(0, -10000)")
+            scroolTime += 1
+            pass
+    driver.execute_script("window.scrollBy(0, -10000)")
     # log_info.success(f"Monster card ID {cardId} selected successful!")
-
-
-def checkCard():
-    for i in range(8):
-        driver.execute_script("window.scrollBy(0, 10000)")
-        time.sleep(0.4)
-    for i in range(2):
-        driver.execute_script("window.scrollBy(0, -10000)")
-
-
-def selectMana(mana):
-    if int(mana) < 10:
-        WebDriverWait(driver, 2).until(
-            EC.element_to_be_clickable((By.XPATH, f"/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[2]/div/div[1]/sl-card-filters/div[1]/div[{int(mana)+1}]"))).click()
-    else:
-        WebDriverWait(driver, 2).until(
-            EC.element_to_be_clickable((By.XPATH, f"/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[2]/div/div[1]/sl-card-filters/div[1]/div[11]"))).click()
-
-
-def checkCardMana(cardid):
-    f = open('data/cardsDetails.json')
-    mana = json.load(f)
-    for i in range(len(mana)):
-        if int(cardid) == int(mana[i]['id']):
-            return(mana[i]['stats']['mana'][0])
 
 
 def check():
@@ -300,7 +286,6 @@ def start():
                     EC.element_to_be_clickable((By.XPATH, i))).click()
                 time.sleep(1)
             log_info.success("Summoners selected successful!")
-            checkCard()
             for i in playingMonster:
                 cardId = i["playingMonsterId"]
                 cardDiv = i["playingMonterDiv"]
@@ -314,7 +299,7 @@ def start():
                             f"Error select card ID: {cardId}, skipped this card, check errorSelectedMonterCardId{cardId}.png to fix...")
                         pass
                 else:
-                    selectMonsterCards(i)
+                    selectMonsterCards(i, cardId, cardDiv)
             log_info.success("Monster selected successful!")
             manaUsed = WebDriverWait(driver, 5).until(
                 EC.presence_of_element_located((By.XPATH, "/html/body/app/div[1]/slcards/div[5]/div[2]/div[1]/div[1]/button/span"))).text
@@ -350,7 +335,7 @@ def start():
                     pass
         except:
             log_info.error(
-                "There might be some erros with the server or your playing cards, check config and retry.")
+                "There might be some erros with the server or your playing cards, retrying in 10 seconds...")
             time.sleep(10)
             pass
 
