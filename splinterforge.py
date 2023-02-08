@@ -123,6 +123,8 @@ def start_font():
 
 def _init():
     global playingSummoners, playingMonster, userName, postingKey, timeSleepInMinute, bossId, skipCardIfSelectedError
+    printSkyBlue(start_font())
+    print("Welcome using SplinterForge Bot, for more infos or update please visit:https://github.com/Astr0-G/SplinterForge-Bot")
     playingSummoners = []
     playingMonster = []
     try:
@@ -354,5 +356,4 @@ def start():
 
 
 if __name__ == '__main__':
-    printSkyBlue(start_font())
     start()
