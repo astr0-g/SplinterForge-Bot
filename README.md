@@ -1,7 +1,5 @@
 # SplinterForge Bot
 
-![1](https://user-images.githubusercontent.com/57165451/217247998-1c66370d-8d28-435e-be8f-22a747032245.png)
-
 # Introduction
 
 this is an open-source bot for playing SplinterForge made by selenium, you could clone this respository or download from releases, and currently only supports windows, and only supports one player for each instance, feel free to copy and paste the folder to run more.
