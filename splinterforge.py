@@ -50,6 +50,8 @@ def printGreen(message):
     resetColor()
 
 # sky blue
+
+
 def printSkyBlue(message):
     set_cmd_text_color(FOREGROUND_SKYBLUE)
     sys.stdout.write(message)
@@ -70,6 +72,8 @@ def printYellow(message):
     resetColor()
 
 # pink
+
+
 def printPinky(message):
     set_cmd_text_color(FOREGROUND_Pink)
     sys.stdout.write(message)
@@ -158,18 +162,17 @@ def selectMonsterCards(i, cardId, cardDiv):
     selectMana(checkCardMana(cardId))
     WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.XPATH, cardDiv))).click()
-    selectMana(checkCardMana(cardId))
-    log_info.success(f"Monster card ID {cardId} selected successful!")
+    # ----------Speed up Process----------
+    # selectMana(checkCardMana(cardId))
+    # log_info.success(f"Monster card ID {cardId} selected successful!")
 
 
 def checkCard():
-    driver.set_window_size(1920, 1080)
     for i in range(8):
         driver.execute_script("window.scrollBy(0, 10000)")
         time.sleep(0.4)
     for i in range(2):
         driver.execute_script("window.scrollBy(0, -10000)")
-    driver.minimize_window()
 
 
 def selectMana(mana):
@@ -211,34 +214,35 @@ def start():
     options = Options()
     options.add_extension('data/hivekeychain.crx')
     options.add_argument("--mute-audio")
-    options.add_argument("--window-size=350,1080")
-    options.add_experimental_option('useAutomationExtension', False)
-    options.add_experimental_option("excludeSwitches", ["enable-logging"])
+    options.add_argument("--window-size=300,1080")
+    options.add_argument("--headless=new")
+    options.add_argument('--ignore-certificate-errors')
+    options.add_argument('--allow-running-insecure-content')
     options.add_argument('--disable-blink-features=AutomationControlled')
+    options.add_experimental_option("excludeSwitches", ["enable-logging"])
+    options.add_experimental_option('useAutomationExtension', False)
     driver = webdriver.Chrome(options=options)
     driver.get("chrome-extension://jcacnejopjdphbnjgfaaobbfafkihpep/popup.html")
     log_info.alerts(
         f"SplinterForge Bot is starting...")
-    log_info.alerts(
-        "PLEASE DONT MOVE OR CLICK ANYTHING untill chrome is minimized!")
-    WebDriverWait(driver, 5).until(
-        EC.element_to_be_clickable((By.XPATH, "/html/body/div/div/div[4]/div[2]/div[5]/button"))).click()
-    WebDriverWait(driver, 5).until(
-        EC.element_to_be_clickable((By.XPATH, "/html/body/div/div/div[1]/div/div[1]/div/input"))).send_keys("Aa123Aa123!!")
-    WebDriverWait(driver, 5).until(
-        EC.element_to_be_clickable((By.XPATH, "/html/body/div/div/div[1]/div/div[2]/div/input"))).send_keys("Aa123Aa123!!")
-    WebDriverWait(driver, 5).until(
-        EC.element_to_be_clickable((By.XPATH, "/html/body/div/div/div[1]/button/div"))).click()
-    WebDriverWait(driver, 5).until(
-        EC.element_to_be_clickable((By.XPATH, "/html/body/div/div/div[1]/div[2]/div/div[2]/button[1]/div"))).click()
-    WebDriverWait(driver, 5).until(
-        EC.element_to_be_clickable((By.XPATH, "/html/body/div/div/div[1]/div[2]/div/div[2]/div[1]/div/input"))).send_keys(userName)
-    WebDriverWait(driver, 5).until(
-        EC.element_to_be_clickable((By.XPATH, "/html/body/div/div/div[1]/div[2]/div/div[2]/div[2]/div/input"))).send_keys(postingKey)
-    time.sleep(1)
-    WebDriverWait(driver, 5).until(
-        EC.element_to_be_clickable((By.XPATH, "/html/body/div/div/div[1]/div[2]/div/div[2]/div[2]/div/input"))).send_keys(Keys.ENTER)
     try:
+        WebDriverWait(driver, 5).until(
+            EC.element_to_be_clickable((By.XPATH, "/html/body/div/div/div[4]/div[2]/div[5]/button"))).click()
+        WebDriverWait(driver, 5).until(
+            EC.element_to_be_clickable((By.XPATH, "/html/body/div/div/div[1]/div/div[1]/div/input"))).send_keys("Aa123Aa123!!")
+        WebDriverWait(driver, 5).until(
+            EC.element_to_be_clickable((By.XPATH, "/html/body/div/div/div[1]/div/div[2]/div/input"))).send_keys("Aa123Aa123!!")
+        WebDriverWait(driver, 5).until(
+            EC.element_to_be_clickable((By.XPATH, "/html/body/div/div/div[1]/button/div"))).click()
+        WebDriverWait(driver, 5).until(
+            EC.element_to_be_clickable((By.XPATH, "/html/body/div/div/div[1]/div[2]/div/div[2]/button[1]/div"))).click()
+        WebDriverWait(driver, 5).until(
+            EC.element_to_be_clickable((By.XPATH, "/html/body/div/div/div[1]/div[2]/div/div[2]/div[1]/div/input"))).send_keys(userName)
+        WebDriverWait(driver, 5).until(
+            EC.element_to_be_clickable((By.XPATH, "/html/body/div/div/div[1]/div[2]/div/div[2]/div[2]/div/input"))).send_keys(postingKey)
+        time.sleep(1)
+        WebDriverWait(driver, 5).until(
+            EC.element_to_be_clickable((By.XPATH, "/html/body/div/div/div[1]/div[2]/div/div[2]/div[2]/div/input"))).send_keys(Keys.ENTER)
         if WebDriverWait(driver, 5).until(
                 EC.presence_of_element_located((By.XPATH, "/html/body/div/div/div[4]/div"))).text == "HIVE KEYCHAIN":
             log_info.success(
@@ -273,10 +277,9 @@ def start():
     forgebalance = WebDriverWait(driver, 5).until(
         EC.presence_of_element_located((By.XPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[2]/div[1]/a[1]/div[1]/span"))).text
     log_info.success(
-        f"Your Forge Balance is {forgebalance}, sleeping for 20 seconds to start, minimizing the window now.")
+        f"Sleeping for 20 seconds to start...")
     ctypes.windll.kernel32.SetConsoleTitleW(
         f"SplinterForge Bot | Forge Balance : {forgebalance} | Finished Round : {finishRound}")
-    driver.minimize_window()
     time.sleep(20)
     while True:
         try:
@@ -301,11 +304,14 @@ def start():
                     try:
                         selectMonsterCards(i, cardId, cardDiv)
                     except:
+                        driver.get_screenshot_as_file(
+                            f"errorSelectedMonterCardId{cardId}.png")
                         log_info.alerts(
-                            f"There is an error choosing card ID: {cardId}, because skipCardIfSelectedError is true, skipped this card...")
+                            f"Error select card ID: {cardId}, skipped this card, check errorSelectedMonterCardId{cardId}.png to fix...")
                         pass
                 else:
                     selectMonsterCards(i)
+            log_info.success("Monster selected successful!")
             manaUsed = WebDriverWait(driver, 5).until(
                 EC.presence_of_element_located((By.XPATH, "/html/body/app/div[1]/slcards/div[5]/div[2]/div[1]/div[1]/button/span"))).text
             totalManaHave = WebDriverWait(driver, 5).until(
@@ -314,7 +320,7 @@ def start():
                 WebDriverWait(driver, 5).until(
                     EC.element_to_be_clickable((By.XPATH, "/html/body/app/div[1]/slcards/div[5]/button[1]/div[2]/span"))).click()
                 time.sleep(4)
-                log_info.success("battle finished! Sleep for 30s...")
+                log_info.success("Battle finished! Sleep for 30s...")
                 finishRound += 1
                 forgebalance = WebDriverWait(driver, 10).until(
                     EC.presence_of_element_located((By.XPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[2]/div[1]/a[1]/div[1]/span"))).text
@@ -323,10 +329,10 @@ def start():
                 time.sleep(30)
                 if timeSleepInMinute != 0:
                     log_info.alerts(
-                        f"Sleep for {int(timeSleepInMinute/60)} mins")
+                        f"Sleep for {int(timeSleepInMinute/60)} mins...")
                 time.sleep(timeSleepInMinute)
             else:
-                log_info.alerts("Not Enough Stamina, sleep for 1 hour...")
+                log_info.alerts("Not enough stamina, sleep for 1 hour...")
                 time.sleep(1800)
             while True:
                 try:
@@ -335,7 +341,6 @@ def start():
                     check()
                     forgebalance = WebDriverWait(driver, 5).until(
                         EC.presence_of_element_located((By.XPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[2]/div[1]/a[1]/div[1]/span"))).text
-                    log_info.success(f"Your Forge balance is {forgebalance}.")
                     break
                 except:
                     pass
