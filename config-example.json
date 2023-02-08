@@ -2,8 +2,8 @@
   "userName": "",
   "postingKey": "",
   "bossId": "14",
-  "playingSummoners": ["278", "236"],
-  "playingMonster": ["23", "24", "188", "183", "90", "371"],
+  "playingSummoners": ["145", "440"],
+  "playingMonster": ["162", "158", "157", "401"],
   "skipCardIfSelectedError": true,
-  "timeSleepInMinute": "0"
+  "timeSleepInMinute": "1"
 }
