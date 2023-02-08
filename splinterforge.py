@@ -280,7 +280,7 @@ def start():
         f"Sleeping for 20 seconds to start...")
     ctypes.windll.kernel32.SetConsoleTitleW(
         f"SplinterForge Bot | Forge Balance : {forgebalance} | Finished Round : {finishRound}")
-    time.sleep(1)
+    time.sleep(20)
     log_info.success(
         f"Starting playing...")
     while True:
