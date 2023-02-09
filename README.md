@@ -8,7 +8,7 @@
 [![Fork](https://img.shields.io/github/forks/Astr0-G/SplinterForge-Bot?style=social)](https://github.com/Astr0-G/SplinterForge-Bot/network/members)
 [![Watchers](https://img.shields.io/github/watchers/Astr0-G/SplinterForge-Bot?style=social)](https://github.com/Astr0-G/SplinterForge-Bot/watchers)
 <br/>
-1 `star` == 1 `thank you`.
+1 `star` ⭐ == 1 `thank you` 🙏 .
 <br/>
 A single star represents a heartfelt thank you. By starring the project, you express gratitude to the contributor for their efforts and hard work.
 
