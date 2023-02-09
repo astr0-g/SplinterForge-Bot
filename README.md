@@ -7,7 +7,10 @@
 [![Stars](https://img.shields.io/github/stars/Astr0-G/SplinterForge-Bot?style=social)](https://github.com/Astr0-G/SplinterForge-Bot/stargazers)
 [![Fork](https://img.shields.io/github/forks/Astr0-G/SplinterForge-Bot?style=social)](https://github.com/Astr0-G/SplinterForge-Bot/network/members)
 [![Watchers](https://img.shields.io/github/watchers/Astr0-G/SplinterForge-Bot?style=social)](https://github.com/Astr0-G/SplinterForge-Bot/watchers)
-<br/>1 `star` == 1 `thank you`. By starring the project you thank the contributor for work.
+<br/>
+1 `star` == 1 `thank you`. 
+<br/>
+A single star represents a heartfelt thank you. By starring the project, you express gratitude to the contributor for their efforts and hard work.
 
 ---
 
@@ -15,12 +18,14 @@
 
 ## Bot Status
 
+<table class="no-border">
   <tr>
     <td><img src="https://img.shields.io/badge/windows-blue??style=flat" alt="Operating systems"/></td>
     <td><img src="https://img.shields.io/badge/multiple%20accounts-working-green.svg?style=flat&&labelColor=363D44" alt="Multiple Accounts"/></td>
     <td><img src="https://img.shields.io/badge/headless-working-green.svg?style=flat&&labelColor=363D44" alt="Headless"/></td>
     <td><img src="https://img.shields.io/badge/free-using-green.svg?style=flat&&labelColor=363D44" alt="Free"/></td>
   </tr>
+</table>
 
 ---
 
