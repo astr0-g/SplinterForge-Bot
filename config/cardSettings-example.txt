@@ -1,4 +1,4 @@
-bossId:summonersId,summonersId:monsterId,monsterId,..,monsterId:timeSleepInMinute(DONT remove this line)(Each line of this file corresponds to the accounts in the accounts.txt file)(bossIds are 14,15,16,17)(you can add as many monsterId as you want)
+bossId:summonersId,summonersId:monsterId,monsterId,..,monsterId:timeSleepInMinute(DONT remove this line)(each line of this file corresponds to the accounts in the accounts.txt file)(bossIds are 14,15,16,17)(you can add as many monsterId as you want)
 14:189,440:508,465,157,158,401,397,351:5
 15:189,440:162,158,157,401,397,425,399:10
 16:5,440:508,105,216,36,287,81,424:20
