@@ -8,6 +8,7 @@
 [![Fork](https://img.shields.io/github/forks/Astr0-G/SplinterForge-Bot?style=social)](https://github.com/Astr0-G/SplinterForge-Bot/network/members)
 [![Watchers](https://img.shields.io/github/watchers/Astr0-G/SplinterForge-Bot?style=social)](https://github.com/Astr0-G/SplinterForge-Bot/watchers)
 <br/>
+<br/>
 1 `star` ⭐ == 1 `thank you` 🙏 .
 <br/>
 
@@ -66,7 +67,7 @@ https://github.com/Astr0-G/SplinterForge-Bot/releases/tag/v0.1-beta.3
 # Contributor
 
 [![Follow me on twitter](https://img.shields.io/twitter/follow/lil_astr_0.svg?style=social)](https://twitter.com/lil_astr_0)
-   
+
 ![DM me on discord](https://dcbadge.vercel.app/api/shield/289092686944796688)
 
 # Donation
