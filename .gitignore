@@ -1,7 +1,11 @@
+accounts.txt
+cardSettings.txt
 config.json
 pyinstaller.exe
+processcleanup.spec
 splinterforge.spec
 dist
 build
+cleanup_icon.ico
 dual_gold.ico
 __pycache__

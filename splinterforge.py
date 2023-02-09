@@ -1,4 +1,6 @@
 from selenium import webdriver
+import multiprocessing
+import linecache
 from selenium.webdriver.common.keys import Keys
 import chromedriver_autoinstaller
 from selenium.webdriver.chrome.options import Options
@@ -7,7 +9,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pyfiglet import Figlet
 import datetime
-import json
 import time
 import os
 import sys
@@ -95,23 +96,23 @@ class log_info():
         print(f"{message}")
 
     @staticmethod
-    def success(message):
+    def success(userName, message):
         printGreen(f"[{log_info.time()}] {userName}: {message}\n")
 
     @staticmethod
-    def error(message):
+    def error(userName, message):
         printRed(f"[{log_info.time()}] {userName}: {message}\n")
 
     @staticmethod
-    def alerts(message):
+    def alerts(userName, message):
         print(f"[{log_info.time()}] {userName}: {message}")
 
     @staticmethod
-    def status(message):
+    def status(userName, message):
         printYellow(f"[{log_info.time()}] {userName}: {message}\n")
 
     @staticmethod
-    def verify(message):
+    def verify(userName, message):
         printDarkBlue(f"[{log_info.time()}] {userName}: {message}\n")
 
 
@@ -121,63 +122,103 @@ def start_font():
     return f"{text}"
 
 
-def _init():
-    global playingSummoners, playingMonster, userName, postingKey, timeSleepInMinute, bossId, skipCardIfSelectedError
-    printSkyBlue(start_font())
-    print("Welcome using SplinterForge Bot, for more infos about update or guide please visit: https://github.com/Astr0-G/SplinterForge-Bot")
-    playingSummoners = []
-    playingMonster = []
+def file_len(file_path):
+    with open(file_path, 'r') as rf:
+        record = 0
+        for line in rf:
+            if line != "\n":
+                record += 1
+        return record
+
+
+def getAccountData(file_path, line_number):
+    acctinfo = linecache.getline(file_path, int(line_number)+1).strip()
+    time.sleep(1)
+    userName = acctinfo.split(":")[0]
+    postingKey = acctinfo.split(":")[1]
+    return userName, postingKey
+
+
+def getCardDetails(file_path, line_number):
+    acctinfo = linecache.getline(file_path, int(line_number)+1).strip()
+    bossId = acctinfo.split(":")[0]
+    playingSummoners = acctinfo.split(":")[1].split(',')
+    playingMonster = acctinfo.split(":")[2].split(',')
+    timeSleepInMinute = acctinfo.split(":")[3]
+    return bossId, playingSummoners, playingMonster, timeSleepInMinute
+
+
+def _init(accountNo):
     try:
-        f = open('config.json')
+        userName, postingKey = getAccountData("config/accounts.txt", accountNo)
+        if userName == "" or postingKey == "":
+            log_info.error(userName,
+                           "error loading accounts.txt, please add user name or posting key.")
+            log_info.error(userName,
+                           "Closing in 10 seconds...")
+            time.sleep(10)
+            sys.exit()
+        else:
+            log_info.alerts(userName, "Loaded accounts.txt")
     except:
-        print("error loading config.json, please create config.json by checking config-example.json")
+        print("error loading accounts.txt, retrying...")
+        time.sleep(10)
+        sys.exit()
+    try:
+        cardSelection = []
+        playingSummonersList = []
+        playingMonsterList = []
+        bossId, playingSummoners, playingMonster, timeSleepInMinute = getCardDetails(
+            "config/cardSettings.txt", accountNo)
+        bossId = f"//div[@tabindex='{bossId}']"
+        for i in list(playingSummoners):
+            playingSummonersList.append(f"//div/img[@id='{i}']")
+        for i in playingMonster:
+            playingMonsterList.append({
+                "playingMonterDiv": f"//div/img[@id='{i}']",
+                "playingMonsterId": f"{i}"
+            })
+        cardSelection.append({
+            "bossId": f"{bossId}",
+            "playingSummoners": playingSummonersList,
+            "playingMonsterId": playingMonsterList
+        })
+        timeSleepInMinute = int(timeSleepInMinute) * 60
+    except:
+        print("error loading cardSettings.txt")
         print("Closing in 10 seconds...")
         time.sleep(10)
         sys.exit()
-    config = json.load(f)
-    for i in config['playingSummoners']:
-        playingSummoners.append(f"//div/img[@id='{i}']")
-    for i in config['playingMonster']:
-        playingMonster.append({
-            "playingMonterDiv": f"//div/img[@id='{i}']",
-            "playingMonsterId": f"{i}"
-        })
-    userName = config['userName']
-    postingKey = config['postingKey']
-    if userName == "" or postingKey == "":
-        log_info.error(
-            "error loading config.json, please add user name or posting key.")
-        log_info.error(
-            "Closing in 10 seconds...")
-        time.sleep(10)
-        sys.exit()
-    else:
-        log_info.alerts("Loading config.json")
-    bossId = f"//div[@tabindex='{config['bossId']}']"
-    skipCardIfSelectedError = config['skipCardIfSelectedError']
-    timeSleepInMinute = int(config['timeSleepInMinute']) * 60
-    f.close()
-    chromedriver_autoinstaller.install()
+    log_info.alerts(userName, "Loaded cardSettings.txt")
+    return userName, postingKey, cardSelection, timeSleepInMinute
 
 
-def selectMonsterCards(i, cardId, cardDiv):
+def selectMonsterCards(userName, i, cardId, cardDiv):
     scroolTime = 0
     while True:
         try:
             if scroolTime < 9:
-                driver.find_element(By.XPATH, cardDiv).click()
-                break
+                WebDriverWait(driver, 2).until(
+                    EC.element_to_be_clickable((By.XPATH, cardDiv))).click()
+                time.sleep(1)
+                selectNumber = driver.find_element(
+                    By.XPATH, "/html/body/app/div[1]/slcards/div[5]/div[1]/h3/span[2]/div[1]/button/span").text
+                if i == int(selectNumber):
+                    result = True
+                    log_info.success(
+                        userName, f"Monster card ID {cardId} selected successful!")
+                    break
             else:
+                log_info.error(userName,
+                               f"Error select card ID: {cardId}, skipped this card...")
+                result = False
                 break
         except:
-            for i in range(scroolTime):
-                driver.execute_script("window.scrollBy(0, 1800)")
-                time.sleep(0.4)
-            driver.execute_script("window.scrollBy(0, -10000)")
+            driver.execute_script("window.scrollBy(0, 1800)")
             scroolTime += 1
             pass
     driver.execute_script("window.scrollBy(0, -10000)")
-    # log_info.success(f"Monster card ID {cardId} selected successful!")
+    return result
 
 
 def check():
@@ -193,10 +234,11 @@ def check():
         pass
 
 
-def start():
+def start(accountNo):
     global driver
 
-    _init()
+    userName, postingKey, cardSelection, timeSleepInMinute = _init(
+        accountNo)
     executable_path = "/webdrivers"
     os.environ["webdriver.chrome.driver"] = executable_path
     options = Options()
@@ -211,8 +253,8 @@ def start():
     options.add_experimental_option('useAutomationExtension', False)
     driver = webdriver.Chrome(options=options)
     driver.get("chrome-extension://jcacnejopjdphbnjgfaaobbfafkihpep/popup.html")
-    log_info.alerts(
-        f"SplinterForge Bot is starting...")
+    log_info.alerts(userName,
+                    f"SplinterForge Bot is starting...")
     try:
         WebDriverWait(driver, 5).until(
             EC.element_to_be_clickable((By.XPATH, "/html/body/div/div/div[4]/div[2]/div[5]/button"))).click()
@@ -233,11 +275,11 @@ def start():
             EC.element_to_be_clickable((By.XPATH, "/html/body/div/div/div[1]/div[2]/div/div[2]/div[2]/div/input"))).send_keys(Keys.ENTER)
         if WebDriverWait(driver, 5).until(
                 EC.presence_of_element_located((By.XPATH, "/html/body/div/div/div[4]/div"))).text == "HIVE KEYCHAIN":
-            log_info.success(
-                "Account successful login!")
+            log_info.success(userName,
+                             "Account successful login!")
     except:
-        log_info.error(
-            "login error! check your useranme or posting keys in config.json file and retry.")
+        log_info.error(userName,
+                       "login error! check your useranme or posting keys in config.json file and retry.")
         driver.close()
     driver.get("https://splinterforge.io/#/")
     driver.set_window_size(1920, 1080)
@@ -261,89 +303,101 @@ def start():
             break
         except:
             pass
-    finishRound = 0
-    forgebalance = WebDriverWait(driver, 5).until(
-        EC.presence_of_element_located((By.XPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[2]/div[1]/a[1]/div[1]/span"))).text
-    log_info.success(
-        f"Sleeping for 20 seconds to start...")
-    ctypes.windll.kernel32.SetConsoleTitleW(
-        f"SplinterForge Bot | Forge Balance : {forgebalance} | Finished Round : {finishRound}")
+    log_info.success(userName,
+                     f"Sleeping for 20 seconds to start...")
     time.sleep(20)
-    log_info.success(
-        f"Starting playing...")
+    log_info.success(userName,
+                     f"Starting playing...")
     while True:
         try:
             driver.get("https://splinterforge.io/#/slcards")
             check()
-            WebDriverWait(driver, 5).until(
-                EC.element_to_be_clickable((By.XPATH, bossId))).click()
-            if "BOSS IS DEAD" == WebDriverWait(driver, 5).until(
-                    EC.presence_of_element_located((By.XPATH, "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/button"))).text:
-                log_info.error(
-                    "Boss you selected is dead, please change your boss Id in config.json and restart the bot.")
-                time.sleep(10*18)
-            WebDriverWait(driver, 5).until(
-                EC.element_to_be_clickable((By.XPATH, "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/button"))).click()
-            log_info.alerts("Selecting summoners and monsters...")
-            for i in playingSummoners:
-                driver.execute_script("window.scrollBy(0, -4000)")
+            for j in range(len(cardSelection)):
                 WebDriverWait(driver, 5).until(
-                    EC.element_to_be_clickable((By.XPATH, i))).click()
-                time.sleep(1)
-            log_info.success("Summoners selected successful!")
-            for i in playingMonster:
-                cardId = i["playingMonsterId"]
-                cardDiv = i["playingMonterDiv"]
-                if skipCardIfSelectedError:
-                    try:
-                        selectMonsterCards(i, cardId, cardDiv)
-                    except:
-                        driver.get_screenshot_as_file(
-                            f"errorSelectedMonterCardId{cardId}.png")
-                        log_info.alerts(
-                            f"Error select card ID: {cardId}, skipped this card, check errorSelectedMonterCardId{cardId}.png to fix...")
-                        pass
-                else:
-                    selectMonsterCards(i, cardId, cardDiv)
-            log_info.success("Monster selected successful!")
-            manaUsed = WebDriverWait(driver, 5).until(
-                EC.presence_of_element_located((By.XPATH, "/html/body/app/div[1]/slcards/div[5]/div[2]/div[1]/div[1]/button/span"))).text
-            totalManaHave = WebDriverWait(driver, 5).until(
-                EC.presence_of_element_located((By.XPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[2]/div[1]/a[2]/div[1]/span"))).text
-            if int(totalManaHave.split('/')[0]) > int(manaUsed):
+                    EC.element_to_be_clickable((By.XPATH, cardSelection[j]['bossId']))).click()
+                if "BOSS IS DEAD" == WebDriverWait(driver, 5).until(
+                        EC.presence_of_element_located((By.XPATH, "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/button"))).text:
+                    log_info.error(userName,
+                                   "Boss you selected is dead, please change your boss Id in config.json and restart the bot.")
+                    time.sleep(10*18)
                 WebDriverWait(driver, 5).until(
-                    EC.element_to_be_clickable((By.XPATH, "/html/body/app/div[1]/slcards/div[5]/button[1]/div[2]/span"))).click()
-                time.sleep(4)
-                log_info.success("Battle finished! Sleep for 30s...")
-                finishRound += 1
-                forgebalance = WebDriverWait(driver, 10).until(
-                    EC.presence_of_element_located((By.XPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[2]/div[1]/a[1]/div[1]/span"))).text
-                ctypes.windll.kernel32.SetConsoleTitleW(
-                    f"SplinterForge Bot | Forge Balance : {forgebalance} | Finished Round : {finishRound}")
-                time.sleep(30)
-                if timeSleepInMinute != 0:
-                    log_info.alerts(
-                        f"Sleep for {int(timeSleepInMinute/60)} mins...")
-                time.sleep(timeSleepInMinute)
-            else:
-                log_info.alerts("Not enough stamina, sleep for 1 hour...")
-                time.sleep(1800)
-            while True:
-                try:
-                    driver.get("https://splinterforge.io/#/")
+                    EC.element_to_be_clickable((By.XPATH, "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/button"))).click()
+                log_info.alerts(
+                    userName, "Selecting summoners and monsters...")
+                for i in cardSelection[j]['playingSummoners']:
+                    driver.execute_script("window.scrollBy(0, -4000)")
+                    WebDriverWait(driver, 5).until(
+                        EC.element_to_be_clickable((By.XPATH, i))).click()
+                log_info.success(userName, "Summoners selected successful!")
+                seletedNum = 1
+                for i in cardSelection[j]['playingMonsterId']:
+                    cardId = i["playingMonsterId"]
+                    cardDiv = i["playingMonterDiv"]
+                    result = selectMonsterCards(
+                        userName, seletedNum, cardId, cardDiv)
                     time.sleep(1)
-                    check()
-                    forgebalance = WebDriverWait(driver, 5).until(
-                        EC.presence_of_element_located((By.XPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[2]/div[1]/a[1]/div[1]/span"))).text
-                    break
-                except:
-                    pass
+                    if result:
+                        seletedNum += 1
+                log_info.success(userName, "Monsters selected successful!")
+                manaUsed = WebDriverWait(driver, 5).until(
+                    EC.presence_of_element_located((By.XPATH, "/html/body/app/div[1]/slcards/div[5]/div[2]/div[1]/div[1]/button/span"))).text
+                totalManaHave = WebDriverWait(driver, 5).until(
+                    EC.presence_of_element_located((By.XPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[2]/div[1]/a[2]/div[1]/span"))).text
+                if int(totalManaHave.split('/')[0]) > int(manaUsed):
+                    WebDriverWait(driver, 5).until(
+                        EC.element_to_be_clickable((By.XPATH, "/html/body/app/div[1]/slcards/div[5]/button[1]/div[2]/span"))).click()
+                    WebDriverWait(driver, 5).until(
+                        EC.element_to_be_clickable((By.XPATH, "/html/body/app/div[1]/slcards/div[4]/div[2]/button[2]/span"))).click()
+                    WebDriverWait(driver, 20).until(
+                        EC.presence_of_element_located((By.XPATH, "/html/body/app/div[1]/slcards/div[5]/div[1]/replay/section/rewards-modal/section/div[1]/div[1]/p[1]")))
+                    time.sleep(2)
+                    reward = driver.find_element(
+                        By.XPATH, "/html/body/app/div[1]/slcards/div[5]/div[1]/replay/section/rewards-modal/section/div[1]/div[1]/p[1]").text
+                    log_info.status(userName, reward)
+                    log_info.success(
+                        userName, "Battle finished! Sleep for 30s...")
+                    if timeSleepInMinute != 0:
+                        log_info.alerts(userName,
+                                        f"Sleep for {int(timeSleepInMinute/60)} mins...")
+                    time.sleep(timeSleepInMinute)
+                else:
+                    log_info.alerts(
+                        userName, "Not enough stamina, sleep for 1 hour...")
+                    time.sleep(1800)
+                while True:
+                    try:
+                        driver.get("https://splinterforge.io/#/")
+                        time.sleep(1)
+                        driver.get("https://splinterforge.io/#/")
+                        check()
+                        break
+                    except:
+                        pass
         except:
-            log_info.error(
-                "There might be some erros with the server or your playing cards, retrying in 10 seconds...")
+            log_info.error(userName,
+                           "There might be some errors with the server or your playing cards, retrying in 10 seconds...")
             time.sleep(10)
             pass
 
 
+def startMulti():
+    multiprocessing.freeze_support()
+    chromedriver_autoinstaller.install()
+    printSkyBlue(start_font())
+    print("Welcome using SplinterForge Bot, for more infos about update or guide please visit: https://github.com/Astr0-G/SplinterForge-Bot")
+    totallaccounts = int(file_len("config/accounts.txt"))
+    print(f"Loaded {(totallaccounts - 1)} accounts")
+    if totallaccounts <= 1:
+        print("Please add accounts to accounts.txt in config folder")
+    # os.system("taskkill /im chromedriver.exe /f")
+    workers = []
+    for i in range(totallaccounts - 1):
+        workers.append(multiprocessing.Process(
+            target=start, args=(str(i + 1))))
+    for w in workers:
+        w.start()
+        time.sleep(8)
+
+
 if __name__ == '__main__':
-    start()
+    startMulti()

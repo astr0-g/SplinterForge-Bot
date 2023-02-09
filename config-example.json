@@ -1,9 +1,0 @@
-{
-  "userName": "",
-  "postingKey": "",
-  "bossId": "14",
-  "playingSummoners": ["145", "440"],
-  "playingMonster": ["162", "158", "157", "401"],
-  "skipCardIfSelectedError": true,
-  "timeSleepInMinute": "1"
-}
