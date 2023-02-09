@@ -1,5 +1,5 @@
 <h1 align="center" style="display: block; font-size: 2.5em; font-weight: bold; margin-block-start: 1em; margin-block-end: 1em;">
-<a name="logo"><img align="center" src="https://splinterforge.io/assets/badges/dual_gold.png" alt="SplinterForge Bot" style="width:100%;height:100%"/></a>
+<a name="logo"><img align="center" src="https://splinterforge.io/assets/badges/dual_gold.png" alt="SplinterForge Bot" style="width:30%;height:30%"/></a>
   <br /><br /><strong>SplinterForge Bot</strong>
 </h1>
 
@@ -8,7 +8,7 @@
 [![Fork](https://img.shields.io/github/forks/Astr0-G/SplinterForge-Bot?style=social)](https://github.com/Astr0-G/SplinterForge-Bot/network/members)
 [![Watchers](https://img.shields.io/github/watchers/Astr0-G/SplinterForge-Bot?style=social)](https://github.com/Astr0-G/SplinterForge-Bot/watchers)
 <br/>
-1 `star` == 1 `thank you`. 
+1 `star` == 1 `thank you`.
 <br/>
 A single star represents a heartfelt thank you. By starring the project, you express gratitude to the contributor for their efforts and hard work.
 
@@ -20,7 +20,7 @@ A single star represents a heartfelt thank you. By starring the project, you exp
 
 <table class="no-border">
   <tr>
-    <td><img src="https://img.shields.io/badge/windows-blue??style=flat" alt="Operating systems"/></td>
+    <td><img src="https://img.shields.io/badge/windows-support-blue.svg?style=flat&&labelColor=363D44" alt="Operating systems"/></td>
     <td><img src="https://img.shields.io/badge/multiple%20accounts-working-green.svg?style=flat&&labelColor=363D44" alt="Multiple Accounts"/></td>
     <td><img src="https://img.shields.io/badge/headless-working-green.svg?style=flat&&labelColor=363D44" alt="Headless"/></td>
     <td><img src="https://img.shields.io/badge/free-using-green.svg?style=flat&&labelColor=363D44" alt="Free"/></td>
@@ -54,7 +54,7 @@ The goal of the SplinterForge Bot is to provide a lightweight and self-sufficien
 - Please use caution when adding too many accounts, as each additional account will use more resources on your computer. I will do my best to minimize resource usage as much as possible.
 - If you encounter any errors or problems, please direct message A S T R O#0001 on Discord for assistance.
 
-# Newest Download
+# Newest Release Download link
 
 https://github.com/Astr0-G/SplinterForge-Bot/releases/tag/v0.1-beta.3
 
