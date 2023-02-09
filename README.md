@@ -65,6 +65,7 @@ https://github.com/Astr0-G/SplinterForge-Bot/releases/tag/v0.1-beta.3
 # Contributor
 
 [![Follow me on twitter](https://img.shields.io/twitter/follow/lil_astr_0.svg?style=social)](https://twitter.com/lil_astr_0)
+   
 ![DM me on discord](https://dcbadge.vercel.app/api/shield/289092686944796688)
 
 # Donation
