@@ -54,9 +54,13 @@ The goal of the SplinterForge Bot is to provide a lightweight and self-sufficien
 - Please use caution when adding too many accounts, as each additional account will use more resources on your computer. I will do my best to minimize resource usage as much as possible.
 - If you encounter any errors or problems, please direct message A S T R O#0001 on Discord for assistance.
 
+---
+
 # Newest Release Download link
 
 https://github.com/Astr0-G/SplinterForge-Bot/releases/tag/v0.1-beta.3
+
+---
 
 # Contributor
 
@@ -68,7 +72,7 @@ https://github.com/Astr0-G/SplinterForge-Bot/releases/tag/v0.1-beta.3
 **Ethereum (ETH):**
 
 ```sh
-0x690eAD7a7615cf97957571BcFb84997C048a6C27
+0xa4D411536cbC9c70AdCC966b3dBd755372Fd6CFE
 ```
 
 **HIVE Wallet:**
