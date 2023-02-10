@@ -1,3 +1,7 @@
+<head>
+    <title></title>
+    <meta name="google-site-verification" content="googleade5a1ffba09d45f">
+  </head>
 <h1 align="center" style="display: block; font-size: 2.5em; font-weight: bold; margin-block-start: 1em; margin-block-end: 1em;">
 <a name="logo"><img align="center" src="https://splinterforge.io/assets/badges/dual_gold.png" alt="SplinterForge Bot" style="width:30%;height:30%"/></a>
   <br /><br /><strong>SplinterForge Bot</strong>
