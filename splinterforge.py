@@ -1,3 +1,4 @@
+import psutil
 from selenium import webdriver
 import multiprocessing
 import linecache
@@ -39,20 +40,16 @@ FOREGROUND_BLUE = 0x09  # blue.
 FOREGROUND_DARKBLUE = 0x01  # dark blue.
 
 
-# dark blue
 def printDarkBlue(message):
     set_cmd_text_color(FOREGROUND_DARKBLUE)
     sys.stdout.write(message)
     resetColor()
 
 
-# green
 def printGreen(message):
     set_cmd_text_color(FOREGROUND_GREEN)
     sys.stdout.write(message)
     resetColor()
-
-# sky blue
 
 
 def printSkyBlue(message):
@@ -61,20 +58,16 @@ def printSkyBlue(message):
     resetColor()
 
 
-# red
 def printRed(message):
     set_cmd_text_color(FOREGROUND_DARKRED)
     sys.stdout.write(message)
     resetColor()
 
 
-# yellow
 def printYellow(message):
     set_cmd_text_color(FOREGROUND_YELLOW)
     sys.stdout.write(message)
     resetColor()
-
-# pink
 
 
 def printPinky(message):
@@ -83,7 +76,6 @@ def printPinky(message):
     resetColor()
 
 
-# reset white
 def resetColor():
     set_cmd_text_color(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE)
 
@@ -129,7 +121,7 @@ def print_result_box(userName, data):
 
 def start_font():
     f = Figlet(font='smkeyboard', width=150)
-    text = f.renderText('SplinterForge\nBot-Beta\n@lil_astr_0')
+    text = f.renderText('SplinterForge\n\/\Bot-Beta\/\n\@lil_astr_0/')
     return f"{text}"
 
 
@@ -180,9 +172,9 @@ def _init(accountNo):
         userName, postingKey = getAccountData("config/accounts.txt", accountNo)
         if userName == "" or postingKey == "":
             log_info.error(userName,
-                           "error loading accounts.txt, please add user name or posting key.")
+                           "Error in loading accounts.txt, please add username or posting key and try again.")
             log_info.error(userName,
-                           "Closing in 10 seconds...")
+                           "Terminating in 10 seconds...")
             time.sleep(10)
             sys.exit()
     except:
@@ -195,7 +187,6 @@ def _init(accountNo):
         playingMonsterList = []
         heroesType, bossId, playingSummoners, playingMonster, timeSleepInMinute = getCardSettingData(
             "config/cardSettings.txt", accountNo)
-        # bossId = f"//div[@tabindex='{bossId}']"
         for i in playingSummoners:
             cardName = getCardData(userName, i)
             playingSummonersList.append({
@@ -217,8 +208,8 @@ def _init(accountNo):
         })
         timeSleepInMinute = int(timeSleepInMinute) * 60
     except:
-        print("error loading cardSettings.txt")
-        print("Closing in 10 seconds...")
+        print("error loading cardSettings.txt file")
+        print("Terminating in 10 seconds...")
         time.sleep(10)
         sys.exit()
     return userName, postingKey, heroesType, cardSelection, timeSleepInMinute
@@ -242,7 +233,7 @@ def selectSummoners(userName, seletedNumOfSummoners, cardDiv, driver):
             driver.execute_script("window.scrollBy(0, 180)")
             scroolTime += 1
     if not result:
-        log_info.error(userName, "Error select summoners, will retrying...")
+        log_info.error(userName, "Error in selecting summoners, retrying...")
     driver.execute_script("window.scrollBy(0, -4000)")
     time.sleep(1)
     return result
@@ -289,32 +280,32 @@ def check(driver):
 
 
 def heroSelect(heroesType, userName, driver):
+    log_info.alerts(userName,
+                    f"Selecting heros type...")
     check(driver)
     try:
-        heroesType = int(heroesType)
-        if heroesType != 1 or heroesType != 2 or heroesType != 3:
-            WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.XPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[1]/a[4]"))).click()
-            WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.XPATH, "/html/body/app/div[1]/splinterforge-heros/div[3]/section/div/div/div[2]/div[1]"))).click()
-            WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.XPATH, f"/html/body/app/div[1]/splinterforge-heros/div[3]/section/div/div/div[2]/div[1]/ul/li[{heroesType}]"))).click()
-            if heroesType == 1:
-                log_info.success(userName,
-                                 f"Selected hero type: Warrior")
-            elif heroesType == 2:
-                log_info.success(userName,
-                                 f"Selected hero type: Wizard")
-            elif heroesType == 3:
-                log_info.success(userName,
-                                 f"Selected hero type: Ranger")
+        hero_types = ['Warrior', 'Wizard', 'Ranger']
+        hero_type = hero_types[int(heroesType) - 1]
+        xpath = "/html/body/app/div[1]/splinterforge-heros/div[3]/section/div/div/div[2]/div[1]"
+
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable(
+            (By.XPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[1]/a[4]"))).click()
+        WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, xpath))).click()
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable(
+            (By.XPATH, f"{xpath}/ul/li[{heroesType}]"))).click()
+        log_info.success(userName, f"Selected hero type: {hero_type}.")
     except:
-        log_info.error(userName,
-                       f"Error selecting heros type, continue...")
+        log_info.error(userName, f"Error in selecting hero type, continue...")
         pass
+    time.sleep(10)
+    log_info.success(userName,
+                     f"Participating in battles...")
 
 
 def login(userName, postingKey, driver):
+    driver.get(
+        "chrome-extension://jcacnejopjdphbnjgfaaobbfafkihpep/popup.html")
     try:
         WebDriverWait(driver, 5).until(
             EC.element_to_be_clickable((By.XPATH, "/html/body/div/div/div[4]/div[2]/div[5]/button"))).click()
@@ -336,10 +327,10 @@ def login(userName, postingKey, driver):
         if WebDriverWait(driver, 5).until(
                 EC.presence_of_element_located((By.XPATH, "/html/body/div/div/div[4]/div"))).text == "HIVE KEYCHAIN":
             log_info.success(userName,
-                             "Account successful login!")
+                             "Login successful!")
     except:
         log_info.error(userName,
-                       "login error! check your useranme or posting keys in config.json file and retry.")
+                       "Login failure! Please check your username and posting key in the accounts.txt file and try again.")
         time.sleep(15)
         driver.close()
     driver.get("https://splinterforge.io/#/")
@@ -382,7 +373,7 @@ def battle(cardSelection, userName, timeSleepInMinute, driver):
                     break
                 else:
                     log_info.error(userName,
-                                   "Boss you selected is dead, automatically selecting another one...")
+                                   "The selected boss has been defeated, selecting another one automatically...")
                     if int(bossIdToSelect) < 17:
                         bossIdToSelect = str(int(bossIdToSelect) + 1)
                     else:
@@ -392,38 +383,39 @@ def battle(cardSelection, userName, timeSleepInMinute, driver):
             WebDriverWait(driver, 5).until(
                 EC.element_to_be_clickable((By.XPATH, "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/button"))).click()
             log_info.alerts(
-                userName, "Selecting summoners and monsters...")
+                userName, "Selecting cards for summoners and monsters, this process could be lengthy...")
             printData = []
             seletedNumOfSummoners = 1
             for i in cardSelection[j]['playingSummoners']:
-                cardId = i["playingSummonersId"]
-                cardDiv = i["playingSummonersDiv"]
-                cardName = i["playingSummonersName"]
+                summonersInfo = i
+                cardId = summonersInfo["playingSummonersId"]
+                cardDiv = summonersInfo["playingSummonersDiv"]
+                cardName = summonersInfo["playingSummonersName"]
                 resultSeletetSummoners = selectSummoners(
                     userName, seletedNumOfSummoners, cardDiv, driver)
                 seletedNumOfSummoners += 1
                 if resultSeletetSummoners:
                     printData.append(
-                        [f"Summoners #{int(cardSelection[j]['playingSummoners'].index(i)) + 1}", cardId, cardName, "✔️"])
+                        [f"Summoners #{int(cardSelection[j]['playingSummoners'].index(i)) + 1}", cardId, cardName, "success"])
                 else:
                     log_info("restarting...")
-            log_info.success(
-                userName, "Summoners selected successful!")
+            # log_info.success(
+            #     userName, "Summoners selected successful!")
             seletedNumOfMonsters = 1
             for i in cardSelection[j]['playingMonsterId']:
-                cardId = i["playingMonstersId"]
-                cardDiv = i["playingMontersDiv"]
-                cardName = i["playingMonstersName"]
+                monstersInfo = i
+                cardId = monstersInfo["playingMonstersId"]
+                cardDiv = monstersInfo["playingMontersDiv"]
+                cardName = monstersInfo["playingMonstersName"]
                 resultSeletetMonsters = selectMonsterCards(
                     userName, seletedNumOfMonsters, cardId, cardDiv, driver)
-                time.sleep(1)
                 if resultSeletetMonsters:
                     printData.append(
-                        [f"Monsters #{int(cardSelection[j]['playingMonsterId'].index(i))+1}", cardId, cardName, "✔️"])
+                        [f"Monsters #{int(cardSelection[j]['playingMonsterId'].index(monstersInfo))+1}", cardId, cardName, "success"])
                     seletedNumOfMonsters += 1
                 else:
                     printData.append(
-                        [f"Monsters #{int(cardSelection[j]['playingMonsterId'].index(i))+1}", cardId, cardName, "❌"])
+                        [f"Monsters #{int(cardSelection[j]['playingMonsterId'].index(monstersInfo))+1}", cardId, cardName, "error"])
             print_result_box(userName, printData)
             manaUsed = WebDriverWait(driver, 5).until(
                 EC.presence_of_element_located((By.XPATH, "/html/body/app/div[1]/slcards/div[5]/div[2]/div[1]/div[1]/button/span"))).text
@@ -431,7 +423,7 @@ def battle(cardSelection, userName, timeSleepInMinute, driver):
                 EC.presence_of_element_located((By.XPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[2]/div[1]/a[2]/div[1]/span"))).text
             if int(manaUsed) <= 15:
                 log_info.error(
-                    userName, "Monster cards selected not met required mana, change your cardSettings.txt, but the bot will retrying...")
+                    userName, "The selected monster cards do not meet the required mana, please adjust your cardSettings.txt, however, bot is retrying...")
             elif int(totalManaHave.split('/')[0]) > int(manaUsed):
                 try:
                     WebDriverWait(driver, 5).until(
@@ -447,30 +439,30 @@ def battle(cardSelection, userName, timeSleepInMinute, driver):
                         By.XPATH, "/html/body/app/div[1]/slcards/div[5]/div[1]/replay/section/rewards-modal/section/div[1]/div[1]/p[1]").text
                     log_info.status(userName, reward)
                     log_info.status(
-                        userName, f"You have total balance of {forgebalance} Forge token.")
+                        userName, f"Your total balance is {forgebalance} Forge tokens.")
                     log_info.success(
-                        userName, "Battle finished! Sleep for 30s...")
+                        userName, "The battle has ended! Taking a break for 30 seconds...")
                     time.sleep(30)
                 except:
                     log_info.success(
-                        userName, "Having difficulty reading rewards but battle finished! Sleep for 30s...")
+                        userName, "Encountering difficulty in reading the rewards, but the battle has ended. Taking a break for 30 seconds...")
 
                     time.sleep(30)
                     continue
                 if timeSleepInMinute != 0:
                     log_info.alerts(userName,
-                                    f"Sleep for {int(timeSleepInMinute/60)} mins...")
+                                    f"According to your configuration, this account will enter a state of inactivity for {int(timeSleepInMinute/60)} minutes.")
                     time.sleep(timeSleepInMinute)
 
             else:
                 log_info.alerts(
-                    userName, "Not enough stamina, sleep for 1 hour...")
-                time.sleep(1800)
+                    userName, "Insufficient stamina, entering a rest state of inactivity for 1 hour...")
+                time.sleep(3600)
             while True:
                 try:
                     driver.get("https://splinterforge.io/#/")
                     time.sleep(1)
-                    driver.get("https://splinterforge.io/#/")
+                    driver.refresh()
                     check(driver)
                     break
                 except:
@@ -478,75 +470,91 @@ def battle(cardSelection, userName, timeSleepInMinute, driver):
     except:
         driver.get("https://splinterforge.io/#/")
         log_info.error(userName,
-                       "There might be some errors with the server or your playing cards, retrying in 30 seconds...")
+                       "There may be some issues with the server or your playing cards, retrying in 30 seconds...")
         time.sleep(15)
-        driver.get("https://splinterforge.io/#/")
+        driver.refresh()
         time.sleep(15)
         pass
 
 
 def start(i, accountNo):
-
     while True:
         try:
             userName, postingKey, heroesType, cardSelection, timeSleepInMinute = _init(
                 accountNo)
             log_info.alerts(userName, "Initializing...")
-            prefs = {"profile.managed_default_content_settings.images": 1,
-                     "profile.managed_default_content_settings.cookies": 1,
-                     "profile.managed_default_content_settings.javascript": 1,
-                     "profile.managed_default_content_settings.plugins": 1,
-                     "profile.default_content_setting_values.notifications": 2,
-                     "profile.managed_default_content_settings.stylesheets": 2,
-                     "profile.managed_default_content_settings.popups": 2,
-                     "profile.managed_default_content_settings.geolocation": 2,
-                     "profile.managed_default_content_settings.media_stream": 2,
-                     }
             executable_path = "/webdrivers"
             os.environ["webdriver.chrome.driver"] = executable_path
             options = Options()
             options.add_extension('data/hivekeychain.crx')
-            options.add_argument("--mute-audio")
-            options.add_argument("--window-size=300,1080")
-            # options.add_argument("--headless=new")
-            options.add_argument('--ignore-certificate-errors')
-            options.add_argument('--allow-running-insecure-content')
+            options.add_argument("--no-sandbox")
+            options.add_argument("--disable-dev-shm-usage")
+            options.add_argument("--disable-setuid-sandbox")
+            options.add_argument("--disable-backgrounding-occluded-windows")
+            options.add_argument("--disable-background-timer-throttling")
+            options.add_argument('--disable-translate')
+            options.add_argument('--disable-popup-blocking')
+            options.add_argument("--disable-infobars")
+            options.add_argument("--disable-gpu")
             options.add_argument(
                 '--disable-blink-features=AutomationControlled')
+            options.add_argument("--mute-audio")
+            options.add_argument('--ignore-certificate-errors')
+            options.add_argument('--allow-running-insecure-content')
             options.add_experimental_option(
-                "excludeSwitches", ["enable-logging"])
+                "excludeSwitches", ["enable-automation"])
             options.add_experimental_option('useAutomationExtension', False)
-            options.experimental_options["prefs"] = prefs
+            options.add_experimental_option(
+                "prefs", {
+                    "profile.managed_default_content_settings.images": 1,
+                    "profile.managed_default_content_settings.cookies": 1,
+                    "profile.managed_default_content_settings.javascript": 1,
+                    "profile.managed_default_content_settings.plugins": 1,
+                    "profile.default_content_setting_values.notifications": 2,
+                    "profile.managed_default_content_settings.stylesheets": 2,
+                    "profile.managed_default_content_settings.popups": 2,
+                    "profile.managed_default_content_settings.geolocation": 2,
+                    "profile.managed_default_content_settings.media_stream": 2,
+                }
+            )
+            options.add_argument("--window-size=300,1080")
+            options.add_argument("--headless=new")
+            options.add_experimental_option(
+                'excludeSwitches', ['enable-logging'])
             driver = webdriver.Chrome(options=options)
             thisDriver = driver
-            driver.get(
-                "chrome-extension://jcacnejopjdphbnjgfaaobbfafkihpep/popup.html")
             login(userName, postingKey, driver)
-            log_info.alerts(userName,
-                            f"Selecting heros type...")
             heroSelect(heroesType, userName, driver)
-            time.sleep(10)
-            log_info.success(userName,
-                             f"Entering battles...")
             while True:
                 battle(cardSelection, userName, timeSleepInMinute, driver)
         except:
             thisDriver.quit()
             log_info.error(userName,
-                           "Process error, restarting...")
+                           "Error in this thread, restarting now.")
             pass
 
 
+def kill_chromeanddriver():
+    for process in psutil.process_iter():
+        if process.name() == "chromedriver.exe":
+            os.system(f"taskkill /pid {process.pid} /f > NUL")
+    for proc in psutil.process_iter():
+        if proc.name() == "chrome.exe":
+            if "--remote-debugging-port" in " ".join(proc.cmdline()):
+                os.system(f"taskkill /pid {proc.pid} /f > NUL")
+                break
+
+
 def startMulti():
+    # kill_chromeanddriver()
     multiprocessing.freeze_support()
     chromedriver_autoinstaller.install()
     printSkyBlue(start_font())
-    print("Welcome using SplinterForge Bot, for more infos about update or guide please visit: https://github.com/Astr0-G/SplinterForge-Bot")
+    print("Welcome to SplinterForge Bot! To stay informed about updates and get access to helpful guides, please check out the Github page: https://github.com/Astr0-G/SplinterForge-Bot")
     totallaccounts = int(file_len("config/accounts.txt"))
     print(f"Total accounts loaded: {totallaccounts - 1}")
     if totallaccounts <= 1:
-        print("Please add accounts to accounts.txt in config folder")
-    # os.system("taskkill /im chromedriver.exe /f")
+        print("You need to add accounts in accounts.txt located in the config folder.")
     workers = []
     for i in range(totallaccounts - 1):
         a = str(i + 1)
