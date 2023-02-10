@@ -1,4 +1,4 @@
-heroesType:bossId:summonersId,summonersId:monsterId,monsterId,..,monsterId:timeSleepInMinute(DONT remove this line)(Each line of this file corresponds to the accounts in the accounts.txt file)(HeroesType are 1,2,3 (1:Warrior,2:Wizard,3:Ranger))(bossIds are 14,15,16,17)(you can add as many monsterId as you want)
-1:14:464,437:388,384,287,81,424,459,383:45
+heroesType:bossId:summonersId,summonersId:monsterId,monsterId,..,monsterId:timeSleepInMinute(DONT remove this line)(Each line in this file corresponds to a separate account in the accounts.txt file)(HeroesType is represented by a number: 1 for Warrior, 2 for Wizard, or 3 for Ranger)(bossIds are 14,15,16,17)(You may include as many MonsterIds as desired)
+2:14:464,437:388,384,287,81,424,459,383:45
 2:15:189,440:162,158,157,401,397,425,399:10
 3:16:5,440:508,105,216,36,287,81,424:20

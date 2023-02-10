@@ -555,6 +555,8 @@ def startMulti():
     print(f"Total accounts loaded: {totallaccounts - 1}")
     if totallaccounts <= 1:
         print("You need to add accounts in accounts.txt located in the config folder.")
+        print("Terminating in 10 seconds...")
+        time.sleep(10)
     workers = []
     for i in range(totallaccounts - 1):
         a = str(i + 1)
