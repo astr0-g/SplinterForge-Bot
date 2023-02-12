@@ -637,10 +637,11 @@ def start(i, accountNo, headless, close_driver_while_sleeping, show_forge_reward
                     'excludeSwitches', ['enable-logging'])
                 try:
                     driver = webdriver.Chrome(options=options)
-                except WebDriverException as e:
-                    # Handle the error and hide it from the user
-                    print("An error occurred while starting the WebDriver:", e)
+                except:
+                    time.sleep(5)
+                    log_info("restarting...")
             except:
+                time.sleep(5)
                 log_info("restarting...")
             battleLoop(driver, userName, postingKey, heroesType, cardSelection, show_forge_reward,
                        show_total_forge_balance, close_driver_while_sleeping, timeSleepInMinute)
@@ -649,6 +650,7 @@ def start(i, accountNo, headless, close_driver_while_sleeping, show_forge_reward
             driver.quit()
             log_info.error(userName,
                            "Error in this thread, restarting now.")
+            time.sleep(5)
             pass
 
 
