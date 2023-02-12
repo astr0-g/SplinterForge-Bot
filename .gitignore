@@ -1,8 +1,8 @@
 accounts.txt
 cardSettings.txt
-config.json
+config.txt
 pyinstaller.exe
-processcleanup.spec
+cleanup.spec
 splinterforge.spec
 dist
 build

@@ -1,0 +1,29 @@
+##################General Settings##################
+## When the HEADLESS option is set to true, the browser will be hidden.
+HEADLESS=true
+
+## Closing the driver during a break can significantly reduce computer resources, 
+## and this is going to create more files in C:\Program Files (x86) and their names includes
+## scoped_dir, so please run cleanup.exe to delete those files.
+## By making CLOSE_DRIVER_WHILE_SLEEPING to be true,
+## it may also lead to errors with the HIVE API when attempting to log back into your account. 
+## To resolve these errors, consider setting the option to false.
+CLOSE_DRIVER_WHILE_SLEEPING=true
+
+## The bot will start with threads of START_THREAD, and then wait for
+## START_THREAD_INTERNAL in seconds, before starting another set of
+## threads of START_THREAD.
+START_THREAD=3
+START_THREAD_INTERVAL=90
+
+###############Show Rewards Settings################
+## Showing FORGE rewards after each battle
+## this could result in slower completion time for the bot.
+SHOW_FORGE_REWARD=true
+SHOW_TOTAL_FORGE_BALANCE=false
+
+#############Resource Checker Settings##############
+## Showing system usage will track computer resources, however activating 
+## it may slow down the bot.
+PRINT_SYSTEM_USAGE=true
+CHECK_SYSTEM_USAGE_FREQUENCY=1
