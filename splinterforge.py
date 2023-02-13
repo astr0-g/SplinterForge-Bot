@@ -290,17 +290,19 @@ def _init(accountNo):
 
 
 def selectSummoners(userName, seletedNumOfSummoners, cardDiv, driver):
+    multiprocessing.freeze_support()
     scroolTime = 0
+    clickedTime = 0
     result = False
     time.sleep(1)
-    while scroolTime < 5:
+    while scroolTime < 5 and clickedTime < 5:
         try:
             WebDriverWait(driver, 0.75).until(
                 EC.presence_of_element_located((By.XPATH, cardDiv)))
-            time.sleep(1)
             WebDriverWait(driver, 1).until(
                 EC.element_to_be_clickable((By.XPATH, cardDiv))).click()
             time.sleep(1)
+            clickedTime += 1
 
             selectNumber = driver.find_element(
                 By.XPATH, "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/div[1]/div[1]/h3/span[2]").text
@@ -310,6 +312,8 @@ def selectSummoners(userName, seletedNumOfSummoners, cardDiv, driver):
         except:
             driver.execute_script("window.scrollBy(0, 180)")
             scroolTime += 1
+    if clickedTime % 2:
+        result = True
     if not result:
         log_info.error(userName, "Error in selecting summoners, retrying...")
     driver.execute_script("window.scrollBy(0, -4000)")
@@ -318,23 +322,22 @@ def selectSummoners(userName, seletedNumOfSummoners, cardDiv, driver):
 
 
 def selectMonsterCards(userName, seletedNumOfMonsters, cardId, cardDiv, driver):
+    multiprocessing.freeze_support()
     scroolTime = 0
+    clickedTime = 0
     result = False
     time.sleep(1)
-    while scroolTime < 15:
+    while scroolTime < 15 and clickedTime < 15:
         try:
             WebDriverWait(driver, 0.75).until(
                 EC.presence_of_element_located((By.XPATH, cardDiv)))
-            time.sleep(1)
             WebDriverWait(driver, 1).until(
                 EC.element_to_be_clickable((By.XPATH, cardDiv))).click()
+            clickedTime += 1
             time.sleep(1)
-
             selectNumber = driver.find_element(
                 By.XPATH, "/html/body/app/div[1]/slcards/div[5]/div[1]/h3/span[2]/div[1]/button/span").text
             selectNumber = int(selectNumber)
-            print("selectNumber", selectNumber)
-            print("seletedNumOfMonsters", seletedNumOfMonsters)
             if seletedNumOfMonsters == selectNumber:
                 result = True
                 # log_info.success(
@@ -346,6 +349,8 @@ def selectMonsterCards(userName, seletedNumOfMonsters, cardId, cardDiv, driver):
             pass
         # log_info.error(userName,
         #                f"Error select card ID: {cardId}, skipped this card...")
+    if clickedTime % 2:
+        result = True
     driver.execute_script("window.scrollBy(0, -10000)")
     time.sleep(1)
     return result
@@ -638,7 +643,9 @@ def start(i, accountNo, headless, close_driver_while_sleeping, show_forge_reward
                 try:
                     driver = webdriver.Chrome(options=options)
                 except:
-                    time.sleep(5)
+                    time.sleep(120)
+                    log_info.error(userName,
+                                   "Driver ERROR! Restart the problem might fix the issues.")
                     log_info("restarting...")
             except:
                 time.sleep(5)
@@ -647,7 +654,10 @@ def start(i, accountNo, headless, close_driver_while_sleeping, show_forge_reward
                        show_total_forge_balance, close_driver_while_sleeping, timeSleepInMinute)
 
         except:
-            driver.quit()
+            try:
+                driver.quit()
+            except:
+                pass
             log_info.error(userName,
                            "Error in this thread, restarting now.")
             time.sleep(5)
