@@ -60,7 +60,7 @@ The goal of the SplinterForge Bot is to provide a lightweight and self-sufficien
 
 # Newest Release Download link
 
-https://github.com/Astr0-G/SplinterForge-Bot/releases/tag/v0.3-beta.1
+https://github.com/Astr0-G/SplinterForge-Bot/releases/tag/v0.4-beta.1
 
 ---
 
