@@ -424,7 +424,7 @@ def login(userName, postingKey, driver):
         time.sleep(15)
         driver.close()
     driver.get("https://splinterforge.io/#/")
-    driver.set_window_size(1920, 1080)
+    driver.set_window_size(1565, 1080)
     WebDriverWait(driver, 5).until(
         EC.element_to_be_clickable((By.XPATH, "/html/body/app/div[1]/div[1]/app-header/success-modal/section/div[1]/div[4]/div/button"))).click()
     WebDriverWait(driver, 5).until(
