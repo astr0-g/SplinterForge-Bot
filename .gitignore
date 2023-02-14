@@ -9,3 +9,6 @@ build
 cleanup_icon.ico
 dual_gold.ico
 __pycache__
+test.py
+splinterforgetest.py
+splinterforgetest.spec

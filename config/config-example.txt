@@ -14,7 +14,7 @@ CLOSE_DRIVER_WHILE_SLEEPING=true
 ## START_THREAD_INTERNAL in seconds, before starting another set of
 ## threads of START_THREAD.
 START_THREAD=3
-START_THREAD_INTERVAL=90
+START_THREAD_INTERVAL=120
 
 ###############Show Rewards Settings################
 ## Showing FORGE rewards after each battle
