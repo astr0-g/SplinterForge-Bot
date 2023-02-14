@@ -3,7 +3,7 @@
   <br /><br /><strong>SplinterForge Bot</strong>
 </h1>
 
-[![Latest release](https://img.shields.io/github/v/release/Astr0-G/SplinterForge-Bot?label=Latest%20release&style=social)](https://github.com/Astr0-G/SplinterForge-Bot/releases/tag/v0.3-beta.1)
+[![Latest release](https://img.shields.io/github/v/release/Astr0-G/SplinterForge-Bot?label=Latest%20release&style=social)](https://github.com/Astr0-G/SplinterForge-Bot/releases/tag/v0.4-beta.1)
 [![Stars](https://img.shields.io/github/stars/Astr0-G/SplinterForge-Bot?style=social)](https://github.com/Astr0-G/SplinterForge-Bot/stargazers)
 [![Fork](https://img.shields.io/github/forks/Astr0-G/SplinterForge-Bot?style=social)](https://github.com/Astr0-G/SplinterForge-Bot/network/members)
 [![Watchers](https://img.shields.io/github/watchers/Astr0-G/SplinterForge-Bot?style=social)](https://github.com/Astr0-G/SplinterForge-Bot/watchers)
