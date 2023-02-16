@@ -513,7 +513,7 @@ def battle(cardSelection, userName, driver, show_forge_reward, show_total_forge_
                 EC.presence_of_element_located((By.XPATH, "/html/body/app/div[1]/slcards/div[5]/div[2]/div[1]/div[1]/button/span"))).text
             totalManaHave = WebDriverWait(driver, 5).until(
                 EC.presence_of_element_located((By.XPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[2]/div[1]/a[2]/div[1]/span"))).text
-            if int(manaUsed) <= 15:
+            if int(manaUsed) < 15:
                 log_info.error(
                     userName, "The selected monster cards do not meet the required mana, please adjust your cardSettings.txt, however, bot is retrying...")
             elif int(totalManaHave.split('/')[0]) > int(manaUsed):
