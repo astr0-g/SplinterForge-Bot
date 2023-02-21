@@ -69,8 +69,7 @@ https://github.com/Astr0-G/SplinterForge-Bot/releases/tag/v0.5-beta.1
 
 # Discord Server
 
-**Please join the discord server for help**  
-[![Join discord](https://codeswholesale.com/blog/wp-content/uploads/2018/10/blog-CW-10.png)](https://discord.gg/pm8SGZkYcD)
+<a href="https://discord.gg/pm8SGZkYcD"><img align="center" src="https://codeswholesale.com/blog/wp-content/uploads/2018/10/blog-CW-10.png" alt="SplinterForge Bot" style="width:30%;height:30%"/></a>
 
 # Contributor
 
