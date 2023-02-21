@@ -27,3 +27,13 @@ SHOW_TOTAL_FORGE_BALANCE=false
 ## it may slow down the bot.
 PRINT_SYSTEM_USAGE=true
 CHECK_SYSTEM_USAGE_FREQUENCY=1
+
+###################API Settings####################
+## Making AUTO_SELECT_HERO is true will auto select the best hero type for the desire boss
+## Making AUTO_SELECT_CARD is true will auto select the best cards for the player, but it 
+## DOES NOT mean you don't need to choose your card in the cardSettings.txt (mandentory for now), 
+## because API might not be able to find a team.
+AUTO_SELECT_HERO=true
+AUTO_SELECT_CARD=true
+SPLINTERLAND_API_ENDPOINT=https://api2.splinterlands.com
+PUBLIC_API_ENDPOINT=https://api.splinterforge.xyz
