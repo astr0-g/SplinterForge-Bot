@@ -373,11 +373,11 @@ def autoSelectCard(cardSelection, bossName, userName, splinterland_api_endpoint,
                 "playingMonsterId": playingMonsterList
             })
             log_info.success(
-                userName, f"Auto selecting playing cards successful!")
+                userName, f"Auto selecting playing cards deck successful!")
             return cardSelection, True
         else:
             log_info.status(
-                userName, f"Auto selecting playing cards failed, you might have too less cards in the account, will continue play with your card setting.")
+                userName, f"Auto selecting playing cards deck failed, you might have too less cards in the account, will continue play with your card setting.")
             return cardSelection, False
     except:
         log_info.alerts(
