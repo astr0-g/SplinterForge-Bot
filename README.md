@@ -3,10 +3,12 @@
   <br /><br /><strong>SplinterForge Bot</strong>
 </h1>
 
-[![Latest release](https://img.shields.io/github/v/release/Astr0-G/SplinterForge-Bot?label=Latest%20release&style=social)](https://github.com/Astr0-G/SplinterForge-Bot/releases/tag/v0.4-beta.1)
+[![Latest release](https://img.shields.io/github/v/release/Astr0-G/SplinterForge-Bot?label=Latest%20release&style=social)](https://github.com/Astr0-G/SplinterForge-Bot/releases/tag/v0.5-beta.1)
 [![Stars](https://img.shields.io/github/stars/Astr0-G/SplinterForge-Bot?style=social)](https://github.com/Astr0-G/SplinterForge-Bot/stargazers)
 [![Fork](https://img.shields.io/github/forks/Astr0-G/SplinterForge-Bot?style=social)](https://github.com/Astr0-G/SplinterForge-Bot/network/members)
 [![Watchers](https://img.shields.io/github/watchers/Astr0-G/SplinterForge-Bot?style=social)](https://github.com/Astr0-G/SplinterForge-Bot/watchers)
+[![Discord](https://img.shields.io/discord/928821046046507079?style=social)](https://discord.gg/pm8SGZkYcD)
+
 <br/>
 <br/>
 1 `star` ⭐ == 1 `thank you` 🙏
@@ -41,7 +43,7 @@ The goal of the SplinterForge Bot is to provide a lightweight and self-sufficien
 
 - **Planned features:**
   - Lower resource usage.
-  - API developement for card selection.
+  - API developement for card selection.(start testing in v0.5-beta.1)
   - rewrite in statically-typed, object-oriented programming language(If you're interested, please direct message me and let's explore the possibility of working together).
 
 ---
@@ -50,8 +52,9 @@ The goal of the SplinterForge Bot is to provide a lightweight and self-sufficien
 
 ## make sure to setup the accounts.txt and cardSettings.txt
 
-- Set up your account information in accounts.txt (found in the config folder). The instructions are included in the file, so please do not remove the first line.
-- Set up your card settings in cardSettings.txt (found in the config folder). There are some examples (which should be replaced with your own settings before running the program) and instructions included in the file, so please do not remove the first line.
+- Set up your account information in `accounts.txt` (found in the config folder). The instructions are included in the file, so please do not remove the first line.
+- Set up your card settings in `cardSettings.txt` (found in the config folder). There are some examples (which should be replaced with your own settings before running the program) and instructions included in the file, so please do not remove the first line.
+- Read through `config.txt` and modify on your needs.
 - Run processcleanup.exe when you feel that your computer is heavily loaded. Please be aware that running processcleanup.exe will also close any open instances of Google Chrome.
 - Please use caution when adding too many accounts, as each additional account will use more resources on your computer. I will do my best to minimize resource usage as much as possible.
 - If you encounter any errors or problems, please direct message A S T R O#0001 on Discord for assistance.
@@ -60,15 +63,20 @@ The goal of the SplinterForge Bot is to provide a lightweight and self-sufficien
 
 # Newest Release Download link
 
-https://github.com/Astr0-G/SplinterForge-Bot/releases/tag/v0.4-beta.1
+https://github.com/Astr0-G/SplinterForge-Bot/releases/tag/v0.5-beta.1
 
 ---
+
+# Discord Server
+
+**Please join the discord server for help**
+[![Join discord](https://img.shields.io/discord/928821046046507079?color=blue&style=for-the-badge)](https://discord.gg/pm8SGZkYcD)
+
+![Join discord]()
 
 # Contributor
 
 [![Follow me on twitter](https://img.shields.io/twitter/follow/lil_astr_0.svg?style=social)](https://twitter.com/lil_astr_0)
-
-![DM me on discord](https://dcbadge.vercel.app/api/shield/289092686944796688)
 
 # Donation
 
