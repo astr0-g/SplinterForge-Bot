@@ -27,7 +27,9 @@
     <td><img src="https://img.shields.io/badge/windows-support-blue.svg?style=flat&&labelColor=363D44" alt="Operating systems"/></td>
     <td><img src="https://img.shields.io/badge/multiple%20accounts-working-green.svg?style=flat&&labelColor=363D44" alt="Multiple Accounts"/></td>
     <td><img src="https://img.shields.io/badge/headless-working-green.svg?style=flat&&labelColor=363D44" alt="Headless"/></td>
+    <td><img src="https://img.shields.io/badge/auto%20battle-working-green.svg?style=flat&&labelColor=363D44" alt="Auto"/></td>
     <td><img src="https://img.shields.io/badge/free-using-green.svg?style=flat&&labelColor=363D44" alt="Free"/></td>
+    
   </tr>
 </table>
 
