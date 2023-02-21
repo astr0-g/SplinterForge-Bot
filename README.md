@@ -69,10 +69,8 @@ https://github.com/Astr0-G/SplinterForge-Bot/releases/tag/v0.5-beta.1
 
 # Discord Server
 
-**Please join the discord server for help**
+**Please join the discord server for help**   
 [![Join discord](https://img.shields.io/discord/928821046046507079?color=blue&style=for-the-badge)](https://discord.gg/pm8SGZkYcD)
-
-![Join discord]()
 
 # Contributor
 
