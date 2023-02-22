@@ -79,12 +79,6 @@ https://github.com/Astr0-G/SplinterForge-Bot/releases/tag/v0.5-beta.1
 
 # Donation
 
-**Ethereum (ETH):**
-
-```sh
-0xa4D411536cbC9c70AdCC966b3dBd755372Fd6CFE
-```
-
 **HIVE Wallet:**
 
 ```sh
