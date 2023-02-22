@@ -643,6 +643,7 @@ def battle(cardSelection, userName, heroesType, driver, show_forge_reward, show_
                          f"Participating in battles...")
         WebDriverWait(driver, 5).until(
             EC.element_to_be_clickable((By.XPATH, "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/button"))).click()
+        autoSelectResult = False
         if auto_select_card:
             cardSelection, autoSelectResult = autoSelectCard(
                 cardSelection, bossName, userName, splinterland_api_endpoint, public_api_endpoint)
