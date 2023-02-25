@@ -181,7 +181,7 @@ func login(userName string, postingKey string, wd selenium.WebDriver,err error) 
     fmt.Println(time.Now())
 }
 
-func initializeAccount(accountNo int) (string, string, string, []map[string]interface{}, int) {
+func initializeAccount(accountNo int) (string, string, string, string,[]map[string]interface{}, int) {
     userName, postingKey, err := getAccountData("config/accounts.txt", accountNo)
     if err != nil || userName == "" || postingKey == "" {
         fmt.Println("Error in loading accounts.txt, please add username or posting key and try again.")
@@ -214,7 +214,6 @@ func initializeAccount(accountNo int) (string, string, string, []map[string]inte
 
     cardSelection := []map[string]interface{}{
         {
-            "bossId":           bossId,
             "playingSummoners": playingSummonersList,
             "playingMonsterId": playingMonsterList,
         },
@@ -222,10 +221,10 @@ func initializeAccount(accountNo int) (string, string, string, []map[string]inte
 
     timeSleepInMinute *= 60
 
-    return userName, postingKey, heroesType, cardSelection, timeSleepInMinute
+    return userName, postingKey, heroesType, bossId, cardSelection, timeSleepInMinute
 }
 
-func initializeDriver(){
+func initializeDriver(accountData []map[string]interface{}){
     extensionData, err := ioutil.ReadFile("data/hivekeychain.crx")
     if err != nil {
         println((1))
@@ -290,11 +289,13 @@ func initializeDriver(){
     }
     defer driver.Quit()
 
-    // Navigate to a web page
-    login("jackieboii","5K2megjfgrDZUEXcnaXwZbih7RuxNNdyHWNZYJWd1Pv4v5UV2AN",driver,err)
-
-
-
+    userName, _ := accountData[0]["userName"].(string)
+    postingKey, _ := accountData[0]["postingKey"].(string)
+    // bossId, _ := accountData[0]["bossId"].(string)
+    // heroesType, _ := accountData[0]["heroesType"].(string)
+    // cardSelection, _ := accountData[0]["cardSelection"].([]map[string]interface{})
+    login(userName,postingKey,driver,err)
+    // battle(accountData,driver,err)
     screenshot, err := driver.Screenshot()
     if err != nil {
         fmt.Printf("Failed to take screenshot: %s\n", err)
@@ -332,10 +333,11 @@ func initializeUserData() {
     var accountLists []map[string]interface{}
     if errCountLines == nil && lineCount > 1 {
         for i := 0; i < lineCount-1; i++ {
-            userName, postingKey, heroesType, cardSelection, timeSleepInMinute := initializeAccount(i+1)
+            userName, postingKey, heroesType, bossId, cardSelection, timeSleepInMinute := initializeAccount(i+1)
             accountLists = append(accountLists, map[string]interface{}{
                 "userName":          userName,
                 "postingKey":        postingKey,
+                "bossId":            bossId,
                 "heroesType":        heroesType,
                 "cardSelection":     cardSelection,
                 "timeSleepInMinute": timeSleepInMinute,
@@ -345,8 +347,8 @@ func initializeUserData() {
         fmt.Print("Please add accounts in accounts.txt\n")
         os.Exit(1)
     }
-    fmt.Print(accountLists)
-
+    fmt.Println(accountLists)
+    initializeDriver([]map[string]interface{}{accountLists[0]})
 }
 func main() {
     initializeUserData()
