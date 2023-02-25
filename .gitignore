@@ -1,6 +1,7 @@
 accounts.txt
 cardSettings.txt
 config.txt
+main.exe
 pyinstaller.exe
 cleanup.spec
 splinterforge.spec
@@ -12,3 +13,4 @@ __pycache__
 test.py
 splinterforgetest.py
 splinterforgetest.spec
+screenshot.png
