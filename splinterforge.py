@@ -593,7 +593,7 @@ def login(userName, postingKey, driver):
             EC.element_to_be_clickable((By.XPATH, "/html/body/div/div/div[1]/div[2]/div/div[2]/div[1]/div/input"))).send_keys(userName)
         WebDriverWait(driver, 5).until(
             EC.element_to_be_clickable((By.XPATH, "/html/body/div/div/div[1]/div[2]/div/div[2]/div[2]/div/input"))).send_keys(postingKey)
-        time.sleep(3)
+        time.sleep(2)
         WebDriverWait(driver, 5).until(
             EC.element_to_be_clickable((By.XPATH, "/html/body/div/div/div[1]/div[2]/div/div[2]/div[2]/div/input"))).send_keys(Keys.ENTER)
         # if WebDriverWait(driver, 5).until(
@@ -613,9 +613,10 @@ def login(userName, postingKey, driver):
         EC.element_to_be_clickable((By.XPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div/div/a/div[1]"))).click()
     WebDriverWait(driver, 5).until(
         EC.element_to_be_clickable((By.XPATH, "/html/body/app/div[1]/login-modal/div/div/div/div[2]/div[2]/input"))).send_keys(userName)
-    time.sleep(1)
+    # time.sleep(1)
     WebDriverWait(driver, 5).until(
         EC.element_to_be_clickable((By.XPATH, "/html/body/app/div[1]/login-modal/div/div/div/div[2]/div[3]/button"))).click()
+
     while True:
         try:
             driver.switch_to.window(driver.window_handles[1])
@@ -629,6 +630,15 @@ def login(userName, postingKey, driver):
             break
         except:
             pass
+    check(driver)
+    time.sleep(5)
+    print("looking")
+   # capture the HAR file
+    har = driver.execute_script(
+        "return window.performance.getEntriesByType('resource');")
+
+    # print the entire HAR file to the console
+    print(json.dumps(har, indent=2))
 
 
 def battle(cardSelection, userName, heroesType, driver, show_forge_reward, show_total_forge_balance, auto_select_card, auto_select_hero, splinterland_api_endpoint, public_api_endpoint):
@@ -698,9 +708,11 @@ def battle(cardSelection, userName, heroesType, driver, show_forge_reward, show_
             EC.presence_of_element_located((By.XPATH, "/html/body/app/div[1]/slcards/div[5]/div[2]/div[1]/div[1]/button/span"))).text
         totalManaHave = WebDriverWait(driver, 5).until(
             EC.presence_of_element_located((By.XPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[2]/div[1]/a[2]/div[1]/span"))).text
+        time.sleep(20000)
         if int(manaUsed) < 15:
             log_info.error(
                 userName, "The selected monster cards do not meet the required mana, please adjust your cardSettings.txt, however, bot is retrying...")
+        
         elif int(totalManaHave.split('/')[0]) > int(manaUsed):
             try:
                 WebDriverWait(driver, 20).until(
@@ -848,8 +860,14 @@ def start(i, accountNo, headless, close_driver_while_sleeping, show_forge_reward
                     options.add_argument("--headless=new")
                 options.add_experimental_option(
                     'excludeSwitches', ['enable-logging'])
+                from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
+                caps = DesiredCapabilities.CHROME.copy()
+                caps['goog:chromeOptions'] = {'logLevel': 'ALL'}
+                caps['goog:loggingPrefs'] = {'performance': 'ALL'}
                 try:
-                    driver = webdriver.Chrome(options=options)
+                    driver = webdriver.Chrome(
+                        options=options, desired_capabilities=caps)
                 except:
                     time.sleep(120)
                     log_info.error(userName,
@@ -861,7 +879,8 @@ def start(i, accountNo, headless, close_driver_while_sleeping, show_forge_reward
             battleLoop(driver, userName, postingKey, heroesType, cardSelection, show_forge_reward,
                        show_total_forge_balance, close_driver_while_sleeping, timeSleepInMinute, auto_select_card, auto_select_hero, splinterland_api_endpoint, public_api_endpoint)
 
-        except:
+        except Exception as e:
+            print(e)
             try:
                 driver.quit()
             except:
