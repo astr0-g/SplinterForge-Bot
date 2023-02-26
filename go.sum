@@ -37,8 +37,8 @@ github.com/hashicorp/golang-lru v0.5.1/go.mod h1:/m3WP610KZHVQ1SGc6re/UDhFvYD7pJ
 github.com/jstemmer/go-junit-report v0.0.0-20190106144839-af01ea7f8024/go.mod h1:6v2b51hI/fHJwM22ozAgKL4VKDeJcHhJFhtBdhmNjmU=
 github.com/levigross/grequests v0.0.0-20221222020224-9eee758d18d5 h1:AsF9Q1mQoyLv0HzvHFW7O+19dHilOcKU74k7E5ufI1A=
 github.com/levigross/grequests v0.0.0-20221222020224-9eee758d18d5/go.mod h1:XfzeIE2WC7CGDhlZJY/rUdqUPy0IPcyI6hoIjhAMNbQ=
-github.com/selenium-Driver-Check/SeleniumDriverCheck v1.0.8 h1:48GZtagoeoQ1/52uh+UpJhl8Su2+jGwOGJP9j76QPqs=
-github.com/selenium-Driver-Check/SeleniumDriverCheck v1.0.8/go.mod h1:0uXArc+jRmkolwrCaZb5PyzeazTnpKt7vcPrph7j+3I=
+github.com/selenium-Driver-Check/SeleniumDriverCheck v1.0.9 h1:s1QYaDf5EbmMq0+kcmoJ8EU3MnbQK7RHYvZfIojDrbs=
+github.com/selenium-Driver-Check/SeleniumDriverCheck v1.0.9/go.mod h1:0uXArc+jRmkolwrCaZb5PyzeazTnpKt7vcPrph7j+3I=
 github.com/tebeka/selenium v0.9.9 h1:cNziB+etNgyH/7KlNI7RMC1ua5aH1+5wUlFQyzeMh+w=
 github.com/tebeka/selenium v0.9.9/go.mod h1:5Fr8+pUvU6B1OiPfkdCKdXZyr5znvVkxuPd0NOdZCQc=
 go.opencensus.io v0.21.0/go.mod h1:mSImk1erAIZhrmZN+AvHh14ztQfjbGwt4TtuofqLduU=

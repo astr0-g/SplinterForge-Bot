@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"runtime"
 	"strconv"
 	"strings"
 	"sync"
@@ -30,7 +31,7 @@ type Summoners struct {
 }
 
 type CardSelection struct {
-	PlayingMonsterID []MonsterId `json:"playingMonsterId"`
+	PlayingMonsters []MonsterId `json:"PlayingMonsters"`
 	PlayingSummoners []Summoners `json:"playingSummoners"`
 }
 
@@ -145,7 +146,7 @@ func elementWaitAndClick(wd selenium.WebDriver, xpath string) {
 		time.Sleep(1 * time.Second)
 	}
 }
-func checkPopUp(wd selenium.WebDriver) {
+func checkPopUp(wd selenium.WebDriver, millisecond int) {
 	defer func() {
 		if err := recover(); err != nil {
 			// Handle any panic that occurs during the execution of the function
@@ -161,8 +162,8 @@ func checkPopUp(wd selenium.WebDriver) {
 			// Handle any errors that occur during the click operation
 		}
 	}
-
-	time.Sleep(1200 * time.Millisecond)
+    duration := time.Duration(millisecond) * time.Millisecond
+	time.Sleep(duration)
 }
 func login(userName string, postingKey string, wd selenium.WebDriver, err error) {
 
@@ -198,7 +199,31 @@ func login(userName string, postingKey string, wd selenium.WebDriver, err error)
 	}
 
 	// wd.SetWindowSize(1565, 1080)
+    
 	wd.Get("https://splinterforge.io/#/")
+    script := `
+        var imgs = document.getElementsByTagName('img');
+        for (var i = 0; i < imgs.length; i++) {
+            imgs[i].parentNode.removeChild(imgs[i]);
+        }
+        var style = document.createElement('style');
+        style.innerHTML = 'img { opacity: 0 }';
+        document.head.appendChild(style);
+        var style = document.createElement('style');
+        style.innerHTML = '* { background-image: none !important; }';
+        document.head.appendChild(style);
+        var style = document.createElement('style');
+        style.innerHTML = '* { color: transparent !important; }';
+        document.head.appendChild(style);
+        var style = document.createElement('style');
+        style.innerHTML = 'img.fade_image { display: none !important; }';
+        document.head.appendChild(style);
+        var style = document.createElement('style');
+        style.innerHTML = '* { transition: paused !important; }';
+        document.head.appendChild(style);
+    `
+    wd.ExecuteScript(script, nil)
+    
 	el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/success-modal/section/div[1]/div[4]/div/button")
 	el.Click()
 	el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div/div/a/div[1]")
@@ -222,6 +247,7 @@ func login(userName string, postingKey string, wd selenium.WebDriver, err error)
 	wd.SwitchWindow(handles[0])
 	println("success log in")
 	fmt.Println(time.Now())
+    time.Sleep(10*time.Minute)
 }
 func initializeAccount(accountNo int) (string, string, string, string, []CardSelection, int) {
 	userName, postingKey, err := getAccountData("config/accounts.txt", accountNo)
@@ -253,7 +279,7 @@ func initializeAccount(accountNo int) (string, string, string, string, []CardSel
 	var cardSelectionList = []CardSelection{}
 	cardSelection := CardSelection{
 		PlayingSummoners: playingSummonersList,
-		PlayingMonsterID: playingMonsterList,
+		PlayingMonsters: playingMonsterList,
 	}
 	cardSelectionList = append(cardSelectionList, cardSelection)
 
@@ -315,8 +341,24 @@ func bossSelect(userName string, bossIdToSelect string, wd selenium.WebDriver) s
 
 	return ""
 }
-func battle(wd selenium.WebDriver, userName string, bossId string, heroesType string, cardSelection []map[string]interface{}) {
+func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType string, cardSelection []CardSelection) {
 	bossSelect(userName, bossId, wd)
+    // fmt.Println(userName,bossId,heroesType)
+    // for _, selection := range cardSelection {
+	// 	for _, PlayingMonster := range selection.PlayingMonsters {
+	// 		fmt.Println(PlayingMonster.PlayingMonstersID)
+    //         fmt.Println(PlayingMonster.PlayingMonstersName)
+    //         fmt.Println(PlayingMonster.PlayingMontersDiv)
+	// 	}
+	// }
+    // for _, selection := range cardSelection {
+	// 	for _, playingSummoner := range selection.PlayingSummoners {
+	// 		fmt.Println(playingSummoner.PlayingSummonersName)
+    //         fmt.Println(playingSummoner.PlayingSummonersID)
+    //         fmt.Println(playingSummoner.PlayingSummonersDiv)
+	// 	}
+	// }
+	
 }
 func initializeDriver(userData UserData) {
 	extensionData, err := ioutil.ReadFile("data/hivekeychain.crx")
@@ -336,7 +378,7 @@ func initializeDriver(userData UserData) {
 			"--disable-translate",
 			"--disable-popup-blocking",
 			"--disable-infobars",
-			"--disable-gpu",
+			// "--disable-gpu",
 			"--disable-blink-features=AutomationControlled",
 			"--mute-audio",
 			"--ignore-certificate-errors",
@@ -388,9 +430,8 @@ func initializeDriver(userData UserData) {
 	heroesType := userData.HeroesType
 	cardSelection := userData.CardSelection
 	login(userName, postingKey, driver, err)
-	// checkPopUp(driver)
-	fmt.Println(bossId, heroesType, cardSelection)
-	//battle(driver, userName, bossId, heroesType, cardSelection)
+	checkPopUp(driver,1000)
+	Battle(driver, userName, bossId, heroesType, cardSelection)
 	screenshot, err := driver.Screenshot()
 	if err != nil {
 		fmt.Printf("Failed to take screenshot: %s\n", err)
@@ -447,6 +488,7 @@ func initializeUserData() {
 		w.Wait()
 		for _, v := range accountLists {
 			initializeDriver(v)
+            break
 		}
 	} else {
 		fmt.Print("Please add accounts in accounts.txt\n")
@@ -455,5 +497,21 @@ func initializeUserData() {
 }
 
 func main() {
-	initializeUserData()
+    // Measure CPU usage before the function is called
+    var stats1 runtime.MemStats
+    runtime.ReadMemStats(&stats1)
+    start := time.Now()
+
+    // Call the function that we want to measure
+    initializeUserData()
+
+    // Measure CPU usage after the function is called
+    elapsed := time.Since(start)
+    var stats2 runtime.MemStats
+    runtime.ReadMemStats(&stats2)
+
+    // Calculate and display CPU usage statistics
+    cpuTime := time.Duration(stats2.Sys - stats1.Sys)
+    fmt.Printf("CPU usage: %.2f%%\n", (float64(cpuTime) / float64(elapsed)) * 100.0)
+	
 }
