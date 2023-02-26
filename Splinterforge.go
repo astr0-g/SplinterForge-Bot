@@ -120,6 +120,25 @@ func elementWaitAndClick(wd selenium.WebDriver, xpath string){
         time.Sleep(1 * time.Second)
     }
 }
+func checkPopUp(wd selenium.WebDriver) {
+    defer func() {
+        if err := recover(); err != nil {
+            // Handle any panic that occurs during the execution of the function
+        }
+    }()
+    if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/success-modal/section/div[1]/div[4]/div/button"); err == nil {
+        if err = element.Click(); err != nil {
+            // Handle any errors that occur during the click operation
+        }
+    }
+    if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/login-modal/div/div/div/div[2]/div[3]/button"); err == nil {
+        if err = element.Click(); err != nil {
+            // Handle any errors that occur during the click operation
+        }
+    }
+
+    time.Sleep(1200 * time.Millisecond)
+}
 func login(userName string, postingKey string, wd selenium.WebDriver,err error) {
 	
     err = wd.SetImplicitWaitTimeout(5 * time.Second)
@@ -223,7 +242,63 @@ func initializeAccount(accountNo int) (string, string, string, string,[]map[stri
 
     return userName, postingKey, heroesType, bossId, cardSelection, timeSleepInMinute
 }
+func bossSelect(userName string,bossIdToSelect string, wd selenium.WebDriver) string {
+    wd.SetImplicitWaitTimeout(2 * time.Second)
+    // Click on the "Bosses" button
+    if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[1]/a[5]/div[1]"); err == nil {
+        if err = element.Click(); err != nil {
+            fmt.Println(err)
+            // Handle any errors that occur during the click operation
+        }
+    }
 
+    // Loop until the boss is defeated or a timeout occurs
+    for {
+        time.Sleep(1*time.Second)
+        // Click on the boss to select it
+        bossSelector := fmt.Sprintf("//div[@tabindex='%s']", bossIdToSelect)
+        if element, err := wd.FindElement(selenium.ByXPATH, bossSelector); err == nil {
+            if err = element.Click(); err != nil {
+                // fmt.Println(err)
+            }
+        }
+        // Check if the boss is defeated
+        element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/button")
+        if err == nil {
+            text, err := element.Text()
+            if err == nil {
+                if text != "BOSS IS DEAD" {
+                        time.Sleep(1 * time.Second)
+        
+                        // Get the boss name
+                        if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[1]/div[2]/div[3]/h3"); err == nil {
+                            bossName,_ := element.Text()
+                            return bossName
+                        }
+                } else {
+                    fmt.Println(userName, "The selected boss has been defeated, selecting another one automatically...")
+                    // Select the next boss
+                    if bossIdToSelect < "17" {
+                        bossIdInt, err := strconv.Atoi(bossIdToSelect)
+                        if err != nil {
+                            // handle the error
+                        }
+                        bossIdInt++
+                        bossIdToSelect = strconv.Itoa(bossIdInt)
+                    } else {
+                        bossIdToSelect = "14"
+                    }
+                } 
+            }
+        }
+        
+    }
+
+    return ""
+}
+func battle(wd selenium.WebDriver,userName string,bossId string,heroesType string,cardSelection []map[string]interface{}){
+    bossSelect(userName,bossId,wd)
+}
 func initializeDriver(accountData []map[string]interface{}){
     extensionData, err := ioutil.ReadFile("data/hivekeychain.crx")
     if err != nil {
@@ -291,11 +366,12 @@ func initializeDriver(accountData []map[string]interface{}){
 
     userName, _ := accountData[0]["userName"].(string)
     postingKey, _ := accountData[0]["postingKey"].(string)
-    // bossId, _ := accountData[0]["bossId"].(string)
-    // heroesType, _ := accountData[0]["heroesType"].(string)
-    // cardSelection, _ := accountData[0]["cardSelection"].([]map[string]interface{})
+    bossId, _ := accountData[0]["bossId"].(string)
+    heroesType, _ := accountData[0]["heroesType"].(string)
+    cardSelection, _ := accountData[0]["cardSelection"].([]map[string]interface{})
     login(userName,postingKey,driver,err)
-    // battle(accountData,driver,err)
+    // checkPopUp(driver)
+    battle(driver,userName,bossId,heroesType,cardSelection)
     screenshot, err := driver.Screenshot()
     if err != nil {
         fmt.Printf("Failed to take screenshot: %s\n", err)
