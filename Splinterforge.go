@@ -9,12 +9,39 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/selenium-Driver-Check/SeleniumDriverCheck"
 	"github.com/tebeka/selenium"
 	"github.com/tebeka/selenium/chrome"
 )
+
+type MonsterId struct {
+	PlayingMonstersID   string `json:"playingMonstersId"`
+	PlayingMonstersName string `json:"playingMonstersName"`
+	PlayingMontersDiv   string `json:"playingMontersDiv"`
+}
+
+type Summoners struct {
+	PlayingSummonersDiv  string `json:"playingSummonersDiv"`
+	PlayingSummonersID   string `json:"playingSummonersId"`
+	PlayingSummonersName string `json:"playingSummonersName"`
+}
+
+type CardSelection struct {
+	PlayingMonsterID []MonsterId `json:"playingMonsterId"`
+	PlayingSummoners []Summoners `json:"playingSummoners"`
+}
+
+type UserData struct {
+	BossID            string          `json:"bossId"`
+	CardSelection     []CardSelection `json:"cardSelection"`
+	HeroesType        string          `json:"heroesType"`
+	PostingKey        string          `json:"postingKey"`
+	TimeSleepInMinute int             `json:"timeSleepInMinute"`
+	UserName          string          `json:"userName"`
+}
 
 func getCardName(cardId string) (string, error) {
 	// Open the JSON file containing the card names and IDs.
@@ -41,116 +68,114 @@ func getCardName(cardId string) (string, error) {
 	// Return an error if the card name was not found.
 	return "", fmt.Errorf("card id %s not found", cardId)
 }
+
 func getAccountData(filePath string, lineNumber int) (string, string, error) {
-    file, err := os.Open(filePath)
-    if err != nil {
-        return "", "", err
-    }
-    defer file.Close()
+	file, err := os.Open(filePath)
+	if err != nil {
+		return "", "", err
+	}
+	defer file.Close()
 
-    scanner := bufio.NewScanner(file)
-    for i := 1; scanner.Scan(); i++ {
-        if i == 1 {
-            continue // skip the first line
-        }
-        if i == lineNumber+1 {
-            acctinfo := scanner.Text()
-            time.Sleep(1 * time.Second)
-            userName := strings.Split(acctinfo, ":")[0]
-            postingKey := strings.Split(acctinfo, ":")[1]
-            return userName, postingKey, nil
-        }
-    }
+	scanner := bufio.NewScanner(file)
+	for i := 1; scanner.Scan(); i++ {
+		if i == 1 {
+			continue // skip the first line
+		}
+		if i == lineNumber+1 {
+			acctinfo := scanner.Text()
+			time.Sleep(1 * time.Second)
+			userName := strings.Split(acctinfo, ":")[0]
+			postingKey := strings.Split(acctinfo, ":")[1]
+			return userName, postingKey, nil
+		}
+	}
+	if err := scanner.Err(); err != nil {
 
-    if err := scanner.Err(); err != nil {
-        
-        return "", "", err
-    }
-    
-    return "", "", nil
+		return "", "", err
+	}
+	return "", "", nil
 }
+
 func getCardSettingData(filePath string, lineNumber int) (string, string, []string, []string, int, error) {
-    file, err := os.Open(filePath)
-    if err != nil {
-        return "", "", nil, nil, 0, err
-    }
-    defer file.Close()
+	file, err := os.Open(filePath)
+	if err != nil {
+		return "", "", nil, nil, 0, err
+	}
+	defer file.Close()
+	scanner := bufio.NewScanner(file)
+	for i := 1; scanner.Scan(); i++ {
+		if i == lineNumber+1 {
+			acctinfo := scanner.Text()
+			heroesType := strings.Split(acctinfo, ":")[0]
+			bossId := strings.Split(acctinfo, ":")[1]
+			playingSummoners := strings.Split(strings.Split(acctinfo, ":")[2], ",")
+			playingMonster := strings.Split(strings.Split(acctinfo, ":")[3], ",")
+			timeSleepInMinute, err := strconv.Atoi(strings.Split(acctinfo, ":")[4])
+			if err != nil {
+				return "", "", nil, nil, 0, err
+			}
+			return heroesType, bossId, playingSummoners, playingMonster, timeSleepInMinute, nil
+		}
+	}
 
-    scanner := bufio.NewScanner(file)
-    for i := 1; scanner.Scan(); i++ {
-        if i == lineNumber+1 {
-            acctinfo := scanner.Text()
-            heroesType := strings.Split(acctinfo, ":")[0]
-            bossId := strings.Split(acctinfo, ":")[1]
-            playingSummoners := strings.Split(strings.Split(acctinfo, ":")[2], ",")
-            playingMonster := strings.Split(strings.Split(acctinfo, ":")[3], ",")
-            timeSleepInMinute, err := strconv.Atoi(strings.Split(acctinfo, ":")[4])
-            if err != nil {
-                return "", "", nil, nil, 0, err
-            }
-            return heroesType, bossId, playingSummoners, playingMonster, timeSleepInMinute, nil
-        }
-    }
+	if err := scanner.Err(); err != nil {
+		return "", "", nil, nil, 0, err
+	}
 
-    if err := scanner.Err(); err != nil {
-        return "", "", nil, nil, 0, err
-    }
-
-    return "", "", nil, nil, 0, nil
+	return "", "", nil, nil, 0, nil
 }
-
-func elementWaitAndClick(wd selenium.WebDriver, xpath string){
-    byXpath := selenium.ByXPATH
-    for {
-        element, err := wd.FindElement(byXpath, xpath)
-        if err != nil {
-            panic(err)
-        }
-        isEnabled, err := element.IsEnabled()
-        if err != nil {
-            panic(err)
-        }
-        if isEnabled {
-            err = element.Click()
-            if err != nil {
-                panic(err)
-            }
-            break
-        }
-        time.Sleep(1 * time.Second)
-    }
+func elementWaitAndClick(wd selenium.WebDriver, xpath string) {
+	byXpath := selenium.ByXPATH
+	for {
+		element, err := wd.FindElement(byXpath, xpath)
+		if err != nil {
+			panic(err)
+		}
+		isEnabled, err := element.IsEnabled()
+		if err != nil {
+			panic(err)
+		}
+		if isEnabled {
+			err = element.Click()
+			if err != nil {
+				panic(err)
+			}
+			break
+		}
+		time.Sleep(1 * time.Second)
+	}
 }
 func checkPopUp(wd selenium.WebDriver) {
-    defer func() {
-        if err := recover(); err != nil {
-            // Handle any panic that occurs during the execution of the function
-        }
-    }()
-    if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/success-modal/section/div[1]/div[4]/div/button"); err == nil {
-        if err = element.Click(); err != nil {
-            // Handle any errors that occur during the click operation
-        }
-    }
-    if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/login-modal/div/div/div/div[2]/div[3]/button"); err == nil {
-        if err = element.Click(); err != nil {
-            // Handle any errors that occur during the click operation
-        }
-    }
+	defer func() {
+		if err := recover(); err != nil {
+			// Handle any panic that occurs during the execution of the function
+		}
+	}()
+	if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/success-modal/section/div[1]/div[4]/div/button"); err == nil {
+		if err = element.Click(); err != nil {
+			// Handle any errors that occur during the click operation
+		}
+	}
+	if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/login-modal/div/div/div/div[2]/div[3]/button"); err == nil {
+		if err = element.Click(); err != nil {
+			// Handle any errors that occur during the click operation
+		}
+	}
 
-    time.Sleep(1200 * time.Millisecond)
+	time.Sleep(1200 * time.Millisecond)
 }
-func login(userName string, postingKey string, wd selenium.WebDriver,err error) {
-	
-    err = wd.SetImplicitWaitTimeout(5 * time.Second)
-    if err != nil {
-        panic(err)
-    }
-    err = wd.Get("chrome-extension://jcacnejopjdphbnjgfaaobbfafkihpep/popup.html")
-    if err != nil {
-        panic(err)
-    }
-    
-    elementWaitAndClick(wd,"/html/body/div/div/div[4]/div[2]/div[5]/button")
+func login(userName string, postingKey string, wd selenium.WebDriver, err error) {
+
+	err = wd.SetImplicitWaitTimeout(5 * time.Second)
+	if err != nil {
+		panic(err)
+	}
+	err = wd.Get("chrome-extension://jcacnejopjdphbnjgfaaobbfafkihpep/popup.html")
+	if err != nil {
+		panic(err)
+	}
+
+	elementWaitAndClick(wd, "/html/body/div/div/div[4]/div[2]/div[5]/button")
 
 	el, _ := wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div[1]/div/div[1]/div/input")
 	el.SendKeys("Aa123Aa123!!")
@@ -165,267 +190,270 @@ func login(userName string, postingKey string, wd selenium.WebDriver,err error) 
 	el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div[1]/div[2]/div/div[2]/div[2]/div/input")
 	el.SendKeys(postingKey)
 	el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div[1]/div[2]/div/div[2]/div[2]/div/input")
-	time.Sleep(1*time.Second)
-    el.SendKeys("\ue007")
-    err = wd.ResizeWindow("bigger",1565,1080)
-    if err != nil{
-        println("can not change size")
-    }
+	time.Sleep(1 * time.Second)
+	el.SendKeys("\ue007")
+	err = wd.ResizeWindow("bigger", 1565, 1080)
+	if err != nil {
+		println("can not change size")
+	}
 
-	
 	// wd.SetWindowSize(1565, 1080)
 	wd.Get("https://splinterforge.io/#/")
-    el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/success-modal/section/div[1]/div[4]/div/button")
-    el.Click()
-    el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div/div/a/div[1]")
-    el.Click()
-    el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/login-modal/div/div/div/div[2]/div[2]/input")
-    el.SendKeys(userName)
-    el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/login-modal/div/div/div/div[2]/div[3]/button")
-    el.Click()
-    for {
-        handles, _ := wd.WindowHandles()
-        if len(handles) == 2 {
-            break
-        }
-    }
-    handles, _ := wd.WindowHandles()
-    wd.SwitchWindow(handles[1])
-    el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div/div[3]/div[1]/div/div")
-    el.Click()
-    el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div/div[3]/div[2]/button[2]/div")
-    el.Click()
-    wd.SwitchWindow(handles[0])
-    println("success log in")
-    fmt.Println(time.Now())
+	el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/success-modal/section/div[1]/div[4]/div/button")
+	el.Click()
+	el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div/div/a/div[1]")
+	el.Click()
+	el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/login-modal/div/div/div/div[2]/div[2]/input")
+	el.SendKeys(userName)
+	el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/login-modal/div/div/div/div[2]/div[3]/button")
+	el.Click()
+	for {
+		handles, _ := wd.WindowHandles()
+		if len(handles) == 2 {
+			break
+		}
+	}
+	handles, _ := wd.WindowHandles()
+	wd.SwitchWindow(handles[1])
+	el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div/div[3]/div[1]/div/div")
+	el.Click()
+	el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div/div[3]/div[2]/button[2]/div")
+	el.Click()
+	wd.SwitchWindow(handles[0])
+	println("success log in")
+	fmt.Println(time.Now())
+}
+func initializeAccount(accountNo int) (string, string, string, string, []CardSelection, int) {
+	userName, postingKey, err := getAccountData("config/accounts.txt", accountNo)
+	if err != nil || userName == "" || postingKey == "" {
+		fmt.Println("Error in loading accounts.txt, please add username or posting key and try again.")
+	}
+	heroesType, bossId, playingSummoners, playingMonster, timeSleepInMinute, err := getCardSettingData("config/cardSettings.txt", accountNo)
+	if err != nil {
+		fmt.Println("Error loading cardSettings.txt file")
+	}
+	playingSummonersList := make([]Summoners, 0, len(playingSummoners))
+	playingMonsterList := make([]MonsterId, 0, len(playingMonster))
+	for _, i := range playingSummoners {
+		cardName, _ := getCardName(i)
+		playingSummonersList = append(playingSummonersList, Summoners{
+			PlayingSummonersDiv:  fmt.Sprintf("//div/img[@id='%s']", i),
+			PlayingSummonersID:   i,
+			PlayingSummonersName: cardName,
+		})
+	}
+	for _, i := range playingMonster {
+		cardName, _ := getCardName(i)
+		playingMonsterList = append(playingMonsterList, MonsterId{
+			PlayingMontersDiv:   fmt.Sprintf("//div/img[@id='%s']", i),
+			PlayingMonstersID:   i,
+			PlayingMonstersName: cardName,
+		})
+	}
+	var cardSelectionList = []CardSelection{}
+	cardSelection := CardSelection{
+		PlayingSummoners: playingSummonersList,
+		PlayingMonsterID: playingMonsterList,
+	}
+	cardSelectionList = append(cardSelectionList, cardSelection)
+
+	timeSleepInMinute *= 60
+
+	return userName, postingKey, heroesType, bossId, cardSelectionList, timeSleepInMinute
+}
+func bossSelect(userName string, bossIdToSelect string, wd selenium.WebDriver) string {
+	wd.SetImplicitWaitTimeout(2 * time.Second)
+	// Click on the "Bosses" button
+	if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[1]/a[5]/div[1]"); err == nil {
+		if err = element.Click(); err != nil {
+			fmt.Println(err)
+			// Handle any errors that occur during the click operation
+		}
+	}
+
+	// Loop until the boss is defeated or a timeout occurs
+	for {
+		time.Sleep(1 * time.Second)
+		// Click on the boss to select it
+		bossSelector := fmt.Sprintf("//div[@tabindex='%s']", bossIdToSelect)
+		if element, err := wd.FindElement(selenium.ByXPATH, bossSelector); err == nil {
+			if err = element.Click(); err != nil {
+				// fmt.Println(err)
+			}
+		}
+		// Check if the boss is defeated
+		element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/button")
+		if err == nil {
+			text, err := element.Text()
+			if err == nil {
+				if text != "BOSS IS DEAD" {
+					time.Sleep(1 * time.Second)
+
+					// Get the boss name
+					if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[1]/div[2]/div[3]/h3"); err == nil {
+						bossName, _ := element.Text()
+						return bossName
+					}
+				} else {
+					fmt.Println(userName, "The selected boss has been defeated, selecting another one automatically...")
+					// Select the next boss
+					if bossIdToSelect < "17" {
+						bossIdInt, err := strconv.Atoi(bossIdToSelect)
+						if err != nil {
+							// handle the error
+						}
+						bossIdInt++
+						bossIdToSelect = strconv.Itoa(bossIdInt)
+					} else {
+						bossIdToSelect = "14"
+					}
+				}
+			}
+		}
+
+	}
+
+	return ""
+}
+func battle(wd selenium.WebDriver, userName string, bossId string, heroesType string, cardSelection []map[string]interface{}) {
+	bossSelect(userName, bossId, wd)
+}
+func initializeDriver(userData UserData) {
+	extensionData, err := ioutil.ReadFile("data/hivekeychain.crx")
+	if err != nil {
+		println((1))
+	}
+
+	extensionBase64 := base64.StdEncoding.EncodeToString(extensionData)
+	chromeOptions := chrome.Capabilities{
+		Path: "",
+		Args: []string{
+			"--no-sandbox",
+			"--disable-dev-shm-usage",
+			"--disable-setuid-sandbox",
+			"--disable-backgrounding-occluded-windows",
+			"--disable-background-timer-throttling",
+			"--disable-translate",
+			"--disable-popup-blocking",
+			"--disable-infobars",
+			"--disable-gpu",
+			"--disable-blink-features=AutomationControlled",
+			"--mute-audio",
+			"--ignore-certificate-errors",
+			"--allow-running-insecure-content",
+			"--window-size=300,600",
+			// "--headless=new",
+		},
+		Extensions: []string{extensionBase64},
+		Prefs: map[string]interface{}{
+			"profile.managed_default_content_settings.images":       1,
+			"profile.managed_default_content_settings.cookies":      1,
+			"profile.managed_default_content_settings.javascript":   1,
+			"profile.managed_default_content_settings.plugins":      1,
+			"profile.default_content_setting_values.notifications":  2,
+			"profile.managed_default_content_settings.stylesheets":  2,
+			"profile.managed_default_content_settings.popups":       2,
+			"profile.managed_default_content_settings.geolocation":  2,
+			"profile.managed_default_content_settings.media_stream": 2,
+		},
+		ExcludeSwitches: []string{
+			"enable-automation",
+			"enable-logging",
+		},
+	}
+
+	caps := selenium.Capabilities{}
+	caps.AddChrome(chromeOptions)
+
+	// Start a new ChromeDriver instance
+	printLog := false
+	wd, err := selenium.NewChromeDriverService(SeleniumDriverCheck.AutoDownload_ChromeDriver(printLog), 9515)
+	if err != nil {
+		fmt.Printf("Failed to create ChromeDriver service: %s\n", err)
+		os.Exit(1)
+	}
+	defer wd.Stop()
+
+	// Create a new WebDriver instance
+	driver, err := selenium.NewRemote(caps, fmt.Sprintf("http://localhost:%d/wd/hub", 9515))
+	if err != nil {
+		fmt.Printf("Failed to create WebDriver: %s\n", err)
+		os.Exit(1)
+	}
+	defer driver.Quit()
+
+	userName := userData.UserName
+	postingKey := userData.PostingKey
+	bossId := userData.BossID
+	heroesType := userData.HeroesType
+	cardSelection := userData.CardSelection
+	login(userName, postingKey, driver, err)
+	// checkPopUp(driver)
+	fmt.Println(bossId, heroesType, cardSelection)
+	//battle(driver, userName, bossId, heroesType, cardSelection)
+	screenshot, err := driver.Screenshot()
+	if err != nil {
+		fmt.Printf("Failed to take screenshot: %s\n", err)
+		os.Exit(1)
+	}
+
+	// write the screenshot to a file
+	if err := ioutil.WriteFile("screenshot.png", screenshot, 0644); err != nil {
+		fmt.Printf("Failed to write screenshot to file: %s\n", err)
+		os.Exit(1)
+	}
 }
 
-func initializeAccount(accountNo int) (string, string, string, string,[]map[string]interface{}, int) {
-    userName, postingKey, err := getAccountData("config/accounts.txt", accountNo)
-    if err != nil || userName == "" || postingKey == "" {
-        fmt.Println("Error in loading accounts.txt, please add username or posting key and try again.")
-    }
-
-    heroesType, bossId, playingSummoners, playingMonster, timeSleepInMinute, err := getCardSettingData("config/cardSettings.txt", accountNo)
-    if err != nil {
-        fmt.Println("Error loading cardSettings.txt file")
-    }
-
-    playingSummonersList := make([]map[string]string, 0, len(playingSummoners))
-    playingMonsterList := make([]map[string]string, 0, len(playingMonster))
-
-    for _, i := range playingSummoners {
-        cardName, _ := getCardName(i)
-        playingSummonersList = append(playingSummonersList, map[string]string{
-            "playingSummonersDiv":  fmt.Sprintf("//div/img[@id='%s']", i),
-            "playingSummonersId":   i,
-            "playingSummonersName": cardName,
-        })
-    }
-    for _, i := range playingMonster {
-        cardName, _ := getCardName(i)
-        playingMonsterList = append(playingMonsterList, map[string]string{
-            "playingMontersDiv":   fmt.Sprintf("//div/img[@id='%s']", i),
-            "playingMonstersId":   i,
-            "playingMonstersName": cardName,
-        })
-    }
-
-    cardSelection := []map[string]interface{}{
-        {
-            "playingSummoners": playingSummonersList,
-            "playingMonsterId": playingMonsterList,
-        },
-    }
-
-    timeSleepInMinute *= 60
-
-    return userName, postingKey, heroesType, bossId, cardSelection, timeSleepInMinute
-}
-func bossSelect(userName string,bossIdToSelect string, wd selenium.WebDriver) string {
-    wd.SetImplicitWaitTimeout(2 * time.Second)
-    // Click on the "Bosses" button
-    if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[1]/a[5]/div[1]"); err == nil {
-        if err = element.Click(); err != nil {
-            fmt.Println(err)
-            // Handle any errors that occur during the click operation
-        }
-    }
-
-    // Loop until the boss is defeated or a timeout occurs
-    for {
-        time.Sleep(1*time.Second)
-        // Click on the boss to select it
-        bossSelector := fmt.Sprintf("//div[@tabindex='%s']", bossIdToSelect)
-        if element, err := wd.FindElement(selenium.ByXPATH, bossSelector); err == nil {
-            if err = element.Click(); err != nil {
-                // fmt.Println(err)
-            }
-        }
-        // Check if the boss is defeated
-        element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/button")
-        if err == nil {
-            text, err := element.Text()
-            if err == nil {
-                if text != "BOSS IS DEAD" {
-                        time.Sleep(1 * time.Second)
-        
-                        // Get the boss name
-                        if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[1]/div[2]/div[3]/h3"); err == nil {
-                            bossName,_ := element.Text()
-                            return bossName
-                        }
-                } else {
-                    fmt.Println(userName, "The selected boss has been defeated, selecting another one automatically...")
-                    // Select the next boss
-                    if bossIdToSelect < "17" {
-                        bossIdInt, err := strconv.Atoi(bossIdToSelect)
-                        if err != nil {
-                            // handle the error
-                        }
-                        bossIdInt++
-                        bossIdToSelect = strconv.Itoa(bossIdInt)
-                    } else {
-                        bossIdToSelect = "14"
-                    }
-                } 
-            }
-        }
-        
-    }
-
-    return ""
-}
-func battle(wd selenium.WebDriver,userName string,bossId string,heroesType string,cardSelection []map[string]interface{}){
-    bossSelect(userName,bossId,wd)
-}
-func initializeDriver(accountData []map[string]interface{}){
-    extensionData, err := ioutil.ReadFile("data/hivekeychain.crx")
-    if err != nil {
-        println((1))
-    }
-
-    extensionBase64 := base64.StdEncoding.EncodeToString(extensionData)
-    chromeOptions := chrome.Capabilities{
-        Path: "",
-        Args: []string{
-            "--no-sandbox",
-            "--disable-dev-shm-usage",
-            "--disable-setuid-sandbox",
-            "--disable-backgrounding-occluded-windows",
-            "--disable-background-timer-throttling",
-            "--disable-translate",
-            "--disable-popup-blocking",
-            "--disable-infobars",
-            "--disable-gpu",
-            "--disable-blink-features=AutomationControlled",
-            "--mute-audio",
-            "--ignore-certificate-errors",
-            "--allow-running-insecure-content",
-            "--window-size=300,600",
-            // "--headless=new",
-        },
-        Extensions: []string{extensionBase64},
-        Prefs: map[string]interface{}{
-            "profile.managed_default_content_settings.images":          1,
-            "profile.managed_default_content_settings.cookies":         1,
-            "profile.managed_default_content_settings.javascript":      1,
-            "profile.managed_default_content_settings.plugins":         1,
-            "profile.default_content_setting_values.notifications":     2,
-            "profile.managed_default_content_settings.stylesheets":     2,
-            "profile.managed_default_content_settings.popups":          2,
-            "profile.managed_default_content_settings.geolocation":     2,
-            "profile.managed_default_content_settings.media_stream":    2,
-        },
-        ExcludeSwitches: []string{
-            "enable-automation",
-            "enable-logging",
-        },
-    }
-
-    caps := selenium.Capabilities{}
-    caps.AddChrome(chromeOptions)
-
-
-    // Start a new ChromeDriver instance
-    printLog := false
-    wd, err := selenium.NewChromeDriverService(SeleniumDriverCheck.AutoDownload_ChromeDriver(printLog), 9515)
-    if err != nil {
-        fmt.Printf("Failed to create ChromeDriver service: %s\n", err)
-        os.Exit(1)
-    }
-    defer wd.Stop()
-
-    // Create a new WebDriver instance
-    driver, err := selenium.NewRemote(caps, fmt.Sprintf("http://localhost:%d/wd/hub", 9515))
-    if err != nil {
-        fmt.Printf("Failed to create WebDriver: %s\n", err)
-        os.Exit(1)
-    }
-    defer driver.Quit()
-
-    userName, _ := accountData[0]["userName"].(string)
-    postingKey, _ := accountData[0]["postingKey"].(string)
-    bossId, _ := accountData[0]["bossId"].(string)
-    heroesType, _ := accountData[0]["heroesType"].(string)
-    cardSelection, _ := accountData[0]["cardSelection"].([]map[string]interface{})
-    login(userName,postingKey,driver,err)
-    // checkPopUp(driver)
-    battle(driver,userName,bossId,heroesType,cardSelection)
-    screenshot, err := driver.Screenshot()
-    if err != nil {
-        fmt.Printf("Failed to take screenshot: %s\n", err)
-        os.Exit(1)
-    }
-
-    // write the screenshot to a file
-    if err := ioutil.WriteFile("screenshot.png", screenshot, 0644); err != nil {
-        fmt.Printf("Failed to write screenshot to file: %s\n", err)
-        os.Exit(1)
-    }
-}
 func countLines(filePath string) (int, error) {
-    file, err := os.Open(filePath)
-    if err != nil {
-        return 0, err
-    }
-    defer file.Close()
-
-    scanner := bufio.NewScanner(file)
-    lineCount := 0
-    for scanner.Scan() {
-        lineCount++
-    }
-
-    if err := scanner.Err(); err != nil {
-        return 0, err
-    }
-
-    return lineCount, nil
+	//读取text文件
+	file, err := os.Open(filePath)
+	if err != nil {
+		return 0, err
+	}
+	defer file.Close()
+	scanner := bufio.NewScanner(file)
+	lineCount := 0
+	for scanner.Scan() {
+		lineCount++
+	}
+	if err := scanner.Err(); err != nil {
+		return 0, err
+	}
+	return lineCount, nil
 }
+
+var w = &sync.WaitGroup{}
 
 func initializeUserData() {
-    lineCount, errCountLines := countLines("config/accounts.txt")
-    var accountLists []map[string]interface{}
-    if errCountLines == nil && lineCount > 1 {
-        for i := 0; i < lineCount-1; i++ {
-            userName, postingKey, heroesType, bossId, cardSelection, timeSleepInMinute := initializeAccount(i+1)
-            accountLists = append(accountLists, map[string]interface{}{
-                "userName":          userName,
-                "postingKey":        postingKey,
-                "bossId":            bossId,
-                "heroesType":        heroesType,
-                "cardSelection":     cardSelection,
-                "timeSleepInMinute": timeSleepInMinute,
-            })
-        }
-    } else {
-        fmt.Print("Please add accounts in accounts.txt\n")
-        os.Exit(1)
-    }
-    fmt.Println(accountLists)
-    initializeDriver([]map[string]interface{}{accountLists[0]})
+	lineCount, errCountLines := countLines("config/accounts.txt")
+	var accountLists []UserData
+	if errCountLines == nil && lineCount > 1 {
+		for i := 0; i < lineCount-1; i++ {
+			w.Add(1)
+			go func(num int) {
+				userName, postingKey, heroesType, bossId, cardSelection, timeSleepInMinute := initializeAccount(num + 1)
+				accountLists = append(accountLists, UserData{
+					UserName:          userName,
+					PostingKey:        postingKey,
+					BossID:            bossId,
+					HeroesType:        heroesType,
+					CardSelection:     cardSelection,
+					TimeSleepInMinute: timeSleepInMinute,
+				})
+
+				w.Done()
+			}(i)
+		}
+		w.Wait()
+		for _, v := range accountLists {
+			initializeDriver(v)
+		}
+	} else {
+		fmt.Print("Please add accounts in accounts.txt\n")
+		os.Exit(1)
+	}
 }
+
 func main() {
-    initializeUserData()
+	initializeUserData()
 }
