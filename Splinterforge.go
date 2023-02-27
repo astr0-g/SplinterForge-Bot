@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"mime/multipart"
 	"net/http"
 	"os"
 	"runtime"
@@ -46,6 +47,12 @@ type UserData struct {
 	PostingKey        string          `json:"postingKey"`
 	TimeSleepInMinute int             `json:"timeSleepInMinute"`
 	UserName          string          `json:"userName"`
+}
+type Card struct {
+	CardDetailID int `json:"card_detail_id"`
+}
+type CardList struct {
+	Cards []Card `json:"cards"`
 }
 func PrintYellow(username string ,message string){
 	now := time.Now()
@@ -307,7 +314,7 @@ func login(userName string, postingKey string, wd selenium.WebDriver) {
 	el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div[1]/div[2]/div/div[2]/div[2]/div/input")
 	el.SendKeys(postingKey)
 	el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div[1]/div[2]/div/div[2]/div[2]/div/input")
-	time.Sleep(1 * time.Second)
+	time.Sleep(2 * time.Second)
 	el.SendKeys("\ue007")
 	err = wd.ResizeWindow("bigger", 1565, 1080)
 	if err != nil {
@@ -380,6 +387,156 @@ func initializeAccount(accountNo int) (string, string, string, string, []CardSel
 
 	return userName, postingKey, heroesType, bossId, cardSelectionList, timeSleepInMinute
 }
+func fetchPlayerCard(userName string, splinterland_api_endpoint string) ([]int, error) {
+	url := "https://api2.splinterlands.com/cards/collection/astrog"
+	method := "GET"
+
+	payload := &bytes.Buffer{}
+	writer := multipart.NewWriter(payload)
+	err := writer.Close()
+	if err != nil {
+		panic(err)
+	}
+
+	client := &http.Client{}
+	req, err := http.NewRequest(method, url, payload)
+	if err != nil {
+		panic(err)
+	}
+
+	req.Header.Add("Content-Type", writer.FormDataContentType())
+	res, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer res.Body.Close()
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		panic(err)
+	}
+
+	var jsonData interface{}
+	err = json.Unmarshal(body, &jsonData)
+	if err != nil {
+		panic(err)
+	}
+
+	jsonString, err := json.Marshal(jsonData)
+	if err != nil {
+		panic(err)
+	}
+	var cardList CardList
+    err = json.Unmarshal([]byte(jsonString), &cardList)
+    if err != nil {
+        panic(err)
+    }
+
+    seen := map[int]bool{}
+    cardDetailIDs := []int{}
+    for _, card := range cardList.Cards {
+        if !seen[card.CardDetailID] {
+            cardDetailIDs = append(cardDetailIDs, card.CardDetailID)
+            seen[card.CardDetailID] = true
+        }
+    }
+	return cardDetailIDs,nil
+}
+type BattleCardsRequestBody struct {
+    BossName string   	`json:"bossName"`
+    BossId   string      `json:"bossId"`
+    Team     string 	`json:"team"`
+}
+
+func fetchBattleCards(bossName string, userName string, splinterland_api_endpoint string, public_api_endpoint string) (map[string]interface{}, error) {
+    cardsId, err := fetchPlayerCard(userName, splinterland_api_endpoint)
+	cardIDsStr := fmt.Sprintf("%v", cardsId)
+	cardIDs := fmt.Sprintf("[%s]\n", strings.Trim(cardIDsStr[1:len(cardIDsStr)-1], " "))
+    if err != nil {
+        return nil, err
+    }
+    bossId := fetchBossID(bossName)
+
+    body := BattleCardsRequestBody{
+        BossName: bossName,
+        BossId:   bossId,
+        Team:     cardIDs,
+    }
+    payload, err := json.Marshal(body)
+    if err != nil {
+        return nil, err
+    }
+
+    url := fmt.Sprintf("%s/teamselection/", public_api_endpoint)
+    request, err := http.NewRequest("POST", url, bytes.NewBuffer(payload))
+    if err != nil {
+        return nil, err
+    }
+    request.Header.Set("Content-Type", "application/json")
+    client := &http.Client{}
+    response, err := client.Do(request)
+    if err != nil {
+        return nil, err
+    }
+    defer response.Body.Close()
+    responseBody, err := ioutil.ReadAll(response.Body)
+    if err != nil {
+        return nil, err
+    }
+	fmt.Println(string(responseBody))
+    var responseJSON map[string]interface{}
+    err = json.Unmarshal(responseBody, &responseJSON)
+    if err != nil {
+        return nil, err
+    }
+
+    
+    return responseJSON, nil
+}
+func autoSelectCard(cardSelection []CardSelection, bossName string, userName string, splinterland_api_endpoint string, public_api_endpoint string)([]CardSelection,bool){
+	// log_info.alerts(
+	//  userName, fmt.Sprintf("Auto selecting playing cards for desire boss: %s", bossName))
+	playingDeck, err := fetchBattleCards(bossName, userName, splinterland_api_endpoint, public_api_endpoint)
+	if err != nil {
+		fmt.Println(err)
+		return cardSelection, false
+	}
+	if playingDeck["RecommendTeam"].(bool) {
+		playingSummonersList := make([]Summoners, 0, len(playingDeck["summonerIds"].(string)))
+		playingMonsterList := make([]MonsterId, 0, len(playingDeck["monsterIds"].(string)))
+		for _, i := range playingDeck["summonerIds"].(string) {
+			fmt.Println(i)
+				// cardName, _ := getCardName(i)
+			playingSummonersList = append(playingSummonersList, Summoners{
+				PlayingSummonersDiv:  fmt.Sprintf("//div/img[@id='%s']", string(i)),
+				// PlayingSummonersID:   i,
+				// PlayingSummonersName: cardName,
+			})
+			}
+		for _, i := range playingDeck["monsterIds"].(string) {
+			fmt.Println(i)
+			// cardName, _ := getCardName(i)
+			playingMonsterList = append(playingMonsterList, MonsterId{
+				PlayingMontersDiv:   fmt.Sprintf("//div/img[@id='%s']", string(i)),
+				// PlayingMonstersID:   i,
+				// PlayingMonstersName: cardName,
+			})
+		}
+		var cardSelectionList = []CardSelection{}
+		cardSelection := CardSelection{
+			PlayingSummoners: playingSummonersList,
+			PlayingMonsters: playingMonsterList,
+		}
+		cardSelectionList = append(cardSelectionList, cardSelection)
+			return nil, true
+		} else {
+			// log_info.status(
+			//  userName, "Auto selecting playing cards deck failed, you might have too less cards in the account, will continue play with your card setting.")
+			return nil, false
+		}
+}
+	// return cardSelection, autoSelectResult
+
 func heroSelect(heroesType string, userName string, wd selenium.WebDriver, auto_select_hero bool, public_api_endpoint string, bossName string) {
 	checkPopUp(wd,1000)
 	heroTypes := [3]string{"Warrior", "Wizard", "Ranger"}
@@ -471,10 +628,17 @@ func bossSelect(userName string, bossIdToSelect string, wd selenium.WebDriver) s
 	return ""
 }
 func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType string, cardSelection []CardSelection) {
+	auto_select_card := true
 	bossName := bossSelect(userName, bossId, wd)
 	fmt.Println(bossName)
 	heroSelect(heroesType,userName,wd,true,"https://api.splinterforge.xyz",bossName)
     fmt.Println(userName,bossId,heroesType)
+	bossSelect(userName, bossId, wd)
+	PrintWhite(userName,"Participating in battles...")
+	// autoSelectResult := false
+	if auto_select_card{
+            cardSelection,_ = autoSelectCard(cardSelection,bossName,userName,"https://api.splinterforge.xyz","https://api2.splinterlands.com")
+		}
     for _, selection := range cardSelection {
 		for _, PlayingMonster := range selection.PlayingMonsters {
 			fmt.Println(PlayingMonster.PlayingMonstersID)
