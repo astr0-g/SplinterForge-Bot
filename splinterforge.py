@@ -757,20 +757,22 @@ def battle(cardSelection, userName, heroesType, driver, show_forge_reward, show_
                 log_info.success(
                     userName, "The battle has ended!")
                 driver.refresh()
+                time.sleep(2)
                 return 1, manaUsed, autoSelectResult
             except:
                 log_info.success(
                     userName, "Encountering difficulty in reading the game results, but the battle has ended.")
                 driver.refresh()
+                time.sleep(2)
                 return 1, manaUsed, autoSelectResult
 
         else:
             driver.refresh()
+            time.sleep(2)
             log_info.alerts(
                 userName, "Insufficient stamina, entering a rest state of inactivity for 1 hour...")
             return 2, manaUsed, autoSelectResult
-    except Exception as e:
-        print(e)
+    except:
         driver.get("https://splinterforge.io/#/")
         log_info.error(userName,
                        "There may be some issues with the server or your playing cards, retrying in 30 seconds...")
