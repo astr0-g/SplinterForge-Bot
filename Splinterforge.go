@@ -2,10 +2,13 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
+	"net/http"
 	"os"
 	"runtime"
 	"strconv"
@@ -13,6 +16,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/fatih/color"
 	"github.com/selenium-Driver-Check/SeleniumDriverCheck"
 	"github.com/tebeka/selenium"
 	"github.com/tebeka/selenium/chrome"
@@ -43,7 +47,31 @@ type UserData struct {
 	TimeSleepInMinute int             `json:"timeSleepInMinute"`
 	UserName          string          `json:"userName"`
 }
-
+func PrintYellow(username string ,message string){
+	now := time.Now()
+	color.Set(color.FgYellow)
+	fmt.Println("[" + now.Format("2006-01-02 15:04:05") + "]",username+":",message)
+}
+func PrintRed(username string ,message string){
+	now := time.Now()
+	color.Set(color.FgRed)
+	fmt.Println("[" + now.Format("2006-01-02 15:04:05") + "]",username+":",message)
+}
+func PrintGreen(username string ,message string){
+	now := time.Now()
+	color.Set(color.FgGreen)
+	fmt.Println("[" + now.Format("2006-01-02 15:04:05") + "]",username+":",message)
+}
+func PrintBlue(username string ,message string){
+	now := time.Now()
+	color.Set(color.FgBlue)
+	fmt.Println("[" + now.Format("2006-01-02 15:04:05") + "]",username+":",message)
+}
+func PrintWhite(username string ,message string){
+	now := time.Now()
+	color.Set(color.FgWhite)
+	fmt.Println("[" + now.Format("2006-01-02 15:04:05") + "]",username+":",message)
+}
 func getCardName(cardId string) (string, error) {
 	// Open the JSON file containing the card names and IDs.
 	file, err := os.Open("data/cardMapping.json")
@@ -146,6 +174,69 @@ func elementWaitAndClick(wd selenium.WebDriver, xpath string) {
 		time.Sleep(1 * time.Second)
 	}
 }
+func fetchHeroSelect(publicAPIEndpoint string, bossName string) (string, error) {
+    bossID := fetchBossID(bossName)
+
+    // Set up the request body
+    requestBody := map[string]interface{}{
+        "bossId": bossID,
+    }
+
+    requestBodyBytes, err := json.Marshal(requestBody)
+    if err != nil {
+        return "", err
+    }
+
+    // Set up the HTTP request
+    endpoint := fmt.Sprintf("%s/heroselection", publicAPIEndpoint)
+    req, err := http.NewRequest("POST", endpoint, bytes.NewReader(requestBodyBytes))
+    if err != nil {
+        return "", err
+    }
+    req.Header.Set("Content-Type", "application/json")
+
+    // Send the request and parse the response
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    if err != nil {
+        return "", err
+    }
+    defer resp.Body.Close()
+
+    var responseData map[string]interface{}
+    decoder := json.NewDecoder(resp.Body)
+    err = decoder.Decode(&responseData)
+    if err != nil {
+        return "", err
+    }
+
+    heroTypeToChoose := strings.Split(responseData["heroTypes"].(string), " ")[0]
+    return heroTypeToChoose, nil
+}
+
+func fetchBossID(bossName string) string {
+    url := "https://splinterforge.io/boss/getBosses"
+
+    // Send the HTTP GET request and parse the JSON response
+    resp, err := http.Get(url)
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer resp.Body.Close()
+
+    var responseData []map[string]interface{}
+    decoder := json.NewDecoder(resp.Body)
+    decoder.Decode(&responseData)
+
+    // Search for the boss ID by name
+    for _, bossData := range responseData {
+        if strings.EqualFold(bossData["name"].(string), bossName) {
+            return bossData["id"].(string)
+        }
+    }
+
+    return ""
+}
 func checkPopUp(wd selenium.WebDriver, millisecond int) {
 	defer func() {
 		if err := recover(); err != nil {
@@ -165,16 +256,41 @@ func checkPopUp(wd selenium.WebDriver, millisecond int) {
     duration := time.Duration(millisecond) * time.Millisecond
 	time.Sleep(duration)
 }
-func login(userName string, postingKey string, wd selenium.WebDriver, err error) {
+func DriverGet(URL string,wd selenium.WebDriver){
+	err := wd.Get(URL)
+	if err != nil {
+		panic(err)
+	}
+    script := `
+        var imgs = document.getElementsByTagName('img');
+        for (var i = 0; i < imgs.length; i++) {
+            imgs[i].parentNode.removeChild(imgs[i]);
+        }
+        var style = document.createElement('style');
+        style.innerHTML = 'img { opacity: 0 }';
+        document.head.appendChild(style);
+        var style = document.createElement('style');
+        style.innerHTML = '* { background-image: none !important; }';
+        document.head.appendChild(style);
+        var style = document.createElement('style');
+        style.innerHTML = '* { color: transparent !important; }';
+        document.head.appendChild(style);
+        var style = document.createElement('style');
+        style.innerHTML = 'img.fade_image { display: none !important; }';
+        document.head.appendChild(style);
+        var style = document.createElement('style');
+        style.innerHTML = '* { transition: paused !important; }';
+        document.head.appendChild(style);
+    `
+    wd.ExecuteScript(script, nil)
+}
+func login(userName string, postingKey string, wd selenium.WebDriver) {
 
-	err = wd.SetImplicitWaitTimeout(5 * time.Second)
+	err := wd.SetImplicitWaitTimeout(5 * time.Second)
 	if err != nil {
 		panic(err)
 	}
-	err = wd.Get("chrome-extension://jcacnejopjdphbnjgfaaobbfafkihpep/popup.html")
-	if err != nil {
-		panic(err)
-	}
+	DriverGet("chrome-extension://jcacnejopjdphbnjgfaaobbfafkihpep/popup.html",wd)
 
 	elementWaitAndClick(wd, "/html/body/div/div/div[4]/div[2]/div[5]/button")
 
@@ -199,30 +315,8 @@ func login(userName string, postingKey string, wd selenium.WebDriver, err error)
 	}
 
 	// wd.SetWindowSize(1565, 1080)
-    
-	wd.Get("https://splinterforge.io/#/")
-    script := `
-        var imgs = document.getElementsByTagName('img');
-        for (var i = 0; i < imgs.length; i++) {
-            imgs[i].parentNode.removeChild(imgs[i]);
-        }
-        var style = document.createElement('style');
-        style.innerHTML = 'img { opacity: 0 }';
-        document.head.appendChild(style);
-        var style = document.createElement('style');
-        style.innerHTML = '* { background-image: none !important; }';
-        document.head.appendChild(style);
-        var style = document.createElement('style');
-        style.innerHTML = '* { color: transparent !important; }';
-        document.head.appendChild(style);
-        var style = document.createElement('style');
-        style.innerHTML = 'img.fade_image { display: none !important; }';
-        document.head.appendChild(style);
-        var style = document.createElement('style');
-        style.innerHTML = '* { transition: paused !important; }';
-        document.head.appendChild(style);
-    `
-    wd.ExecuteScript(script, nil)
+    DriverGet("https://splinterforge.io/#/",wd)
+	
     
 	el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/success-modal/section/div[1]/div[4]/div/button")
 	el.Click()
@@ -247,7 +341,6 @@ func login(userName string, postingKey string, wd selenium.WebDriver, err error)
 	wd.SwitchWindow(handles[0])
 	println("success log in")
 	fmt.Println(time.Now())
-    time.Sleep(10*time.Minute)
 }
 func initializeAccount(accountNo int) (string, string, string, string, []CardSelection, int) {
 	userName, postingKey, err := getAccountData("config/accounts.txt", accountNo)
@@ -287,18 +380,54 @@ func initializeAccount(accountNo int) (string, string, string, string, []CardSel
 
 	return userName, postingKey, heroesType, bossId, cardSelectionList, timeSleepInMinute
 }
+func heroSelect(heroesType string, userName string, wd selenium.WebDriver, auto_select_hero bool, public_api_endpoint string, bossName string) {
+	checkPopUp(wd,1000)
+	heroTypes := [3]string{"Warrior", "Wizard", "Ranger"}
+	if auto_select_hero {
+		hero_type, err := fetchHeroSelect(public_api_endpoint, bossName)
+		if err == nil {
+			PrintYellow(userName, fmt.Sprintf("Auto selecting heroes type: %s for desired boss: %s", hero_type, bossName))
+			for i, val := range heroTypes {
+				if val == hero_type {
+					heroesType = strconv.Itoa(i+1)
+					break
+				}
+			}
+	} else {
+	PrintRed(userName, "Auto selecting heroes type failed due to API error.")
+	}
+	} else {
+	PrintYellow(userName, "Selecting heroes type...")
+	}
+	defer func() {
+        if err := recover(); err != nil {
+            PrintRed(userName, "Error in selecting hero type, continue...")
+        }
+    }()
+    heroIndex, _ := strconv.Atoi(heroesType)
+    hero_type := heroTypes[heroIndex-1]
+	el, _ := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[1]/a[4]")
+	el.Click()
+	bossXpath := "/html/body/app/div[1]/splinterforge-heros/div[3]/section/div/div/div[2]/div[1]"
+	el, _ = wd.FindElement(selenium.ByXPATH, bossXpath)
+	el.Click()
+	bossSelectXpath := fmt.Sprintf("%s/ul/li[%s]",bossXpath , heroesType)
+    el, _ = wd.FindElement(selenium.ByXPATH, bossSelectXpath)
+	el.Click()
+    PrintGreen(userName, fmt.Sprintf("Selected hero type: %s", hero_type))
+}
 func bossSelect(userName string, bossIdToSelect string, wd selenium.WebDriver) string {
 	wd.SetImplicitWaitTimeout(2 * time.Second)
 	// Click on the "Bosses" button
 	if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[1]/a[5]/div[1]"); err == nil {
 		if err = element.Click(); err != nil {
-			fmt.Println(err)
+			// fmt.Println(err)
 			// Handle any errors that occur during the click operation
 		}
 	}
 
 	// Loop until the boss is defeated or a timeout occurs
-	for {
+	for{
 		time.Sleep(1 * time.Second)
 		// Click on the boss to select it
 		bossSelector := fmt.Sprintf("//div[@tabindex='%s']", bossIdToSelect)
@@ -342,22 +471,24 @@ func bossSelect(userName string, bossIdToSelect string, wd selenium.WebDriver) s
 	return ""
 }
 func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType string, cardSelection []CardSelection) {
-	bossSelect(userName, bossId, wd)
-    // fmt.Println(userName,bossId,heroesType)
-    // for _, selection := range cardSelection {
-	// 	for _, PlayingMonster := range selection.PlayingMonsters {
-	// 		fmt.Println(PlayingMonster.PlayingMonstersID)
-    //         fmt.Println(PlayingMonster.PlayingMonstersName)
-    //         fmt.Println(PlayingMonster.PlayingMontersDiv)
-	// 	}
-	// }
-    // for _, selection := range cardSelection {
-	// 	for _, playingSummoner := range selection.PlayingSummoners {
-	// 		fmt.Println(playingSummoner.PlayingSummonersName)
-    //         fmt.Println(playingSummoner.PlayingSummonersID)
-    //         fmt.Println(playingSummoner.PlayingSummonersDiv)
-	// 	}
-	// }
+	bossName := bossSelect(userName, bossId, wd)
+	fmt.Println(bossName)
+	heroSelect(heroesType,userName,wd,true,"https://api.splinterforge.xyz",bossName)
+    fmt.Println(userName,bossId,heroesType)
+    for _, selection := range cardSelection {
+		for _, PlayingMonster := range selection.PlayingMonsters {
+			fmt.Println(PlayingMonster.PlayingMonstersID)
+            fmt.Println(PlayingMonster.PlayingMonstersName)
+            fmt.Println(PlayingMonster.PlayingMontersDiv)
+		}
+	}
+    for _, selection := range cardSelection {
+		for _, playingSummoner := range selection.PlayingSummoners {
+			fmt.Println(playingSummoner.PlayingSummonersName)
+            fmt.Println(playingSummoner.PlayingSummonersID)
+            fmt.Println(playingSummoner.PlayingSummonersDiv)
+		}
+	}
 	
 }
 func initializeDriver(userData UserData) {
@@ -429,7 +560,7 @@ func initializeDriver(userData UserData) {
 	bossId := userData.BossID
 	heroesType := userData.HeroesType
 	cardSelection := userData.CardSelection
-	login(userName, postingKey, driver, err)
+	login(userName, postingKey, driver)
 	checkPopUp(driver,1000)
 	Battle(driver, userName, bossId, heroesType, cardSelection)
 	screenshot, err := driver.Screenshot()
@@ -497,7 +628,6 @@ func initializeUserData() {
 }
 
 func main() {
-    // Measure CPU usage before the function is called
     var stats1 runtime.MemStats
     runtime.ReadMemStats(&stats1)
     start := time.Now()
