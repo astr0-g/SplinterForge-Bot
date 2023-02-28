@@ -268,28 +268,44 @@ func DriverGet(URL string,wd selenium.WebDriver){
 	if err != nil {
 		panic(err)
 	}
-    script := `
-        var imgs = document.getElementsByTagName('img');
-        for (var i = 0; i < imgs.length; i++) {
-            imgs[i].parentNode.removeChild(imgs[i]);
-        }
-        var style = document.createElement('style');
-        style.innerHTML = 'img { opacity: 0 }';
-        document.head.appendChild(style);
-        var style = document.createElement('style');
-        style.innerHTML = '* { background-image: none !important; }';
-        document.head.appendChild(style);
-        var style = document.createElement('style');
-        style.innerHTML = '* { color: transparent !important; }';
-        document.head.appendChild(style);
-        var style = document.createElement('style');
-        style.innerHTML = 'img.fade_image { display: none !important; }';
-        document.head.appendChild(style);
-        var style = document.createElement('style');
-        style.innerHTML = '* { transition: paused !important; }';
-        document.head.appendChild(style);
-    `
-    wd.ExecuteScript(script, nil)
+    // script := `
+    //     var imgs = document.getElementsByTagName('img');
+    //     for (var i = 0; i < imgs.length; i++) {
+    //         imgs[i].parentNode.removeChild(imgs[i]);
+    //     }
+    //     var style = document.createElement('style');
+    //     style.innerHTML = 'img { opacity: 0 }';
+    //     document.head.appendChild(style);
+    //     var style = document.createElement('style');
+    //     style.innerHTML = '* { background-image: none !important; }';
+    //     document.head.appendChild(style);
+    //     var style = document.createElement('style');
+    //     style.innerHTML = '* { color: transparent !important; }';
+    //     document.head.appendChild(style);
+    //     var style = document.createElement('style');
+    //     style.innerHTML = 'img.fade_image { display: none !important; }';
+    //     document.head.appendChild(style);
+    //     var style = document.createElement('style');
+    //     style.innerHTML = '* { transition: paused !important; }';
+    //     document.head.appendChild(style);
+    // `
+    // wd.ExecuteScript(script, nil)
+}
+func checklogin(userName string, wd selenium.WebDriver){
+	for {
+		el, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[2]/div[2]/a/div[2]")
+		if err != nil {
+			time.Sleep(3*time.Second)
+			continue
+		} else {
+			text, _ := el.Text()
+			if text == userName {
+				break
+			} else {
+				fmt.Println("username erro")
+			}
+		}
+	}
 }
 func login(userName string, postingKey string, wd selenium.WebDriver) {
 
@@ -346,7 +362,8 @@ func login(userName string, postingKey string, wd selenium.WebDriver) {
 	el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div/div[3]/div[2]/button[2]/div")
 	el.Click()
 	wd.SwitchWindow(handles[0])
-	println("success log in")
+	checklogin(userName,wd)
+	fmt.Println("success log in")
 	fmt.Println(time.Now())
 }
 func initializeAccount(accountNo int) (string, string, string, string, []CardSelection, int) {
@@ -448,92 +465,88 @@ type BattleCardsRequestBody struct {
     Team     string 	`json:"team"`
 }
 
-func fetchBattleCards(bossName string, userName string, splinterland_api_endpoint string, public_api_endpoint string) (map[string]interface{}, error) {
+func fetchBattleCards(bossName string, userName string, splinterland_api_endpoint string, public_api_endpoint string){
     cardsId, err := fetchPlayerCard(userName, splinterland_api_endpoint)
 	cardIDsStr := fmt.Sprintf("%v", cardsId)
 	cardIDs := fmt.Sprintf("[%s]\n", strings.Trim(cardIDsStr[1:len(cardIDsStr)-1], " "))
     if err != nil {
-        return nil, err
+        return 
     }
     bossId := fetchBossID(bossName)
-
-    body := BattleCardsRequestBody{
-        BossName: bossName,
-        BossId:   bossId,
-        Team:     cardIDs,
-    }
-    payload, err := json.Marshal(body)
+	data := `{"bossName": "` + bossName + `", "bossId": "` + bossId + `", "team": ` + cardIDs + `}`
+	payload := strings.NewReader(data)
     if err != nil {
-        return nil, err
+        return 
     }
-
+	method := "POST"
     url := fmt.Sprintf("%s/teamselection/", public_api_endpoint)
-    request, err := http.NewRequest("POST", url, bytes.NewBuffer(payload))
-    if err != nil {
-        return nil, err
-    }
-    request.Header.Set("Content-Type", "application/json")
-    client := &http.Client{}
-    response, err := client.Do(request)
-    if err != nil {
-        return nil, err
-    }
-    defer response.Body.Close()
-    responseBody, err := ioutil.ReadAll(response.Body)
-    if err != nil {
-        return nil, err
-    }
-	fmt.Println(string(responseBody))
-    var responseJSON map[string]interface{}
-    err = json.Unmarshal(responseBody, &responseJSON)
-    if err != nil {
-        return nil, err
-    }
+    client := &http.Client {
+	}
+	req, err := http.NewRequest(method, url, payload)
+  
+	if err != nil {
+	  fmt.Println(err)
+	  return
+	}
+	req.Header.Add("Content-Type", "application/json")
+  
+	res, err := client.Do(req)
+	if err != nil {
+	  fmt.Println(err)
+	  return
+	}
+	defer res.Body.Close()
+  
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+	  fmt.Println(err)
+	  return
+	}
+	fmt.Println(string(body))
 
     
-    return responseJSON, nil
 }
-func autoSelectCard(cardSelection []CardSelection, bossName string, userName string, splinterland_api_endpoint string, public_api_endpoint string)([]CardSelection,bool){
+func autoSelectCard(cardSelection []CardSelection, bossName string, userName string, splinterland_api_endpoint string, public_api_endpoint string){
 	// log_info.alerts(
 	//  userName, fmt.Sprintf("Auto selecting playing cards for desire boss: %s", bossName))
-	playingDeck, err := fetchBattleCards(bossName, userName, splinterland_api_endpoint, public_api_endpoint)
-	if err != nil {
-		fmt.Println(err)
-		return cardSelection, false
-	}
-	if playingDeck["RecommendTeam"].(bool) {
-		playingSummonersList := make([]Summoners, 0, len(playingDeck["summonerIds"].(string)))
-		playingMonsterList := make([]MonsterId, 0, len(playingDeck["monsterIds"].(string)))
-		for _, i := range playingDeck["summonerIds"].(string) {
-			fmt.Println(i)
-				// cardName, _ := getCardName(i)
-			playingSummonersList = append(playingSummonersList, Summoners{
-				PlayingSummonersDiv:  fmt.Sprintf("//div/img[@id='%s']", string(i)),
-				// PlayingSummonersID:   i,
-				// PlayingSummonersName: cardName,
-			})
-			}
-		for _, i := range playingDeck["monsterIds"].(string) {
-			fmt.Println(i)
-			// cardName, _ := getCardName(i)
-			playingMonsterList = append(playingMonsterList, MonsterId{
-				PlayingMontersDiv:   fmt.Sprintf("//div/img[@id='%s']", string(i)),
-				// PlayingMonstersID:   i,
-				// PlayingMonstersName: cardName,
-			})
-		}
-		var cardSelectionList = []CardSelection{}
-		cardSelection := CardSelection{
-			PlayingSummoners: playingSummonersList,
-			PlayingMonsters: playingMonsterList,
-		}
-		cardSelectionList = append(cardSelectionList, cardSelection)
-			return nil, true
-		} else {
-			// log_info.status(
-			//  userName, "Auto selecting playing cards deck failed, you might have too less cards in the account, will continue play with your card setting.")
-			return nil, false
-		}
+	fetchBattleCards(bossName, userName, splinterland_api_endpoint, public_api_endpoint)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return cardSelection, false
+	// }
+	// if playingDeck["RecommendTeam"].(bool) {
+	// 	playingSummonersList := make([]Summoners, 0, len(playingDeck["summonerIds"].(string)))
+	// 	playingMonsterList := make([]MonsterId, 0, len(playingDeck["monsterIds"].(string)))
+	// 	for _, i := range playingDeck["summonerIds"].(string) {
+	// 		fmt.Println(i)
+	// 			// cardName, _ := getCardName(i)
+	// 		playingSummonersList = append(playingSummonersList, Summoners{
+	// 			PlayingSummonersDiv:  fmt.Sprintf("//div/img[@id='%s']", string(i)),
+	// 			// PlayingSummonersID:   i,
+	// 			// PlayingSummonersName: cardName,
+	// 		})
+	// 		}
+	// 	for _, i := range playingDeck["monsterIds"].(string) {
+	// 		fmt.Println(i)
+	// 		// cardName, _ := getCardName(i)
+	// 		playingMonsterList = append(playingMonsterList, MonsterId{
+	// 			PlayingMontersDiv:   fmt.Sprintf("//div/img[@id='%s']", string(i)),
+	// 			// PlayingMonstersID:   i,
+	// 			// PlayingMonstersName: cardName,
+	// 		})
+	// 	}
+	// 	var cardSelectionList = []CardSelection{}
+	// 	cardSelection := CardSelection{
+	// 		PlayingSummoners: playingSummonersList,
+	// 		PlayingMonsters: playingMonsterList,
+	// 	}
+	// 	cardSelectionList = append(cardSelectionList, cardSelection)
+	// 		return nil, true
+	// 	} else {
+	// 		// log_info.status(
+	// 		//  userName, "Auto selecting playing cards deck failed, you might have too less cards in the account, will continue play with your card setting.")
+	// 		return nil, false
+	// 	}
 }
 	// return cardSelection, autoSelectResult
 
@@ -637,7 +650,7 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 	PrintWhite(userName,"Participating in battles...")
 	// autoSelectResult := false
 	if auto_select_card{
-            cardSelection,_ = autoSelectCard(cardSelection,bossName,userName,"https://api.splinterforge.xyz","https://api2.splinterlands.com")
+            autoSelectCard(cardSelection,bossName,userName,"https://api.splinterforge.xyz","https://api2.splinterlands.com")
 		}
     for _, selection := range cardSelection {
 		for _, PlayingMonster := range selection.PlayingMonsters {
