@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -17,12 +16,14 @@ import (
 	"sync"
 	"time"
 
+	"github.com/golang/glog"
 	"github.com/levigross/grequests"
 
 	"github.com/fatih/color"
 	"github.com/selenium-Driver-Check/SeleniumDriverCheck"
 	"github.com/tebeka/selenium"
 	"github.com/tebeka/selenium/chrome"
+	"github.com/tebeka/selenium/log"
 )
 
 type MonsterId struct {
@@ -235,7 +236,7 @@ func fetchBossID(bossName string) string {
 	// Send the HTTP GET request and parse the JSON response
 	resp, err := http.Get(url)
 	if err != nil {
-		log.Fatal(err)
+		glog.Fatal(err)
 	}
 	defer resp.Body.Close()
 
@@ -815,7 +816,7 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 		}
 		el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/button[1]/div[2]/span")
 		el.Click()
-		time.Sleep(5*time.Second)
+		// time.Sleep(25*time.Second)
 		
 		d , _ := wd.Log("performance")
 		for  _,dd  := range d{
