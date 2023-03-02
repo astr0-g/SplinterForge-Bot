@@ -870,7 +870,7 @@ func initializeDriver(userData UserData) {
 	if err != nil {
 		println((1))
 	}
-	t := false
+	t := true
 	extensionBase64 := base64.StdEncoding.EncodeToString(extensionData)
 	chromeOptions := chrome.Capabilities{
 		PerfLoggingPrefs: &chrome.PerfLoggingPreferences{
