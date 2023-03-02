@@ -322,7 +322,7 @@ func login(userName string, postingKey string, wd selenium.WebDriver) {
 		panic(err)
 	}
 	DriverGet("chrome-extension://jcacnejopjdphbnjgfaaobbfafkihpep/popup.html", wd)
-	
+
 	elementWaitAndClick(wd, "/html/body/div/div/div[4]/div[2]/div[5]/button")
 
 	el, _ := wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div[1]/div/div[1]/div/input")
@@ -412,7 +412,7 @@ func initializeAccount(accountNo int) (string, string, string, string, []CardSel
 	return userName, postingKey, heroesType, bossId, cardSelectionList, timeSleepInMinute
 }
 func fetchPlayerCard(userName string, splinterland_api_endpoint string) ([]int, error) {
-	url := fmt.Sprintf("%s/cards/collection/%s",splinterland_api_endpoint,userName)
+	url := fmt.Sprintf("%s/cards/collection/%s", splinterland_api_endpoint, userName)
 	method := "GET"
 
 	payload := &bytes.Buffer{}
@@ -494,58 +494,58 @@ func fetchBattleCards(bossName string, userName string, splinterland_api_endpoin
 		JSON: postData,
 	}
 	gresponse, err := grequests.Post(url, requestOptions)
-    if err != nil {
-        return "", err
-    }
+	if err != nil {
+		return "", err
+	}
 
-    // Check if the response was successful
-    if !gresponse.Ok {
-        return "", fmt.Errorf("HTTP error: %d - %s", gresponse.StatusCode, gresponse.String())
-    }
+	// Check if the response was successful
+	if !gresponse.Ok {
+		return "", fmt.Errorf("HTTP error: %d - %s", gresponse.StatusCode, gresponse.String())
+	}
 
-    // Parse the response JSON
-    var responseData map[string]interface{}
-    err = json.Unmarshal(gresponse.Bytes(), &responseData)
-    if err != nil {
-        return "", err
-    }
+	// Parse the response JSON
+	var responseData map[string]interface{}
+	err = json.Unmarshal(gresponse.Bytes(), &responseData)
+	if err != nil {
+		return "", err
+	}
 
-    // Encode the response as JSON
-    jsonResponse, err := json.Marshal(responseData)
-    if err != nil {
-        return "", err
-    }
+	// Encode the response as JSON
+	jsonResponse, err := json.Marshal(responseData)
+	if err != nil {
+		return "", err
+	}
 
-    // Return the response as a JSON-encoded string
-    return string(jsonResponse), nil
+	// Return the response as a JSON-encoded string
+	return string(jsonResponse), nil
 }
-func autoSelectCard(cardSelection []CardSelection, bossName string, userName string, splinterland_api_endpoint string, public_api_endpoint string)( []CardSelection, bool,error) {
+func autoSelectCard(cardSelection []CardSelection, bossName string, userName string, splinterland_api_endpoint string, public_api_endpoint string) ([]CardSelection, bool, error) {
 	PrintWhite(
-	 	userName, fmt.Sprintf("Auto selecting playing cards for desire boss: %s", bossName))
-	playingDeck,err := fetchBattleCards(bossName, userName, splinterland_api_endpoint, public_api_endpoint)
+		userName, fmt.Sprintf("Auto selecting playing cards for desire boss: %s", bossName))
+	playingDeck, err := fetchBattleCards(bossName, userName, splinterland_api_endpoint, public_api_endpoint)
 	if err != nil {
 		fmt.Println(err)
-		return cardSelection,false, err
+		return cardSelection, false, err
 	}
 	playingDeckBytes := []byte(playingDeck)
 	var playingDeckMap map[string]interface{}
 	err = json.Unmarshal(playingDeckBytes, &playingDeckMap)
-    if err != nil {
-        return cardSelection,false, err
-    }
+	if err != nil {
+		return cardSelection, false, err
+	}
 	fmt.Println(playingDeckMap["RecommendTeam"].(bool))
 	fmt.Println(playingDeckMap)
 	if playingDeckMap["RecommendTeam"].(bool) {
 		summonerIds, ok := playingDeckMap["summonerIds"].([]interface{})
 		if !ok {
-			return cardSelection,false, fmt.Errorf("summonerIds is not an array")
+			return cardSelection, false, fmt.Errorf("summonerIds is not an array")
 		}
-	
+
 		monsterIds, ok := playingDeckMap["monsterIds"].([]interface{})
 		if !ok {
-			return cardSelection,false, fmt.Errorf("summonerIds is not an array")
+			return cardSelection, false, fmt.Errorf("summonerIds is not an array")
 		}
-	
+
 		playingSummonersList := make([]Summoners, 0, len(summonerIds))
 		playingMonsterList := make([]MonsterId, 0, len(monsterIds))
 		fmt.Printf("summonerIds: %v\n", summonerIds)
@@ -556,20 +556,20 @@ func autoSelectCard(cardSelection []CardSelection, bossName string, userName str
 			playingSummonersList = append(playingSummonersList, Summoners{
 				PlayingSummonersID:   summonerId,
 				PlayingSummonersName: cardName,
-				PlayingSummonersDiv: fmt.Sprintf("//div/img[@id='%s']", summonerId),
+				PlayingSummonersDiv:  fmt.Sprintf("//div/img[@id='%s']", summonerId),
 			})
 		}
-	
+
 		for _, i := range monsterIds {
 			monsterId := fmt.Sprintf("%v", i)
 			cardName, _ := getCardName(monsterId)
 			playingMonsterList = append(playingMonsterList, MonsterId{
 				PlayingMonstersID:   monsterId,
 				PlayingMonstersName: cardName,
-				PlayingMontersDiv: fmt.Sprintf("//div/img[@id='%s']", monsterId),
+				PlayingMontersDiv:   fmt.Sprintf("//div/img[@id='%s']", monsterId),
 			})
 		}
-	
+
 		var cardSelectionList = []CardSelection{}
 		cardSelection := CardSelection{
 			PlayingSummoners: playingSummonersList,
@@ -577,11 +577,11 @@ func autoSelectCard(cardSelection []CardSelection, bossName string, userName str
 		}
 		cardSelectionList = append(cardSelectionList, cardSelection)
 		fmt.Println(cardSelectionList)
-		return cardSelectionList,true, nil
+		return cardSelectionList, true, nil
 	} else {
 		// log_info.status(
 		//  userName, "Auto selecting playing cards deck failed, you might have too less cards in the account, will continue play with your card setting.")
-		return cardSelection,false, nil
+		return cardSelection, false, nil
 	}
 }
 
@@ -623,10 +623,10 @@ func heroSelect(heroesType string, userName string, wd selenium.WebDriver, auto_
 	el.Click()
 	PrintGreen(userName, fmt.Sprintf("Selected hero type: %s", hero_type))
 }
-func bossSelect(userName string, bossIdToSelect string, wd selenium.WebDriver) (string,string,error) {
+func bossSelect(userName string, bossIdToSelect string, wd selenium.WebDriver) (string, string, error) {
 	wd.SetImplicitWaitTimeout(2 * time.Second)
 	// Click on the "Bosses" button
-	
+
 	// Loop until the boss is defeated or a timeout occurs
 	for {
 		if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[1]/a[5]/div[1]"); err == nil {
@@ -654,7 +654,7 @@ func bossSelect(userName string, bossIdToSelect string, wd selenium.WebDriver) (
 					// Get the boss name
 					if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[1]/div[2]/div[3]/h3"); err == nil {
 						bossName, _ := element.Text()
-						return bossName,bossIdToSelect,nil
+						return bossName, bossIdToSelect, nil
 					}
 				} else {
 					fmt.Println(userName, "The selected boss has been defeated, selecting another one automatically...")
@@ -676,40 +676,40 @@ func bossSelect(userName string, bossIdToSelect string, wd selenium.WebDriver) (
 	}
 }
 func waitForElement(wd selenium.WebDriver, xpath string) (bool, error) {
-    for i := 0; i < 5; i++ {
-        _, err := wd.FindElement(selenium.ByXPATH, xpath)
-        if err != nil {
+	for i := 0; i < 5; i++ {
+		_, err := wd.FindElement(selenium.ByXPATH, xpath)
+		if err != nil {
 			time.Sleep(100 * time.Millisecond)
-            continue
-        } else {
-            return true, nil
-        }
-        
-    }
-    return false, nil
+			continue
+		} else {
+			return true, nil
+		}
+
+	}
+	return false, nil
 }
 func selectSummoners(userName string, seletedNumOfSummoners int, cardDiv string, wd selenium.WebDriver) bool {
-    scroolTime := 0
-    clickedTime := 0
-    result := false
-    time.Sleep(1 * time.Second)
-    for scroolTime < 5 && clickedTime < 5 {
-		for i:=0; i < scroolTime;i++ {
-			wd.ExecuteScript("window.scrollBy(0, 180)",nil)
+	scroolTime := 0
+	clickedTime := 0
+	result := false
+	time.Sleep(1 * time.Second)
+	for scroolTime < 5 && clickedTime < 5 {
+		for i := 0; i < scroolTime; i++ {
+			wd.ExecuteScript("window.scrollBy(0, 180)", nil)
 		}
 		el, err := wd.FindElement(selenium.ByXPATH, cardDiv)
-		if err != nil{
+		if err != nil {
 			fmt.Println(err)
 			continue
-		} else{
+		} else {
 			el.Click()
 		}
-		checkCardDiv := fmt.Sprintf("/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/div[1]/div[2]/div[%s]",strconv.Itoa(seletedNumOfSummoners))
+		checkCardDiv := fmt.Sprintf("/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/div[1]/div[2]/div[%s]", strconv.Itoa(seletedNumOfSummoners))
 		success, err := waitForElement(wd, checkCardDiv)
 		if err != nil {
 			panic(err)
 		}
-		
+
 		if success {
 			fmt.Println("Button clicked!")
 			fmt.Println("good")
@@ -719,36 +719,36 @@ func selectSummoners(userName string, seletedNumOfSummoners int, cardDiv string,
 			fmt.Println("Button not clicked!")
 			clickedTime++
 		}
-    }
-    if clickedTime % 2 == 1 {
-        result = true
-    }
-    if !result {
-        PrintRed(userName, "Error in selecting summoners, retrying...")
-    }
-    wd.ExecuteScript("window.scrollBy(0, -4000)",nil)
-    time.Sleep(1 * time.Second)
-    return result
+	}
+	if clickedTime%2 == 1 {
+		result = true
+	}
+	if !result {
+		PrintRed(userName, "Error in selecting summoners, retrying...")
+	}
+	wd.ExecuteScript("window.scrollBy(0, -4000)", nil)
+	time.Sleep(1 * time.Second)
+	return result
 }
 func selectMonsters(userName string, seletedNumOfMonsters int, cardDiv string, wd selenium.WebDriver) bool {
-    scroolTime := 0
-    clickedTime := 0
-    result := false
-    time.Sleep(1 * time.Second)
-    for scroolTime < 5 && clickedTime < 5 {
+	scroolTime := 0
+	clickedTime := 0
+	result := false
+	time.Sleep(1 * time.Second)
+	for scroolTime < 5 && clickedTime < 5 {
 		el, err := wd.FindElement(selenium.ByXPATH, cardDiv)
-		if err != nil{
+		if err != nil {
 			fmt.Println(err)
 			wd.ExecuteScript("window.scrollBy(0, 450)", nil)
 			continue
-		} else{
+		} else {
 			el.Click()
-			checkCardDiv := fmt.Sprintf("/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/div[2]/div[2]/div[%s]",strconv.Itoa(seletedNumOfMonsters))
+			checkCardDiv := fmt.Sprintf("/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/div[2]/div[2]/div[%s]", strconv.Itoa(seletedNumOfMonsters))
 			success, err := waitForElement(wd, checkCardDiv)
 			if err != nil {
-				
+
 			}
-			
+
 			if success {
 				fmt.Println("Button clicked!")
 				fmt.Println("good")
@@ -762,21 +762,21 @@ func selectMonsters(userName string, seletedNumOfMonsters int, cardDiv string, w
 				continue
 			}
 		}
-		
-    }
-    if clickedTime % 2 == 1 {
-        result = true
-    }
-    if !result {
-        PrintRed(userName, "Error in selecting summoners, retrying...")
-    }
-    wd.ExecuteScript("window.scrollBy(0, -4000)",nil)
-    time.Sleep(1 * time.Second)
-    return result
+
+	}
+	if clickedTime%2 == 1 {
+		result = true
+	}
+	if !result {
+		PrintRed(userName, "Error in selecting summoners, retrying...")
+	}
+	wd.ExecuteScript("window.scrollBy(0, -4000)", nil)
+	time.Sleep(1 * time.Second)
+	return result
 }
 func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType string, cardSelection []CardSelection) {
 	auto_select_card := true
-	bossName,bossIdToSelect,_ := bossSelect(userName, bossId, wd)
+	bossName, bossIdToSelect, _ := bossSelect(userName, bossId, wd)
 	fmt.Println(bossName)
 	heroSelect(heroesType, userName, wd, true, "https://api.splinterforge.xyz", bossName)
 	fmt.Println(userName, bossId, heroesType)
@@ -784,7 +784,7 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 	// autoSelectResult := falsez
 
 	if auto_select_card {
-		cardSelection,_,_ := autoSelectCard(cardSelection, bossName, userName, "https://api2.splinterlands.com", "https://api.splinterforge.xyz")
+		cardSelection, _, _ := autoSelectCard(cardSelection, bossName, userName, "https://api2.splinterlands.com", "https://api.splinterforge.xyz")
 		seletedNumOfSummoners := 1
 		el, _ := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/button")
 		el.Click()
@@ -794,9 +794,9 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 				fmt.Println(playingSummoner.PlayingSummonersName)
 				fmt.Println(playingSummoner.PlayingSummonersID)
 				fmt.Println(playingSummoner.PlayingSummonersDiv)
-				result := selectSummoners(userName, seletedNumOfSummoners, playingSummoner.PlayingSummonersDiv , wd)
-				if result{
-					seletedNumOfSummoners++	
+				result := selectSummoners(userName, seletedNumOfSummoners, playingSummoner.PlayingSummonersDiv, wd)
+				if result {
+					seletedNumOfSummoners++
 				}
 			}
 		}
@@ -806,41 +806,46 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 				fmt.Println(PlayingMonster.PlayingMonstersID)
 				fmt.Println(PlayingMonster.PlayingMonstersName)
 				fmt.Println(PlayingMonster.PlayingMontersDiv)
-				result := selectMonsters(userName, seletedNumOfMonsters, PlayingMonster.PlayingMontersDiv , wd)
-				if result{
-					seletedNumOfMonsters++	
+				result := selectMonsters(userName, seletedNumOfMonsters, PlayingMonster.PlayingMontersDiv, wd)
+				if result {
+					seletedNumOfMonsters++
 				}
-				
+
 			}
 		}
 		el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/button[1]/div[2]/span")
 		el.Click()
-
-		var requestBody string
-		wd.Wait(func(wd selenium.WebDriver) (bool, error) {
-			logs, err := wd.ExecuteScript("return performance.getEntries();",nil)
-			if err != nil {
-				return false, err
-			}
-
-			for _, log := range logs.([]interface{}) {
-				if entry, ok := log.(map[string]interface{}); ok {
-					if request, ok := entry["request"].(map[string]interface{}); ok {
-						if method, ok := request["method"].(string); ok && method == "POST" {
-							if url, ok := request["url"].(string); ok && strings.Contains(url, "https://splinterforge.io/boss/fight_boss") {
-								if requestBody, ok = request["postData"].(string); ok {
-									return true, nil
-								}
-							}
-						}
-					}
-				}
-			}
-			return false, nil
-		})
-
-		fmt.Println(requestBody)
+		time.Sleep(5*time.Second)
 		
+		d , _ := wd.Log("performance")
+		for  _,dd  := range d{
+			fmt.Println(dd,"\n--------------------------------------------------------------------------------")
+		}
+		//var requestBody string
+		//wd.Wait(func(wd selenium.WebDriver) (bool, error) {
+		//	logs, err := wd.ExecuteScript("return performance.getEntries();", nil)
+		//	if err != nil {
+		//		return false, err
+		//	}
+		//
+		//	for _, log := range logs.([]interface{}) {
+		//		if entry, ok := log.(map[string]interface{}); ok {
+		//			if request, ok := entry["request"].(map[string]interface{}); ok {
+		//				if method, ok := request["method"].(string); ok && method == "POST" {
+		//					if url, ok := request["url"].(string); ok && strings.Contains(url, "https://splinterforge.io/boss/fight_boss") {
+		//						if requestBody, ok = request["postData"].(string); ok {
+		//							return true, nil
+		//						}
+		//					}
+		//				}
+		//			}
+		//		}
+		//	}
+		//	return false, nil
+		//})
+
+		//fmt.Println(requestBody)
+
 	} else {
 		for _, selection := range cardSelection {
 			for _, PlayingMonster := range selection.PlayingMonsters {
@@ -856,8 +861,7 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 				fmt.Println(playingSummoner.PlayingSummonersDiv)
 			}
 		}
-	} 
-	
+	}
 
 }
 func initializeDriver(userData UserData) {
@@ -910,7 +914,7 @@ func initializeDriver(userData UserData) {
 
 	caps := selenium.Capabilities{}
 	caps.AddChrome(chromeOptions)
-		caps.SetLogLevel(log.Performance, log.All)
+	caps.SetLogLevel(log.Performance, log.All)
 	// Start a new ChromeDriver instance
 	printLog := false
 	wd, err := selenium.NewChromeDriverService(SeleniumDriverCheck.AutoDownload_ChromeDriver(printLog), 9515)
@@ -1004,18 +1008,17 @@ func main() {
 	var stats1 runtime.MemStats
 	runtime.ReadMemStats(&stats1)
 	start := time.Now()
-	
+
 	// Call the function that we want to measure
 	initializeUserData()
-	
+
 	// Measure CPU usage after the function is called
 	elapsed := time.Since(start)
 	var stats2 runtime.MemStats
 	runtime.ReadMemStats(&stats2)
-	
+
 	// Calculate and display CPU usage statistics
 	cpuTime := time.Duration(stats2.Sys - stats1.Sys)
 	fmt.Printf("CPU usage: %.2f%%\n", (float64(cpuTime)/float64(elapsed))*100.0)
-	
 
 }
