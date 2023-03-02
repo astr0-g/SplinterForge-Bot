@@ -695,31 +695,29 @@ func selectSummoners(userName string, seletedNumOfSummoners int, cardDiv string,
 	result := false
 	time.Sleep(1 * time.Second)
 	for scroolTime < 5 && clickedTime < 5 {
-		for i := 0; i < scroolTime; i++ {
-			wd.ExecuteScript("window.scrollBy(0, 180)", nil)
-		}
 		el, err := wd.FindElement(selenium.ByXPATH, cardDiv)
 		if err != nil {
 			fmt.Println(err)
 			continue
 		} else {
 			el.Click()
-		}
-		checkCardDiv := fmt.Sprintf("/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/div[1]/div[2]/div[%s]", strconv.Itoa(seletedNumOfSummoners))
-		success, err := waitForElement(wd, checkCardDiv)
-		if err != nil {
-			panic(err)
-		}
+			checkCardDiv := fmt.Sprintf("/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/div[1]/div[2]/div[%s]", strconv.Itoa(seletedNumOfSummoners))
+			success, err := waitForElement(wd, checkCardDiv)
+			if err != nil {
+				panic(err)
+			}
 
-		if success {
-			fmt.Println("Button clicked!")
-			fmt.Println("good")
-			result = true
-			break
-		} else {
-			fmt.Println("Button not clicked!")
-			clickedTime++
+			if success {
+				fmt.Println("Button clicked!")
+				result = true
+				break
+			} else {
+				fmt.Println("Button not clicked!")
+				clickedTime++
+				scroolTime++
+			}
 		}
+		
 	}
 	if clickedTime%2 == 1 {
 		result = true
@@ -745,11 +743,8 @@ func selectMonsters(userName string, seletedNumOfMonsters int, cardDiv string, w
 		} else {
 			el.Click()
 			checkCardDiv := fmt.Sprintf("/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/div[2]/div[2]/div[%s]", strconv.Itoa(seletedNumOfMonsters))
-			success, err := waitForElement(wd, checkCardDiv)
-			if err != nil {
-
-			}
-
+			fmt.Println(checkCardDiv)
+			success, _ := waitForElement(wd, checkCardDiv)
 			if success {
 				fmt.Println("Button clicked!")
 				fmt.Println("good")
@@ -774,6 +769,18 @@ func selectMonsters(userName string, seletedNumOfMonsters int, cardDiv string, w
 	wd.ExecuteScript("window.scrollBy(0, -4000)", nil)
 	time.Sleep(1 * time.Second)
 	return result
+}
+
+type Message struct {
+	Method string `json:"method"`
+	Params struct {
+		Request struct {
+			URL        string `json:"url"`
+			Method     string `json:"method"`
+			PostData   string `json:"postData"`
+			Headers    map[string]string `json:"headers"`
+		} `json:"request"`
+	} `json:"params"`
 }
 func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType string, cardSelection []CardSelection) {
 	auto_select_card := true
@@ -811,42 +818,37 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 				if result {
 					seletedNumOfMonsters++
 				}
-
 			}
 		}
 		el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/button[1]/div[2]/span")
 		el.Click()
-		// time.Sleep(25*time.Second)
+		time.Sleep(10*time.Second)
 		
 		d , _ := wd.Log("performance")
-		for  _,dd  := range d{
-			fmt.Println(dd,"\n--------------------------------------------------------------------------------")
+		for _, dd := range d {
+			var data map[string]json.RawMessage
+			messageBytes, err := json.Marshal(dd)
+			if err != nil {
+				fmt.Println("1", err)
+				continue
+			}
+			if err := json.Unmarshal(messageBytes, &data); err != nil {
+				fmt.Println("2", err)
+				continue
+			}
+			var message Message
+			if err := json.Unmarshal(data["message"], &message); err != nil {
+				fmt.Println("3", err)
+				continue
+			}
+			if message.Params.Request.URL == "https://splinterforge.io/boss/fight_boss" {
+				fmt.Println("Found")
+				fmt.Println(message.Params.Request.PostData)
+			}
 		}
-		//var requestBody string
-		//wd.Wait(func(wd selenium.WebDriver) (bool, error) {
-		//	logs, err := wd.ExecuteScript("return performance.getEntries();", nil)
-		//	if err != nil {
-		//		return false, err
-		//	}
-		//
-		//	for _, log := range logs.([]interface{}) {
-		//		if entry, ok := log.(map[string]interface{}); ok {
-		//			if request, ok := entry["request"].(map[string]interface{}); ok {
-		//				if method, ok := request["method"].(string); ok && method == "POST" {
-		//					if url, ok := request["url"].(string); ok && strings.Contains(url, "https://splinterforge.io/boss/fight_boss") {
-		//						if requestBody, ok = request["postData"].(string); ok {
-		//							return true, nil
-		//						}
-		//					}
-		//				}
-		//			}
-		//		}
-		//	}
-		//	return false, nil
-		//})
-
-		//fmt.Println(requestBody)
-
+		
+		
+// 
 	} else {
 		for _, selection := range cardSelection {
 			for _, PlayingMonster := range selection.PlayingMonsters {
@@ -893,7 +895,7 @@ func initializeDriver(userData UserData) {
 			"--ignore-certificate-errors",
 			"--allow-running-insecure-content",
 			"--window-size=300,600",
-			// "--headless=new",
+			"--headless=new",
 		},
 		Extensions: []string{extensionBase64},
 		Prefs: map[string]interface{}{
