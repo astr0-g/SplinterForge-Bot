@@ -868,6 +868,10 @@ func initializeDriver(userData UserData) {
 
 	extensionBase64 := base64.StdEncoding.EncodeToString(extensionData)
 	chromeOptions := chrome.Capabilities{
+		PerfLoggingPrefs: &chrome.PerfLoggingPreferences{
+			EnableNetwork: &t,
+			EnablePage:    &t},
+		W3C:  false,
 		Path: "",
 		Args: []string{
 			"--no-sandbox",
@@ -906,7 +910,7 @@ func initializeDriver(userData UserData) {
 
 	caps := selenium.Capabilities{}
 	caps.AddChrome(chromeOptions)
-	
+		caps.SetLogLevel(log.Performance, log.All)
 	// Start a new ChromeDriver instance
 	printLog := false
 	wd, err := selenium.NewChromeDriverService(SeleniumDriverCheck.AutoDownload_ChromeDriver(printLog), 9515)
