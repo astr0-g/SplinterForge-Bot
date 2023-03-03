@@ -6,6 +6,7 @@ require (
 	github.com/fatih/color v1.14.1
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
 	github.com/levigross/grequests v0.0.0-20221222020224-9eee758d18d5
+	github.com/mattn/go-runewidth v0.0.13 // indirect
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/selenium-Driver-Check/SeleniumDriverCheck v1.0.9
 	github.com/tebeka/selenium v0.9.9
