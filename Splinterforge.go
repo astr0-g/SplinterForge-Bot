@@ -751,6 +751,7 @@ type Message struct {
 }
 
 func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType string, cardSelection []spstruct.CardSelection) {
+	//
 	//auto_select_card := true
 	//bossName, bossIdToSelect, _ := bossSelect(userName, bossId, wd)
 	//fmt.Println(bossName)
