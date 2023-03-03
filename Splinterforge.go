@@ -905,6 +905,7 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 	//	//}
 	//}
 }
+
 func initializeDriver(userData spstruct.UserData) {
 	extensionData, err := ioutil.ReadFile("data/hivekeychain.crx")
 	if err != nil {
