@@ -69,8 +69,8 @@ type FitReturnData struct {
 	Boss   string `json:"boss"`
 	//Team     []map[string]interface{} `json:"team"`
 	//Actions  []map[string]interface{} `json:"actions"`
-	TotalDmg int `json:"totalDmg"` // 总伤害
-	Points   int `json:"points"`   // 分数
+	TotalDmg int        `json:"totalDmg"` // 总伤害
+	Points   int        `json:"points"`   // 分数
 	Rewards  []struct { // 奖励
 		Type string `json:"type"`
 		Name string `json:"name"`
@@ -91,9 +91,9 @@ type FitReturnData struct {
 
 type KeyLoginResData struct {
 	Stamina struct {
-		Last    time.Time `json:"last"`
-		Current int       `json:"current"`
-		Max     int       `json:"max"`
+		Last    string `json:"last"`
+		Current int    `json:"current"`
+		Max     int    `json:"max"`
 	} `json:"stamina"`
 	Sc struct {
 		Balance float64 `json:"balance"`

@@ -794,12 +794,11 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 	//el, _ := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/button[1]/div[2]/span")
 	//el.Click()
 	// time.Sleep(25*time.Second)
-	time.Sleep(10 * time.Second)
 	name, _ := wd.ExecuteScript("return localStorage.getItem('forge:username');", nil)
 	key, _ := wd.ExecuteScript("return localStorage.getItem('forge:key');", nil)
 
-	fmt.Println(name)
-	fmt.Println(key)
+	//fmt.Println(name)
+	//fmt.Println(key)
 	res, _ := grequests.Post("https://splinterforge.io/users/keyLogin", &grequests.RequestOptions{
 		JSON: map[string]string{
 			"username": name.(string),
@@ -811,11 +810,16 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 	})
 	var powerRes = spstruct.KeyLoginResData{}
 	json.Unmarshal(res.Bytes(), &powerRes)
-	fmt.Println(powerRes.Stamina.Current)
-	fmt.Println(powerRes.Stamina.Max)
+	//fmt.Println(powerRes.Stamina.Current)
+	//fmt.Println(powerRes.Stamina.Max)
 
-	fmt.Println(powerRes.Stamina.Current / 20)
-	fmt.Println(powerRes.Stamina.Max / 20)
+	count, _ := CaculateTimeDiff(powerRes.Stamina.Last)
+	fmt.Println("powerRes.Stamina.Last = ", powerRes.Stamina.Last)
+	fmt.Println("count = ", count)
+	fmt.Println("powerRes.Stamina.Current = ", powerRes.Stamina.Current)
+	fmt.Println("powerRes.Stamina.Max = ", powerRes.Stamina.Max)
+	fmt.Println("powerRes.Stamina.Current + count/20 = ", (powerRes.Stamina.Current+count)/20)
+	fmt.Println("powerRes.Stamina.Max / 20 = ", powerRes.Stamina.Max/20)
 	//d, _ := wd.Log("performance")
 	//for _, dd := range d {
 	//	fmt.Println(dd.Message)
@@ -1039,6 +1043,22 @@ func initializeUserData() {
 		fmt.Print("Please add accounts in accounts.txt\n")
 		os.Exit(1)
 	}
+}
+
+func CaculateTimeDiff(oldTime string) (int, error) {
+	now := time.Now()
+
+	// 待计算的时间参数（string格式）
+	t, err := time.Parse(time.RFC3339, "2023-03-03T08:04:10.316Z")
+	if err != nil {
+		return 0, err
+	}
+	// 转换为Unix时间戳并计算差值
+	diff := int(now.Unix() - t.Unix())
+	// 转换为分钟
+	diffInMinutes := diff / 60
+	return diffInMinutes, nil
+
 }
 
 func main() {
