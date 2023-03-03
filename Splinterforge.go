@@ -360,8 +360,7 @@ func login(userName string, postingKey string, wd selenium.WebDriver) {
 	el.Click()
 	wd.SwitchWindow(handles[0])
 	checklogin(userName, wd)
-	fmt.Println("success log in")
-	fmt.Println(time.Now())
+	PrintGreen(userName,"success log in")
 }
 func initializeAccount(accountNo int) (string, string, string, string, []spstruct.CardSelection, int) {
 
@@ -455,7 +454,7 @@ func fetchPlayerCard(userName string, splinterland_api_endpoint string) ([]int, 
 			seen[card.CardDetailID] = true
 		}
 	}
-	fmt.Println(cardDetailIDs)
+	// fmt.Println(cardDetailIDs)
 	return cardDetailIDs, nil
 }
 
@@ -515,7 +514,7 @@ func autoSelectCard(cardSelection []spstruct.CardSelection, bossName string, use
 		userName, fmt.Sprintf("Auto selecting playing cards for desire boss: %s", bossName))
 	playingDeck, err := fetchBattleCards(bossName, userName, splinterland_api_endpoint, public_api_endpoint)
 	if err != nil {
-		fmt.Println(err)
+		// fmt.Println(err)
 		return cardSelection, false, err
 	}
 	playingDeckBytes := []byte(playingDeck)
@@ -524,8 +523,8 @@ func autoSelectCard(cardSelection []spstruct.CardSelection, bossName string, use
 	if err != nil {
 		return cardSelection, false, err
 	}
-	fmt.Println(playingDeckMap["RecommendTeam"].(bool))
-	fmt.Println(playingDeckMap)
+	// fmt.Println(playingDeckMap["RecommendTeam"].(bool))
+	// fmt.Println(playingDeckMap)
 	if playingDeckMap["RecommendTeam"].(bool) {
 		summonerIds, ok := playingDeckMap["summonerIds"].([]interface{})
 		if !ok {
@@ -567,7 +566,7 @@ func autoSelectCard(cardSelection []spstruct.CardSelection, bossName string, use
 			PlayingMonsters:  playingMonsterList,
 		}
 		cardSelectionList = append(cardSelectionList, cardSelection)
-		fmt.Println(cardSelectionList)
+		// fmt.Println(cardSelectionList)
 		return cardSelectionList, true, nil
 	} else {
 		// log_info.status(
@@ -648,7 +647,7 @@ func bossSelect(userName string, bossIdToSelect string, wd selenium.WebDriver) (
 						return bossName, bossIdToSelect, nil
 					}
 				} else {
-					fmt.Println(userName, "The selected boss has been defeated, selecting another one automatically...")
+					PrintRed(userName, "The selected boss has been defeated, selecting another one automatically...")
 					// Select the next boss
 					if bossIdToSelect < "17" {
 						bossIdInt, err := strconv.Atoi(bossIdToSelect)
@@ -687,22 +686,22 @@ func selectSummoners(userName string, seletedNumOfSummoners int, cardDiv string,
 	for scroolTime < 5 && clickedTime < 5 {
 		el, err := wd.FindElement(selenium.ByXPATH, cardDiv)
 		if err != nil {
-			fmt.Println(err)
+			// fmt.Println(err)
 			continue
 		} else {
 			el.Click()
 			checkCardDiv := fmt.Sprintf("/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/div[1]/div[2]/div[%s]", strconv.Itoa(seletedNumOfSummoners))
 			success, err := waitForElement(wd, checkCardDiv)
 			if err != nil {
-				panic(err)
+				// panic(err)
 			}
 
 			if success {
-				fmt.Println("Button clicked!")
+				// fmt.Println("Button clicked!")
 				result = true
 				break
 			} else {
-				fmt.Println("Button not clicked!")
+				// fmt.Println("Button not clicked!")
 				clickedTime++
 				scroolTime++
 			}
@@ -727,22 +726,22 @@ func selectMonsters(userName string, seletedNumOfMonsters int, cardDiv string, w
 	for scroolTime < 5 && clickedTime < 5 {
 		el, err := wd.FindElement(selenium.ByXPATH, cardDiv)
 		if err != nil {
-			fmt.Println(err)
+			// fmt.Println(err)
 			wd.ExecuteScript("window.scrollBy(0, 450)", nil)
 			scroolTime++
 			continue
 		} else {
 			el.Click()
 			checkCardDiv := fmt.Sprintf("/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/div[2]/div[2]/div[%s]", strconv.Itoa(seletedNumOfMonsters))
-			fmt.Println(checkCardDiv)
+			// fmt.Println(checkCardDiv)
 			success, _ := waitForElement(wd, checkCardDiv)
 			if success {
-				fmt.Println("Button clicked!")
-				fmt.Println("good")
+				// fmt.Println("Button clicked!")
+				// fmt.Println("good")
 				result = true
 				break
 			} else {
-				fmt.Println("Button not clicked!")
+				// fmt.Println("Button not clicked!")
 				clickedTime++
 				wd.ExecuteScript("window.scrollBy(0, 450)", nil)
 				continue
@@ -778,9 +777,7 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 	
 	auto_select_card := true
 	bossName, bossIdToSelect, _ := bossSelect(userName, bossId, wd)
-	fmt.Println(bossName)
 	heroSelect(heroesType, userName, wd, true, "https://api.splinterforge.xyz", bossName)
-	fmt.Println(userName, bossId, heroesType)
 	bossSelect(userName, bossIdToSelect, wd)
 	// autoSelectResult := falsez
 	
@@ -799,9 +796,9 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 	selectResult := true
 	for _, selection := range cardSelection {
 		for i, playingSummoner := range selection.PlayingSummoners {
-			fmt.Println(playingSummoner.PlayingSummonersName)
-			fmt.Println(playingSummoner.PlayingSummonersID)
-			fmt.Println(playingSummoner.PlayingSummonersDiv)
+			// fmt.Println(playingSummoner.PlayingSummonersName)
+			// fmt.Println(playingSummoner.PlayingSummonersID)
+			// fmt.Println(playingSummoner.PlayingSummonersDiv)
 			result := selectSummoners(userName, seletedNumOfSummoners, playingSummoner.PlayingSummonersDiv, wd)
 			if result {
 				seletedNumOfSummoners++
@@ -810,9 +807,9 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 		}
 		seletedNumOfMonsters := 1
 		for j, playingMonster := range selection.PlayingMonsters {
-			fmt.Println(playingMonster.PlayingMonstersID)
-			fmt.Println(playingMonster.PlayingMonstersName)
-			fmt.Println(playingMonster.PlayingMontersDiv)
+			// fmt.Println(playingMonster.PlayingMonstersID)
+			// fmt.Println(playingMonster.PlayingMonstersName)
+			// fmt.Println(playingMonster.PlayingMontersDiv)
 			result := selectMonsters(userName, seletedNumOfMonsters, playingMonster.PlayingMontersDiv, wd)
 			if result {
 				seletedNumOfMonsters++
@@ -846,33 +843,54 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 	//fmt.Println(powerRes.Stamina.Current)
 	//fmt.Println(powerRes.Stamina.Max)
 
+	
+	returnJsonResult := false
+	for{
+		d, _ := wd.Log("performance")
+		for _, dd := range d {
+			if strings.Contains(dd.Message, "https://splinterforge.io/boss/fight_boss") && strings.Contains(dd.Message, "\"method\":\"Network.requestWillBeSent\"") {
+				fitRes := spstruct.FitBossRequestsData{}
+				fitPostData := spstruct.FitBossPostData{}
+				json.Unmarshal([]byte(dd.Message), &fitRes)
+				json.Unmarshal([]byte(fitRes.Message.Params.Request.PostData), &fitPostData)
+				fmt.Println(fitPostData)
+				returnJsonResult = true
+				break
+			} 
+		}
+		if returnJsonResult{
+			break
+		} else {
+			time.Sleep(2*time.Second)
+			continue
+		}
+	}
 	count, _ := CaculateTimeDiff(powerRes.Stamina.Last)
-	fmt.Println("powerRes.Stamina.Last = ", powerRes.Stamina.Last)
-	fmt.Println("count = ", count)
-	fmt.Println("powerRes.Stamina.Current = ", powerRes.Stamina.Current)
-	fmt.Println("powerRes.Stamina.Max = ", powerRes.Stamina.Max)
-	fmt.Println("powerRes.Stamina.Current + count/20 = ", (powerRes.Stamina.Current+count)/20)
-	fmt.Println("powerRes.Stamina.Max / 20 = ", powerRes.Stamina.Max/20)
-	// d, _ := wd.Log("performance")
+	PrintWhite(userName,fmt.Sprintf("powerRes.Stamina.Last = %s", powerRes.Stamina.Last))
+	PrintWhite(userName,fmt.Sprintf("count = %s", strconv.Itoa(count)))
+	PrintWhite(userName,fmt.Sprintf("powerRes.Stamina.Current = %s", strconv.Itoa(powerRes.Stamina.Current)))
+	PrintWhite(userName,fmt.Sprintf("powerRes.Stamina.Max = %s", strconv.Itoa(powerRes.Stamina.Max)))
+	PrintWhite(userName,fmt.Sprintf("powerRes.Stamina.Current + count/20 = %s", strconv.Itoa((powerRes.Stamina.Current+count)/20)))
+	PrintWhite(userName,fmt.Sprintf("powerRes.Stamina.Max / 20 = %s", strconv.Itoa(powerRes.Stamina.Max/20)))
 	// for _, dd := range d {
-	// 	fmt.Println(dd.Message)
-	// 	value = browser.execute_script('return localStorage.getItem("wwwPassLogout");')
-	// 	//if strings.Contains(dd.Message, "https://splinterforge.io/boss/fight_boss") && strings.Contains(dd.Message, "\"method\":\"Network.requestWillBeSent\"") {
-	// 	//fmt.Println(dd.Message)
-	// 	if strings.Contains(dd.Message, `"username"`) && strings.Contains(dd.Message, "token") {
-	// 		fmt.Println(dd.Message)
-	// 		//fitRes := FitBossRequestsData{}
-	// 		//fitPostData := FitBossPostData{}
+	// 	// fmt.Println(dd.Message)
+	// // 	value = browser.execute_script('return localStorage.getItem("wwwPassLogout");')
+	// 	if strings.Contains(dd.Message, "https://splinterforge.io/boss/fight_boss") && strings.Contains(dd.Message, "\"method\":\"Network.requestWillBeSent\"") {
+	// 	// fmt.Println(dd.Message)
+	// 	// if strings.Contains(dd.Message, `"username"`) && strings.Contains(dd.Message, "token") {
+	// 		// fmt.Println(dd.Message)
+	// 		fitRes := spstruct.FitBossRequestsData{}
+	// 		fitPostData := spstruct.FitBossPostData{}
 	// 		//将dd.Message转换为fitRes
 	
-	// 		keyLoginPostData := KeyLoginPostData{}
+	// 		// keyLoginPostData := KeyLoginPostData{}
 	
-	// 		//json.Unmarshal([]byte(dd.Message), &fitRes)
-	// 		//json.Unmarshal([]byte(fitRes.Message.Params.Request.PostData), &fitPostData)
+	// 		json.Unmarshal([]byte(dd.Message), &fitRes)
+	// 		json.Unmarshal([]byte(fitRes.Message.Params.Request.PostData), &fitPostData)
 	
-	// 		json.Unmarshal([]byte(dd.Message), &keyLoginPostData)
-	// 		//fmt.Println(fitPostData.Memo)
-	// 		//fmt.Println(fitPostData.Team)
+	// 		// json.Unmarshal([]byte(dd.Message), &keyLoginPostData)
+	// 		fmt.Println(fitPostData)
+			// fmt.Println(fitPostData.Team)
 	// 		//for i := 0; i < 22; i++ {
 	// 		//
 	// 		//}
@@ -937,7 +955,8 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 	// 	//	}
 	// 	//}
 	// }
-	}
+	// }
+		}
 }
 
 func initializeDriver(userData spstruct.UserData) {
@@ -1112,5 +1131,5 @@ func main() {
 	// Calculate and display CPU usage statistics
 	cpuTime := time.Duration(stats2.Sys - stats1.Sys)
 	fmt.Printf("CPU usage: %.2f%%\n", (float64(cpuTime)/float64(elapsed))*100.0)
-
+	time.Sleep(20*time.Second)
 }
