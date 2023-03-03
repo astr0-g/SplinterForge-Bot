@@ -24,44 +24,9 @@ import (
 	"github.com/tebeka/selenium"
 	"github.com/tebeka/selenium/chrome"
 	"github.com/tebeka/selenium/log"
+
+	"splinterforge/spstruct"
 )
-
-type MonsterId struct {
-	PlayingMonstersID   string `json:"playingMonstersId"`
-	PlayingMonstersName string `json:"playingMonstersName"`
-	PlayingMontersDiv   string `json:"playingMontersDiv"`
-}
-
-type Summoners struct {
-	PlayingSummonersDiv  string `json:"playingSummonersDiv"`
-	PlayingSummonersID   string `json:"playingSummonersId"`
-	PlayingSummonersName string `json:"playingSummonersName"`
-}
-
-type CardSelection struct {
-	PlayingMonsters  []MonsterId `json:"PlayingMonsters"`
-	PlayingSummoners []Summoners `json:"playingSummoners"`
-}
-
-type UserData struct {
-	BossID            string          `json:"bossId"`
-	CardSelection     []CardSelection `json:"cardSelection"`
-	HeroesType        string          `json:"heroesType"`
-	PostingKey        string          `json:"postingKey"`
-	TimeSleepInMinute int             `json:"timeSleepInMinute"`
-	UserName          string          `json:"userName"`
-}
-type Card struct {
-	CardDetailID int `json:"card_detail_id"`
-}
-type CardList struct {
-	Cards []Card `json:"cards"`
-}
-type BattleCardsRequestBody struct {
-	BossName string `json:"bossName"`
-	BossId   string `json:"bossId"`
-	Team     []int  `json:"team"`
-}
 
 func PrintYellow(username string, message string) {
 	now := time.Now()
@@ -277,28 +242,28 @@ func DriverGet(URL string, wd selenium.WebDriver) {
 	if err != nil {
 		panic(err)
 	}
-	// script := `
-	//     var imgs = document.getElementsByTagName('img');
-	//     for (var i = 0; i < imgs.length; i++) {
-	//         imgs[i].parentNode.removeChild(imgs[i]);
-	//     }
-	//     var style = document.createElement('style');
-	//     style.innerHTML = 'img { opacity: 0 }';
-	//     document.head.appendChild(style);
-	//     var style = document.createElement('style');
-	//     style.innerHTML = '* { background-image: none !important; }';
-	//     document.head.appendChild(style);
-	//     var style = document.createElement('style');
-	//     style.innerHTML = '* { color: transparent !important; }';
-	//     document.head.appendChild(style);
-	//     var style = document.createElement('style');
-	//     style.innerHTML = 'img.fade_image { display: none !important; }';
-	//     document.head.appendChild(style);
-	//     var style = document.createElement('style');
-	//     style.innerHTML = '* { transition: paused !important; }';
-	//     document.head.appendChild(style);
-	// `
-	// wd.ExecuteScript(script, nil)
+	script := `
+	    var imgs = document.getElementsByTagName('img');
+	    for (var i = 0; i < imgs.length; i++) {
+	        imgs[i].parentNode.removeChild(imgs[i]);
+	    }
+	    var style = document.createElement('style');
+	    style.innerHTML = 'img { opacity: 0 }';
+	    document.head.appendChild(style);
+	    var style = document.createElement('style');
+	    style.innerHTML = '* { background-image: none !important; }';
+	    document.head.appendChild(style);
+	    var style = document.createElement('style');
+	    style.innerHTML = '* { color: transparent !important; }';
+	    document.head.appendChild(style);
+	    var style = document.createElement('style');
+	    style.innerHTML = 'img.fade_image { display: none !important; }';
+	    document.head.appendChild(style);
+	    var style = document.createElement('style');
+	    style.innerHTML = '* { transition: paused !important; }';
+	    document.head.appendChild(style);
+	`
+	wd.ExecuteScript(script, nil)
 }
 func checklogin(userName string, wd selenium.WebDriver) {
 	for {
@@ -374,7 +339,8 @@ func login(userName string, postingKey string, wd selenium.WebDriver) {
 	fmt.Println("success log in")
 	fmt.Println(time.Now())
 }
-func initializeAccount(accountNo int) (string, string, string, string, []CardSelection, int) {
+func initializeAccount(accountNo int) (string, string, string, string, []spstruct.CardSelection, int) {
+
 	userName, postingKey, err := getAccountData("config/accounts.txt", accountNo)
 	if err != nil || userName == "" || postingKey == "" {
 		fmt.Println("Error in loading accounts.txt, please add username or posting key and try again.")
@@ -383,11 +349,11 @@ func initializeAccount(accountNo int) (string, string, string, string, []CardSel
 	if err != nil {
 		fmt.Println("Error loading cardSettings.txt file")
 	}
-	playingSummonersList := make([]Summoners, 0, len(playingSummoners))
-	playingMonsterList := make([]MonsterId, 0, len(playingMonster))
+	playingSummonersList := make([]spstruct.Summoners, 0, len(playingSummoners))
+	playingMonsterList := make([]spstruct.MonsterId, 0, len(playingMonster))
 	for _, i := range playingSummoners {
 		cardName, _ := getCardName(i)
-		playingSummonersList = append(playingSummonersList, Summoners{
+		playingSummonersList = append(playingSummonersList, spstruct.Summoners{
 			PlayingSummonersDiv:  fmt.Sprintf("//div/img[@id='%s']", i),
 			PlayingSummonersID:   i,
 			PlayingSummonersName: cardName,
@@ -395,14 +361,14 @@ func initializeAccount(accountNo int) (string, string, string, string, []CardSel
 	}
 	for _, i := range playingMonster {
 		cardName, _ := getCardName(i)
-		playingMonsterList = append(playingMonsterList, MonsterId{
+		playingMonsterList = append(playingMonsterList, spstruct.MonsterId{
 			PlayingMontersDiv:   fmt.Sprintf("//div/img[@id='%s']", i),
 			PlayingMonstersID:   i,
 			PlayingMonstersName: cardName,
 		})
 	}
-	var cardSelectionList = []CardSelection{}
-	cardSelection := CardSelection{
+	var cardSelectionList = []spstruct.CardSelection{}
+	cardSelection := spstruct.CardSelection{
 		PlayingSummoners: playingSummonersList,
 		PlayingMonsters:  playingMonsterList,
 	}
@@ -451,7 +417,7 @@ func fetchPlayerCard(userName string, splinterland_api_endpoint string) ([]int, 
 	if err != nil {
 		panic(err)
 	}
-	var cardList CardList
+	var cardList spstruct.CardList
 	err = json.Unmarshal([]byte(jsonString), &cardList)
 	if err != nil {
 		panic(err)
@@ -480,7 +446,7 @@ func fetchBattleCards(bossName string, userName string, splinterland_api_endpoin
 	bossId := fetchBossID(bossName)
 
 	// Prepare the request body
-	postData := BattleCardsRequestBody{
+	postData := spstruct.BattleCardsRequestBody{
 		BossId:   bossId,
 		BossName: bossName,
 		Team:     cardsId,
@@ -520,7 +486,7 @@ func fetchBattleCards(bossName string, userName string, splinterland_api_endpoin
 	// Return the response as a JSON-encoded string
 	return string(jsonResponse), nil
 }
-func autoSelectCard(cardSelection []CardSelection, bossName string, userName string, splinterland_api_endpoint string, public_api_endpoint string) ([]CardSelection, bool, error) {
+func autoSelectCard(cardSelection []spstruct.CardSelection, bossName string, userName string, splinterland_api_endpoint string, public_api_endpoint string) ([]spstruct.CardSelection, bool, error) {
 	PrintWhite(
 		userName, fmt.Sprintf("Auto selecting playing cards for desire boss: %s", bossName))
 	playingDeck, err := fetchBattleCards(bossName, userName, splinterland_api_endpoint, public_api_endpoint)
@@ -547,14 +513,14 @@ func autoSelectCard(cardSelection []CardSelection, bossName string, userName str
 			return cardSelection, false, fmt.Errorf("summonerIds is not an array")
 		}
 
-		playingSummonersList := make([]Summoners, 0, len(summonerIds))
-		playingMonsterList := make([]MonsterId, 0, len(monsterIds))
+		playingSummonersList := make([]spstruct.Summoners, 0, len(summonerIds))
+		playingMonsterList := make([]spstruct.MonsterId, 0, len(monsterIds))
 		fmt.Printf("summonerIds: %v\n", summonerIds)
 		fmt.Printf("monsterIds: %v\n", monsterIds)
 		for _, i := range summonerIds {
 			summonerId := fmt.Sprintf("%v", i)
 			cardName, _ := getCardName(summonerId)
-			playingSummonersList = append(playingSummonersList, Summoners{
+			playingSummonersList = append(playingSummonersList, spstruct.Summoners{
 				PlayingSummonersID:   summonerId,
 				PlayingSummonersName: cardName,
 				PlayingSummonersDiv:  fmt.Sprintf("//div/img[@id='%s']", summonerId),
@@ -564,15 +530,15 @@ func autoSelectCard(cardSelection []CardSelection, bossName string, userName str
 		for _, i := range monsterIds {
 			monsterId := fmt.Sprintf("%v", i)
 			cardName, _ := getCardName(monsterId)
-			playingMonsterList = append(playingMonsterList, MonsterId{
+			playingMonsterList = append(playingMonsterList, spstruct.MonsterId{
 				PlayingMonstersID:   monsterId,
 				PlayingMonstersName: cardName,
 				PlayingMontersDiv:   fmt.Sprintf("//div/img[@id='%s']", monsterId),
 			})
 		}
 
-		var cardSelectionList = []CardSelection{}
-		cardSelection := CardSelection{
+		var cardSelectionList = []spstruct.CardSelection{}
+		cardSelection := spstruct.CardSelection{
 			PlayingSummoners: playingSummonersList,
 			PlayingMonsters:  playingMonsterList,
 		}
@@ -774,103 +740,164 @@ func selectMonsters(userName string, seletedNumOfMonsters int, cardDiv string, w
 	wd.ExecuteScript("window.scrollBy(0, -4000)", nil)
 	time.Sleep(1 * time.Second)
 	return result
-}
-func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType string, cardSelection []CardSelection) {
-	auto_select_card := true
-	bossName, bossIdToSelect, _ := bossSelect(userName, bossId, wd)
-	fmt.Println(bossName)
-	heroSelect(heroesType, userName, wd, true, "https://api.splinterforge.xyz", bossName)
-	fmt.Println(userName, bossId, heroesType)
-	bossSelect(userName, bossIdToSelect, wd)
-	// autoSelectResult := falsez
-
-	if auto_select_card {
-		cardSelection, _, _ := autoSelectCard(cardSelection, bossName, userName, "https://api2.splinterlands.com", "https://api.splinterforge.xyz")
-		seletedNumOfSummoners := 1
-		el, _ := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/button")
-		el.Click()
-		PrintWhite(userName, "Participating in battles...")
-		for _, selection := range cardSelection {
-			for _, playingSummoner := range selection.PlayingSummoners {
-				fmt.Println(playingSummoner.PlayingSummonersName)
-				fmt.Println(playingSummoner.PlayingSummonersID)
-				fmt.Println(playingSummoner.PlayingSummonersDiv)
-				result := selectSummoners(userName, seletedNumOfSummoners, playingSummoner.PlayingSummonersDiv, wd)
-				if result {
-					seletedNumOfSummoners++
-				}
-			}
-		}
-		seletedNumOfMonsters := 1
-		for _, selection := range cardSelection {
-			for _, PlayingMonster := range selection.PlayingMonsters {
-				fmt.Println(PlayingMonster.PlayingMonstersID)
-				fmt.Println(PlayingMonster.PlayingMonstersName)
-				fmt.Println(PlayingMonster.PlayingMontersDiv)
-				result := selectMonsters(userName, seletedNumOfMonsters, PlayingMonster.PlayingMontersDiv, wd)
-				if result {
-					seletedNumOfMonsters++
-				}
-
-			}
-		}
-		el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/button[1]/div[2]/span")
-		el.Click()
-		// time.Sleep(25*time.Second)
-		
-		d , _ := wd.Log("performance")
-		for  _,dd  := range d{
-			fmt.Println(dd,"\n--------------------------------------------------------------------------------")
-		}
-		//var requestBody string
-		//wd.Wait(func(wd selenium.WebDriver) (bool, error) {
-		//	logs, err := wd.ExecuteScript("return performance.getEntries();", nil)
-		//	if err != nil {
-		//		return false, err
-		//	}
-		//
-		//	for _, log := range logs.([]interface{}) {
-		//		if entry, ok := log.(map[string]interface{}); ok {
-		//			if request, ok := entry["request"].(map[string]interface{}); ok {
-		//				if method, ok := request["method"].(string); ok && method == "POST" {
-		//					if url, ok := request["url"].(string); ok && strings.Contains(url, "https://splinterforge.io/boss/fight_boss") {
-		//						if requestBody, ok = request["postData"].(string); ok {
-		//							return true, nil
-		//						}
-		//					}
-		//				}
-		//			}
-		//		}
-		//	}
-		//	return false, nil
-		//})
-
-		//fmt.Println(requestBody)
-
-	} else {
-		for _, selection := range cardSelection {
-			for _, PlayingMonster := range selection.PlayingMonsters {
-				fmt.Println(PlayingMonster.PlayingMonstersID)
-				fmt.Println(PlayingMonster.PlayingMonstersName)
-				fmt.Println(PlayingMonster.PlayingMontersDiv)
-			}
-		}
-		for _, selection := range cardSelection {
-			for _, playingSummoner := range selection.PlayingSummoners {
-				fmt.Println(playingSummoner.PlayingSummonersName)
-				fmt.Println(playingSummoner.PlayingSummonersID)
-				fmt.Println(playingSummoner.PlayingSummonersDiv)
-			}
-		}
-	}
 
 }
-func initializeDriver(userData UserData) {
+func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType string, cardSelection []spstruct.CardSelection) {
+	//auto_select_card := true
+	//bossName, bossIdToSelect, _ := bossSelect(userName, bossId, wd)
+	//fmt.Println(bossName)
+	//heroSelect(heroesType, userName, wd, true, "https://api.splinterforge.xyz", bossName)
+	//fmt.Println(userName, bossId, heroesType)
+	//bossSelect(userName, bossIdToSelect, wd)
+	//// autoSelectResult := falsez
+	//
+	//if auto_select_card {
+	//cardSelection, _, _ := autoSelectCard(cardSelection, bossName, userName, "https://api2.splinterlands.com", "https://api.splinterforge.xyz")
+	//seletedNumOfSummoners := 1
+	//el, _ := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/button")
+	//el.Click()
+	//PrintWhite(userName, "Participating in battles...")
+	//for _, selection := range cardSelection {
+	//	for _, playingSummoner := range selection.PlayingSummoners {
+	//		fmt.Println(playingSummoner.PlayingSummonersName)
+	//		fmt.Println(playingSummoner.PlayingSummonersID)
+	//		fmt.Println(playingSummoner.PlayingSummonersDiv)
+	//		result := selectSummoners(userName, seletedNumOfSummoners, playingSummoner.PlayingSummonersDiv, wd)
+	//		if result {
+	//			seletedNumOfSummoners++
+	//		}
+	//	}
+	//}
+	//seletedNumOfMonsters := 1
+	//for _, selection := range cardSelection {
+	//	for _, PlayingMonster := range selection.PlayingMonsters {
+	//		fmt.Println(PlayingMonster.PlayingMonstersID)
+	//		fmt.Println(PlayingMonster.PlayingMonstersName)
+	//		fmt.Println(PlayingMonster.PlayingMontersDiv)
+	//		result := selectMonsters(userName, seletedNumOfMonsters, PlayingMonster.PlayingMontersDiv, wd)
+	//		if result {
+	//			seletedNumOfMonsters++
+	//		}
+	//
+	//	}
+	//}
+
+	//el, _ := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/button[1]/div[2]/span")
+	//el.Click()
+	// time.Sleep(25*time.Second)
+	//time.Sleep(10 * time.Second)
+	name, _ := wd.ExecuteScript("return localStorage.getItem('forge:username');", nil)
+	key, _ := wd.ExecuteScript("return localStorage.getItem('forge:key');", nil)
+
+	fmt.Println(name)
+	fmt.Println(key)
+	res, _ := grequests.Post("https://splinterforge.io/users/keyLogin", &grequests.RequestOptions{
+		JSON: map[string]string{
+			"username": name.(string),
+			"key":      key.(string),
+		},
+		Headers: map[string]string{
+			"Content-Type": "application/json",
+		},
+	})
+	var powerRes = spstruct.KeyLoginResData{}
+	json.Unmarshal(res.Bytes(), &powerRes)
+	fmt.Println(powerRes.Stamina.Current)
+	fmt.Println(powerRes.Stamina.Max)
+
+	fmt.Println(powerRes.Stamina.Current / 20)
+	fmt.Println(powerRes.Stamina.Max / 20)
+	//d, _ := wd.Log("performance")
+	//for _, dd := range d {
+	//	fmt.Println(dd.Message)
+	//	value = browser.execute_script('return localStorage.getItem("wwwPassLogout");')
+	//	//if strings.Contains(dd.Message, "https://splinterforge.io/boss/fight_boss") && strings.Contains(dd.Message, "\"method\":\"Network.requestWillBeSent\"") {
+	//	//fmt.Println(dd.Message)
+	//	if strings.Contains(dd.Message, `"username"`) && strings.Contains(dd.Message, "token") {
+	//		fmt.Println(dd.Message)
+	//		//fitRes := FitBossRequestsData{}
+	//		//fitPostData := FitBossPostData{}
+	//		//将dd.Message转换为fitRes
+	//
+	//		keyLoginPostData := KeyLoginPostData{}
+	//
+	//		//json.Unmarshal([]byte(dd.Message), &fitRes)
+	//		//json.Unmarshal([]byte(fitRes.Message.Params.Request.PostData), &fitPostData)
+	//
+	//		json.Unmarshal([]byte(dd.Message), &keyLoginPostData)
+	//		//fmt.Println(fitPostData.Memo)
+	//		//fmt.Println(fitPostData.Team)
+	//		//for i := 0; i < 22; i++ {
+	//		//
+	//		//}
+	//		//res, err := grequests.Post("https://splinterforge.io/boss/fight_boss", &grequests.RequestOptions{
+	//		//	JSON: fitPostData,
+	//		//	Headers: map[string]string{
+	//		//		"Content-Type": fitRes.Message.Params.Request.Headers.ContentType,
+	//		//		"User-Agent":   fitRes.Message.Params.Request.Headers.UserAgent,
+	//		//	},
+	//		//})
+	//		//fmt.Println(res, err)
+	//
+	//		res, err := grequests.Post("https://splinterforge.io/users/keyLogin", &grequests.RequestOptions{
+	//			JSON: strings.ReplaceAll(keyLoginPostData.Message.Params.Request.PostData, "token", "key"),
+	//			Headers: map[string]string{
+	//				"Content-Type": keyLoginPostData.Message.Params.Request.Headers.ContentType,
+	//				"User-Agent":   keyLoginPostData.Message.Params.Request.Headers.UserAgent,
+	//			},
+	//		})
+	//		fmt.Println(res, err)
+	//		//}
+	//	}
+	//	//var requestBody string
+	//	//wd.Wait(func(wd selenium.WebDriver) (bool, error) {
+	//	//	logs, err := wd.ExecuteScript("return performance.getEntries();", nil)
+	//	//	if err != nil {
+	//	//		return false, err
+	//	//	}
+	//	//
+	//	//	for _, log := range logs.([]interface{}) {
+	//	//		if entry, ok := log.(map[string]interface{}); ok {
+	//	//			if request, ok := entry["request"].(map[string]interface{}); ok {
+	//	//				if method, ok := request["method"].(string); ok && method == "POST" {
+	//	//					if url, ok := request["url"].(string); ok && strings.Contains(url, "https://splinterforge.io/boss/fight_boss") {
+	//	//						if requestBody, ok = request["postData"].(string); ok {
+	//	//							return true, nil
+	//	//						}
+	//	//					}
+	//	//				}
+	//	//			}
+	//	//		}
+	//	//	}
+	//	//	return false, nil
+	//	//})
+	//
+	//	//fmt.Println(requestBody)
+	//	//
+	//	//} else {
+	//	//	for _, selection := range cardSelection {
+	//	//		for _, PlayingMonster := range selection.PlayingMonsters {
+	//	//			fmt.Println(PlayingMonster.PlayingMonstersID)
+	//	//			fmt.Println(PlayingMonster.PlayingMonstersName)
+	//	//			fmt.Println(PlayingMonster.PlayingMontersDiv)
+	//	//		}
+	//	//	}
+	//	//	for _, selection := range cardSelection {
+	//	//		for _, playingSummoner := range selection.PlayingSummoners {
+	//	//			fmt.Println(playingSummoner.PlayingSummonersName)
+	//	//			fmt.Println(playingSummoner.PlayingSummonersID)
+	//	//			fmt.Println(playingSummoner.PlayingSummonersDiv)
+	//	//		}
+	//	//	}
+	//	//}
+	//}
+}
+func initializeDriver(userData spstruct.UserData) {
 	extensionData, err := ioutil.ReadFile("data/hivekeychain.crx")
 	if err != nil {
 		println((1))
 	}
-	t := false
+	t := true
 	extensionBase64 := base64.StdEncoding.EncodeToString(extensionData)
 	chromeOptions := chrome.Capabilities{
 		PerfLoggingPrefs: &chrome.PerfLoggingPreferences{
@@ -893,7 +920,7 @@ func initializeDriver(userData UserData) {
 			"--ignore-certificate-errors",
 			"--allow-running-insecure-content",
 			"--window-size=300,600",
-			// "--headless=new",
+			"--headless=new",
 		},
 		Extensions: []string{extensionBase64},
 		Prefs: map[string]interface{}{
@@ -976,13 +1003,13 @@ var w = &sync.WaitGroup{}
 
 func initializeUserData() {
 	lineCount, errCountLines := countLines("config/accounts.txt")
-	var accountLists []UserData
+	var accountLists []spstruct.UserData
 	if errCountLines == nil && lineCount > 1 {
 		for i := 0; i < lineCount-1; i++ {
 			w.Add(1)
 			go func(num int) {
 				userName, postingKey, heroesType, bossId, cardSelection, timeSleepInMinute := initializeAccount(num + 1)
-				accountLists = append(accountLists, UserData{
+				accountLists = append(accountLists, spstruct.UserData{
 					UserName:          userName,
 					PostingKey:        postingKey,
 					BossID:            bossId,

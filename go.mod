@@ -1,4 +1,4 @@
-module main
+module splinterforge
 
 go 1.16
 
