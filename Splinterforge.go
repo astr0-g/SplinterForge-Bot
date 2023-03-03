@@ -683,7 +683,7 @@ func selectSummoners(userName string, seletedNumOfSummoners int, cardDiv string,
 				scroolTime++
 			}
 		}
-		
+
 	}
 	if clickedTime%2 == 1 {
 		result = true
@@ -735,107 +735,21 @@ func selectMonsters(userName string, seletedNumOfMonsters int, cardDiv string, w
 	wd.ExecuteScript("window.scrollBy(0, -4000)", nil)
 	time.Sleep(1 * time.Second)
 	return result
-<<<<<<< HEAD
-=======
+
 }
 
 type Message struct {
 	Method string `json:"method"`
 	Params struct {
 		Request struct {
-			URL        string `json:"url"`
-			Method     string `json:"method"`
-			PostData   string `json:"postData"`
-			Headers    map[string]string `json:"headers"`
+			URL      string            `json:"url"`
+			Method   string            `json:"method"`
+			PostData string            `json:"postData"`
+			Headers  map[string]string `json:"headers"`
 		} `json:"request"`
 	} `json:"params"`
 }
-func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType string, cardSelection []CardSelection) {
-	auto_select_card := true
-	bossName, bossIdToSelect, _ := bossSelect(userName, bossId, wd)
-	fmt.Println(bossName)
-	heroSelect(heroesType, userName, wd, true, "https://api.splinterforge.xyz", bossName)
-	fmt.Println(userName, bossId, heroesType)
-	bossSelect(userName, bossIdToSelect, wd)
-	// autoSelectResult := falsez
 
-	if auto_select_card {
-		cardSelection, _, _ := autoSelectCard(cardSelection, bossName, userName, "https://api2.splinterlands.com", "https://api.splinterforge.xyz")
-		seletedNumOfSummoners := 1
-		el, _ := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/button")
-		el.Click()
-		PrintWhite(userName, "Participating in battles...")
-		for _, selection := range cardSelection {
-			for _, playingSummoner := range selection.PlayingSummoners {
-				fmt.Println(playingSummoner.PlayingSummonersName)
-				fmt.Println(playingSummoner.PlayingSummonersID)
-				fmt.Println(playingSummoner.PlayingSummonersDiv)
-				result := selectSummoners(userName, seletedNumOfSummoners, playingSummoner.PlayingSummonersDiv, wd)
-				if result {
-					seletedNumOfSummoners++
-				}
-			}
-		}
-		seletedNumOfMonsters := 1
-		for _, selection := range cardSelection {
-			for _, PlayingMonster := range selection.PlayingMonsters {
-				fmt.Println(PlayingMonster.PlayingMonstersID)
-				fmt.Println(PlayingMonster.PlayingMonstersName)
-				fmt.Println(PlayingMonster.PlayingMontersDiv)
-				result := selectMonsters(userName, seletedNumOfMonsters, PlayingMonster.PlayingMontersDiv, wd)
-				if result {
-					seletedNumOfMonsters++
-				}
-			}
-		}
-		el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/button[1]/div[2]/span")
-		el.Click()
-		time.Sleep(10*time.Second)
-		
-		d , _ := wd.Log("performance")
-		for _, dd := range d {
-			var data map[string]json.RawMessage
-			messageBytes, err := json.Marshal(dd)
-			if err != nil {
-				fmt.Println("1", err)
-				continue
-			}
-			if err := json.Unmarshal(messageBytes, &data); err != nil {
-				fmt.Println("2", err)
-				continue
-			}
-			var message Message
-			if err := json.Unmarshal(data["message"], &message); err != nil {
-				fmt.Println("3", err)
-				continue
-			}
-			if message.Params.Request.URL == "https://splinterforge.io/boss/fight_boss" {
-				fmt.Println("Found")
-				fmt.Println(message.Params.Request.PostData)
-			}
-		}
-		
-		
-// 
-	} else {
-		for _, selection := range cardSelection {
-			for _, PlayingMonster := range selection.PlayingMonsters {
-				fmt.Println(PlayingMonster.PlayingMonstersID)
-				fmt.Println(PlayingMonster.PlayingMonstersName)
-				fmt.Println(PlayingMonster.PlayingMontersDiv)
-			}
-		}
-		for _, selection := range cardSelection {
-			for _, playingSummoner := range selection.PlayingSummoners {
-				fmt.Println(playingSummoner.PlayingSummonersName)
-				fmt.Println(playingSummoner.PlayingSummonersID)
-				fmt.Println(playingSummoner.PlayingSummonersDiv)
-			}
-		}
-	}
->>>>>>> 9b689e070bcf9486dc68473b4b6e3ae1b56031a6
-
-}
 func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType string, cardSelection []spstruct.CardSelection) {
 	//auto_select_card := true
 	//bossName, bossIdToSelect, _ := bossSelect(userName, bossId, wd)
@@ -879,7 +793,7 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 	//el, _ := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/button[1]/div[2]/span")
 	//el.Click()
 	// time.Sleep(25*time.Second)
-	//time.Sleep(10 * time.Second)
+	time.Sleep(10 * time.Second)
 	name, _ := wd.ExecuteScript("return localStorage.getItem('forge:username');", nil)
 	key, _ := wd.ExecuteScript("return localStorage.getItem('forge:key');", nil)
 
