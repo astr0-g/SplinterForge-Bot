@@ -852,6 +852,7 @@ func getConfig(filePath string) (bool, bool, int, int, bool, bool, bool, int, bo
 }
 func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType string, cardSelection []spstruct.CardSelection, autoSelectHero bool, autoSelectCard bool, splinterlandAPIEndpoint string, publicAPIEndpoint string) {
 	MemoStatus := true
+	Unexpected := false
 	bossName, bossIdToSelect, _ := bossSelect(userName, bossId, wd)
 	heroSelect(heroesType, userName, wd, autoSelectHero, publicAPIEndpoint, bossName)
 	bossSelect(userName, bossIdToSelect, wd)
@@ -935,8 +936,9 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 				continue
 			} else if strings.Contains(reFit.String(), "decoded message was invalid") {
 				MemoStatus = false
+				PrintRed(userName, "Memo Error, Restarting...")
 				break
-			} else {
+			} else if strings.Contains(reFit.String(), "totalDmg") && strings.Contains(reFit.String(), "points") {
 				var fitReturnData = spstruct.FitReturnData{}
 				json.Unmarshal(reFit.Bytes(), &fitReturnData)
 				fmt.Println("fitReturnData.Points > ", fitReturnData.Points)
@@ -964,16 +966,19 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 				PrintWhite(userName, fmt.Sprintf("powerRes.Stamina.Max / 20 = %s", strconv.Itoa(powerRes.Stamina.Max/20)))
 				time.Sleep(25 * time.Second)
 				continue
+			} else {
+				Unexpected = true
+				PrintRed(userName, "Unexpected Error, Restarting...")
+				break
 			}
 		} else {
 			fmt.Println("RequestsFit Err > ", err)
 		}
 	}
-	if MemoStatus == false {
+	if MemoStatus == false || Unexpected == true {
 		go func() {
 			for _, v := range accountLists {
 				if v.UserName == userName {
-					PrintRed(userName, "Memo Error, Restarting...")
 					initializeDriver(v, headless, closeDriverWhileSleeping, showForgeReward, showTotalForgeBalance, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint)
 				}
 			}
