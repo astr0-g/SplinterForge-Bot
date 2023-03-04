@@ -979,9 +979,12 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 		go func() {
 			for _, v := range accountLists {
 				if v.UserName == userName {
+					w.Add(1)
 					initializeDriver(v, headless, closeDriverWhileSleeping, showForgeReward, showTotalForgeBalance, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint)
 				}
+				w.Done()
 			}
+			w.Wait()
 		}()
 	}
 }
@@ -1143,7 +1146,14 @@ func main() {
 	start := time.Now()
 
 	// Call the function that we want to measure
-	initializeUserData()
+	for i := 0; i < 1; i++ {
+		w.Add(1)
+		go func() {
+			initializeUserData()
+			w.Done()
+		}()
+		w.Wait()
+	}
 
 	// Measure CPU usage after the function is called
 	elapsed := time.Since(start)
