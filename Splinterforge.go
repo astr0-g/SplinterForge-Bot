@@ -921,6 +921,7 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 				break
 			}
 		}
+
 		if returnJsonResult == true {
 			break
 		} else {
