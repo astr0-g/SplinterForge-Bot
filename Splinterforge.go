@@ -853,6 +853,7 @@ func getConfig(filePath string) (bool, bool, int, int, bool, bool, bool, int, bo
 func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType string, cardSelection []spstruct.CardSelection, autoSelectHero bool, autoSelectCard bool, splinterlandAPIEndpoint string, publicAPIEndpoint string) {
 	MemoStatus := true
 	Unexpected := false
+	time.Sleep(15 * time.Second)
 	bossName, bossIdToSelect, _ := bossSelect(userName, bossId, wd)
 	heroSelect(heroesType, userName, wd, autoSelectHero, publicAPIEndpoint, bossName)
 	bossSelect(userName, bossIdToSelect, wd)
@@ -984,8 +985,9 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 				}
 				w.Done()
 			}
-			w.Wait()
+
 		}()
+		w.Wait()
 	}
 }
 
@@ -1146,14 +1148,8 @@ func main() {
 	start := time.Now()
 
 	// Call the function that we want to measure
-	for i := 0; i < 1; i++ {
-		w.Add(1)
-		go func() {
-			initializeUserData()
-			w.Done()
-		}()
-		w.Wait()
-	}
+
+	initializeUserData()
 
 	// Measure CPU usage after the function is called
 	elapsed := time.Since(start)
