@@ -938,6 +938,7 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 		} else {
 			fmt.Println("RequestsFit Err > ", err)
 		}
+
 		time.Sleep(5 * time.Second)
 		res, _ := grequests.Post("https://splinterforge.io/users/keyLogin", &grequests.RequestOptions{
 			JSON: map[string]string{
