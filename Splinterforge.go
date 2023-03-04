@@ -920,6 +920,7 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 	}
 
 	for {
+		fitPostData.Memo = "dw9d59wd5298w5d2985dw9"
 		reFit, err := grequests.Post("https://splinterforge.io/boss/fight_boss", &grequests.RequestOptions{
 			JSON: fitPostData,
 			Headers: map[string]string{
@@ -928,39 +929,44 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 			},
 		})
 		if err == nil {
-			//var fitReturnData = spstruct.FitReturnData{}
-			//json.Unmarshal(reFit.Bytes(), &fitReturnData)
-			//fmt.Println("fitReturnData.Points > ", fitReturnData.Points)
-			//fmt.Println("fitReturnData.TotalDmg > ", fitReturnData.TotalDmg)
-			//fmt.Println("fitReturnData.Rewards[0].Qty > ", fitReturnData.Rewards[0].Qty)
-			//fmt.Println("fitReturnData.Rewards[1].Qty > ", fitReturnData.Rewards[1].Qty)
 			fmt.Println(reFit.String())
+			if strings.Contains(reFit.String(), "not enough mana!") {
+				time.Sleep(1 * time.Hour)
+				continue
+			} else {
+				var fitReturnData = spstruct.FitReturnData{}
+				json.Unmarshal(reFit.Bytes(), &fitReturnData)
+				fmt.Println("fitReturnData.Points > ", fitReturnData.Points)
+				fmt.Println("fitReturnData.TotalDmg > ", fitReturnData.TotalDmg)
+				fmt.Println("fitReturnData.Rewards[0].Qty > ", fitReturnData.Rewards[0].Qty)
+				fmt.Println("fitReturnData.Rewards[1].Qty > ", fitReturnData.Rewards[1].Qty)
+				time.Sleep(5 * time.Second)
+				res, _ := grequests.Post("https://splinterforge.io/users/keyLogin", &grequests.RequestOptions{
+					JSON: map[string]string{
+						"username": name.(string),
+						"key":      key.(string),
+					},
+					Headers: map[string]string{
+						"Content-Type": "application/json",
+					},
+				})
+				var powerRes = spstruct.KeyLoginResData{}
+				json.Unmarshal(res.Bytes(), &powerRes)
+				count, _ := CaculateTimeDiff(powerRes.Stamina.Last)
+				PrintWhite(userName, fmt.Sprintf("powerRes.Stamina.Last = %s", powerRes.Stamina.Last))
+				PrintWhite(userName, fmt.Sprintf("count = %s", count))
+				PrintWhite(userName, fmt.Sprintf("powerRes.Stamina.Current = %s", strconv.Itoa(powerRes.Stamina.Current)))
+				PrintWhite(userName, fmt.Sprintf("powerRes.Stamina.Max = %s", strconv.Itoa(powerRes.Stamina.Max)))
+				PrintWhite(userName, fmt.Sprintf("(powerRes.Stamina.Current + count)/20 = %s", (powerRes.Stamina.Current+count)/20))
+				PrintWhite(userName, fmt.Sprintf("powerRes.Stamina.Max / 20 = %s", strconv.Itoa(powerRes.Stamina.Max/20)))
+
+				time.Sleep(25 * time.Second)
+				continue
+			}
 		} else {
 			fmt.Println("RequestsFit Err > ", err)
 		}
 
-		time.Sleep(5 * time.Second)
-		res, _ := grequests.Post("https://splinterforge.io/users/keyLogin", &grequests.RequestOptions{
-			JSON: map[string]string{
-				"username": name.(string),
-				"key":      key.(string),
-			},
-			Headers: map[string]string{
-				"Content-Type": "application/json",
-			},
-		})
-		var powerRes = spstruct.KeyLoginResData{}
-		json.Unmarshal(res.Bytes(), &powerRes)
-
-		count, _ := CaculateTimeDiff(powerRes.Stamina.Last)
-		PrintWhite(userName, fmt.Sprintf("powerRes.Stamina.Last = %s", powerRes.Stamina.Last))
-		PrintWhite(userName, fmt.Sprintf("count = %s", strconv.Itoa(count)))
-		PrintWhite(userName, fmt.Sprintf("powerRes.Stamina.Current = %s", strconv.Itoa(powerRes.Stamina.Current)))
-		PrintWhite(userName, fmt.Sprintf("powerRes.Stamina.Max = %s", strconv.Itoa(powerRes.Stamina.Max)))
-		PrintWhite(userName, fmt.Sprintf("(powerRes.Stamina.Current + count)/20 = %s", (powerRes.Stamina.Current+count)/20))
-		PrintWhite(userName, fmt.Sprintf("powerRes.Stamina.Max / 20 = %s", strconv.Itoa(powerRes.Stamina.Max/20)))
-
-		time.Sleep(25 * time.Second)
 	}
 
 	// for _, dd := range d {
