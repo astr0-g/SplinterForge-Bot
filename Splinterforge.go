@@ -851,7 +851,7 @@ func getConfig(filePath string) (bool, bool, int, int, bool, bool, bool, int, bo
 	return headless, closeDriverWhileSleeping, startThread, startThreadInterval, showForgeReward, showTotalForgeBalance, printSystemUsage, checkSystemUsageFreq, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint
 }
 func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType string, cardSelection []spstruct.CardSelection, autoSelectHero bool, autoSelectCard bool, splinterlandAPIEndpoint string, publicAPIEndpoint string) {
-
+	MemoStatus := true
 	bossName, bossIdToSelect, _ := bossSelect(userName, bossId, wd)
 	heroSelect(heroesType, userName, wd, autoSelectHero, publicAPIEndpoint, bossName)
 	bossSelect(userName, bossIdToSelect, wd)
@@ -918,7 +918,7 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 			continue
 		}
 	}
-
+	wd.Close()
 	for {
 		fitPostData.Memo = "dw9d59wd5298w5d2985dw9"
 		reFit, err := grequests.Post("https://splinterforge.io/boss/fight_boss", &grequests.RequestOptions{
@@ -933,6 +933,9 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 			if strings.Contains(reFit.String(), "not enough mana!") {
 				time.Sleep(1 * time.Hour)
 				continue
+			} else if strings.Contains(reFit.String(), "decoded message was invalid") {
+				MemoStatus = false
+				break
 			} else {
 				var fitReturnData = spstruct.FitReturnData{}
 				json.Unmarshal(reFit.Bytes(), &fitReturnData)
@@ -959,36 +962,24 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 				PrintWhite(userName, fmt.Sprintf("powerRes.Stamina.Max = %s", strconv.Itoa(powerRes.Stamina.Max)))
 				PrintWhite(userName, fmt.Sprintf("(powerRes.Stamina.Current + count)/20 = %s", (powerRes.Stamina.Current+count)/20))
 				PrintWhite(userName, fmt.Sprintf("powerRes.Stamina.Max / 20 = %s", strconv.Itoa(powerRes.Stamina.Max/20)))
-
 				time.Sleep(25 * time.Second)
 				continue
 			}
 		} else {
 			fmt.Println("RequestsFit Err > ", err)
 		}
+	}
+	if MemoStatus == false {
+		go func() {
+			for _, v := range accountLists {
+				if v.UserName == userName {
+					initializeDriver(v, headless, closeDriverWhileSleeping, showForgeReward, showTotalForgeBalance, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint)
+				}
+			}
+		}()
 
 	}
-
-	// for _, dd := range d {
-	// 	// fmt.Println(dd.Message)
-	// // 	value = browser.execute_script('return localStorage.getItem("wwwPassLogout");')
-	// 	if strings.Contains(dd.Message, "https://splinterforge.io/boss/fight_boss") && strings.Contains(dd.Message, "\"method\":\"Network.requestWillBeSent\"") {
-	// 	// fmt.Println(dd.Message)
-	// 	// if strings.Contains(dd.Message, `"username"`) && strings.Contains(dd.Message, "token") {
-	// 		// fmt.Println(dd.Message)
-	// 		fitRes := spstruct.FitBossRequestsData{}
-	// 		fitPostData := spstruct.FitBossPostData{}
-	// 		//将dd.Message转换为fitRes
-
-	// 		// keyLoginPostData := KeyLoginPostData{}
-
-	// 		json.Unmarshal([]byte(dd.Message), &fitRes)
-	// 		json.Unmarshal([]byte(fitRes.Message.Params.Request.PostData), &fitPostData)
-
-	// 		// json.Unmarshal([]byte(dd.Message), &keyLoginPostData)
-	// 		fmt.Println(fitPostData)
-	// fmt.Println(fitPostData.Team)
-
+	return
 }
 
 func initializeDriver(userData spstruct.UserData, headless bool, closeDriverWhileSleeping bool, showForgeReward bool, showTotalForgeBalance bool, autoSelectCard bool, autoSelectHero bool, autoSelectSleepTime int, splinterforgeAPIEndpoint string, splinterlandAPIEndpoint string, publicAPIEndpoint string) {
@@ -1101,12 +1092,14 @@ func countLines(filePath string) (int, error) {
 	return lineCount, nil
 }
 
-var w = &sync.WaitGroup{}
+var (
+	accountLists                                                                                                                                                                                                                                                                    = []spstruct.UserData{}
+	w                                                                                                                                                                                                                                                                               = &sync.WaitGroup{}
+	headless, closeDriverWhileSleeping, startThread, startThreadInterval, showForgeReward, showTotalForgeBalance, printSystemUsage, checkSystemUsageFreq, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint = getConfig("config/config.txt")
+)
 
 func initializeUserData() {
-	headless, closeDriverWhileSleeping, startThread, startThreadInterval, showForgeReward, showTotalForgeBalance, printSystemUsage, checkSystemUsageFreq, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint := getConfig("config/config.txt")
 	lineCount, errCountLines := countLines("config/accounts.txt")
-	var accountLists []spstruct.UserData
 	if errCountLines == nil && lineCount > 1 {
 		for i := 0; i < lineCount-1; i++ {
 			w.Add(1)
