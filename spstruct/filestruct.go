@@ -72,9 +72,9 @@ type FitReturnData struct {
 	TotalDmg int        `json:"totalDmg"` // 总伤害
 	Points   int        `json:"points"`   // 分数
 	Rewards  []struct { // 奖励
-		Type string `json:"type"`
-		Name string `json:"name"`
-		Qty  int    `json:"qty"`
+		Type string  `json:"type"`
+		Name string  `json:"name"`
+		Qty  float64 `json:"qty"`
 	} `json:"rewards"`
 	UniqueRules []string `json:"uniqueRules"`
 	Ppd         int      `json:"ppd"`

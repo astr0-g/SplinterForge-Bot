@@ -891,19 +891,9 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 	printResultBox(userName, printData, selectResult)
 	el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/button[1]/div[2]/span")
 	el.Click()
+
 	name, _ := wd.ExecuteScript("return localStorage.getItem('forge:username');", nil)
 	key, _ := wd.ExecuteScript("return localStorage.getItem('forge:key');", nil)
-	res, _ := grequests.Post("https://splinterforge.io/users/keyLogin", &grequests.RequestOptions{
-		JSON: map[string]string{
-			"username": name.(string),
-			"key":      key.(string),
-		},
-		Headers: map[string]string{
-			"Content-Type": "application/json",
-		},
-	})
-	var powerRes = spstruct.KeyLoginResData{}
-	json.Unmarshal(res.Bytes(), &powerRes)
 
 	returnJsonResult := false
 	fitPostData := spstruct.FitBossPostData{}
@@ -912,7 +902,6 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 	for {
 		d, _ := wd.Log("performance")
 		for _, dd := range d {
-			fmt.Println(dd.Message)
 			if strings.Contains(dd.Message, "https://splinterforge.io/boss/fight_boss") && strings.Contains(dd.Message, "\"method\":\"Network.requestWillBeSent\"") {
 				json.Unmarshal([]byte(dd.Message), &fitRes)
 				json.Unmarshal([]byte(fitRes.Message.Params.Request.PostData), &fitPostData)
@@ -949,16 +938,29 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 			fmt.Println("RequestsFit Err > ", err)
 		}
 
-		time.Sleep(30 * time.Second)
-	}
+		time.Sleep(5 * time.Second)
+		res, _ := grequests.Post("https://splinterforge.io/users/keyLogin", &grequests.RequestOptions{
+			JSON: map[string]string{
+				"username": name.(string),
+				"key":      key.(string),
+			},
+			Headers: map[string]string{
+				"Content-Type": "application/json",
+			},
+		})
+		var powerRes = spstruct.KeyLoginResData{}
+		json.Unmarshal(res.Bytes(), &powerRes)
 
-	//count, _ := CaculateTimeDiff(powerRes.Stamina.Last)
-	//PrintWhite(userName, fmt.Sprintf("powerRes.Stamina.Last = %s", powerRes.Stamina.Last))
-	//PrintWhite(userName, fmt.Sprintf("count = %s", strconv.Itoa(count)))
-	//PrintWhite(userName, fmt.Sprintf("powerRes.Stamina.Current = %s", strconv.Itoa(powerRes.Stamina.Current)))
-	//PrintWhite(userName, fmt.Sprintf("powerRes.Stamina.Max = %s", strconv.Itoa(powerRes.Stamina.Max)))
-	//PrintWhite(userName, fmt.Sprintf("powerRes.Stamina.Current + count/20 = %s", strconv.Itoa((powerRes.Stamina.Current+count)/20)))
-	//PrintWhite(userName, fmt.Sprintf("powerRes.Stamina.Max / 20 = %s", strconv.Itoa(powerRes.Stamina.Max/20)))
+		count, _ := CaculateTimeDiff(powerRes.Stamina.Last)
+		PrintWhite(userName, fmt.Sprintf("powerRes.Stamina.Last = %s", powerRes.Stamina.Last))
+		PrintWhite(userName, fmt.Sprintf("count = %s", strconv.Itoa(count)))
+		PrintWhite(userName, fmt.Sprintf("powerRes.Stamina.Current = %s", strconv.Itoa(powerRes.Stamina.Current)))
+		PrintWhite(userName, fmt.Sprintf("powerRes.Stamina.Max = %s", strconv.Itoa(powerRes.Stamina.Max)))
+		PrintWhite(userName, fmt.Sprintf("powerRes.Stamina.Current + count/20 = %s", strconv.Itoa((powerRes.Stamina.Current+count)/20)))
+		PrintWhite(userName, fmt.Sprintf("powerRes.Stamina.Max / 20 = %s", strconv.Itoa(powerRes.Stamina.Max/20)))
+
+		time.Sleep(25 * time.Second)
+	}
 
 	// for _, dd := range d {
 	// 	// fmt.Println(dd.Message)
