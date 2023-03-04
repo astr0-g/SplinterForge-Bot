@@ -984,7 +984,6 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 			}
 		}()
 	}
-	return
 }
 
 func initializeDriver(userData spstruct.UserData, headless bool, closeDriverWhileSleeping bool, showForgeReward bool, showTotalForgeBalance bool, autoSelectCard bool, autoSelectHero bool, autoSelectSleepTime int, splinterforgeAPIEndpoint string, splinterlandAPIEndpoint string, publicAPIEndpoint string) {
