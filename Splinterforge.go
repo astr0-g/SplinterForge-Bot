@@ -928,12 +928,13 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 			},
 		})
 		if err == nil {
-			var fitReturnData = spstruct.FitReturnData{}
-			json.Unmarshal(reFit.Bytes(), &fitReturnData)
-			fmt.Println("fitReturnData.Points > ", fitReturnData.Points)
-			fmt.Println("fitReturnData.TotalDmg > ", fitReturnData.TotalDmg)
-			fmt.Println("fitReturnData.Rewards[0].Qty > ", fitReturnData.Rewards[0].Qty)
-			fmt.Println("fitReturnData.Rewards[1].Qty > ", fitReturnData.Rewards[1].Qty)
+			//var fitReturnData = spstruct.FitReturnData{}
+			//json.Unmarshal(reFit.Bytes(), &fitReturnData)
+			//fmt.Println("fitReturnData.Points > ", fitReturnData.Points)
+			//fmt.Println("fitReturnData.TotalDmg > ", fitReturnData.TotalDmg)
+			//fmt.Println("fitReturnData.Rewards[0].Qty > ", fitReturnData.Rewards[0].Qty)
+			//fmt.Println("fitReturnData.Rewards[1].Qty > ", fitReturnData.Rewards[1].Qty)
+			fmt.Println(reFit.String())
 		} else {
 			fmt.Println("RequestsFit Err > ", err)
 		}
@@ -955,7 +956,7 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 		PrintWhite(userName, fmt.Sprintf("count = %s", strconv.Itoa(count)))
 		PrintWhite(userName, fmt.Sprintf("powerRes.Stamina.Current = %s", strconv.Itoa(powerRes.Stamina.Current)))
 		PrintWhite(userName, fmt.Sprintf("powerRes.Stamina.Max = %s", strconv.Itoa(powerRes.Stamina.Max)))
-		PrintWhite(userName, fmt.Sprintf("powerRes.Stamina.Current + count/20 = %s", strconv.Itoa((powerRes.Stamina.Current+count)/20)))
+		PrintWhite(userName, fmt.Sprintf("(powerRes.Stamina.Current + count)/20 = %s", (powerRes.Stamina.Current+count)/20))
 		PrintWhite(userName, fmt.Sprintf("powerRes.Stamina.Max / 20 = %s", strconv.Itoa(powerRes.Stamina.Max/20)))
 
 		time.Sleep(25 * time.Second)

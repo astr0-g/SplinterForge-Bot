@@ -74,7 +74,7 @@ type FitReturnData struct {
 	Rewards  []struct { // 奖励
 		Type string  `json:"type"`
 		Name string  `json:"name"`
-		Qty  float64 `json:"qty"`
+		Qty  float32 `json:"qty"`
 	} `json:"rewards"`
 	UniqueRules []string `json:"uniqueRules"`
 	Ppd         int      `json:"ppd"`
