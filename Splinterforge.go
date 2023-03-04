@@ -921,6 +921,7 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 	for{
 		d, _ := wd.Log("performance")
 		for _, dd := range d {
+			fmt.Println(dd.Message)
 			if strings.Contains(dd.Message, "https://splinterforge.io/boss/fight_boss") && strings.Contains(dd.Message, "\"method\":\"Network.requestWillBeSent\"") {
 				fitRes := spstruct.FitBossRequestsData{}
 				fitPostData := spstruct.FitBossPostData{}
