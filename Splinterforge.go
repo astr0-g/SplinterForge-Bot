@@ -973,17 +973,16 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 		go func() {
 			for _, v := range accountLists {
 				if v.UserName == userName {
+					PrintRed(userName, "Memo Error, Restarting...")
 					initializeDriver(v, headless, closeDriverWhileSleeping, showForgeReward, showTotalForgeBalance, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint)
 				}
 			}
 		}()
-
 	}
 	return
 }
 
 func initializeDriver(userData spstruct.UserData, headless bool, closeDriverWhileSleeping bool, showForgeReward bool, showTotalForgeBalance bool, autoSelectCard bool, autoSelectHero bool, autoSelectSleepTime int, splinterforgeAPIEndpoint string, splinterlandAPIEndpoint string, publicAPIEndpoint string) {
-
 	extensionData, err := ioutil.ReadFile("data/hivekeychain.crx")
 	if err != nil {
 		println((1))
