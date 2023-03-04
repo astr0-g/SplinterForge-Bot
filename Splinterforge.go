@@ -1060,17 +1060,6 @@ func initializeDriver(userData spstruct.UserData, headless bool, closeDriverWhil
 	login(userName, postingKey, driver)
 	checkPopUp(driver, 1000)
 	Battle(driver, userName, bossId, heroesType, cardSelection, autoSelectHero, autoSelectCard, splinterlandAPIEndpoint, publicAPIEndpoint)
-	screenshot, err := driver.Screenshot()
-	if err != nil {
-		fmt.Printf("Failed to take screenshot: %s\n", err)
-		os.Exit(1)
-	}
-
-	// write the screenshot to a file
-	if err := ioutil.WriteFile("screenshot.png", screenshot, 0644); err != nil {
-		fmt.Printf("Failed to write screenshot to file: %s\n", err)
-		os.Exit(1)
-	}
 }
 
 func countLines(filePath string) (int, error) {
