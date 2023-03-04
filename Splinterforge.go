@@ -979,7 +979,6 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 	if MemoStatus == false || Unexpected == true {
 		for _, v := range accountLists {
 			if v.UserName == userName {
-				w.Add(1)
 				initializeDriver(v, headless, closeDriverWhileSleeping, showForgeReward, showTotalForgeBalance, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint)
 			}
 		}
