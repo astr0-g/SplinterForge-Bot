@@ -31,6 +31,7 @@ import (
 
 var (
 	accountLists                                                                                                                                                                                               = []spstruct.UserData{}
+	q                                                                                                                                                                                                          = &sync.WaitGroup{}
 	r                                                                                                                                                                                                          = &sync.WaitGroup{}
 	w                                                                                                                                                                                                          = &sync.WaitGroup{}
 	s                                                                                                                                                                                                          = &sync.WaitGroup{}
@@ -988,6 +989,8 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 		}()
 		if wait == true {
 			w.Done()
+		} else {
+			q.Done()
 		}
 	} else {
 		if CurrentStamina < manaused {
@@ -1141,8 +1144,10 @@ func initializeUserData() {
 
 		if len(accountLists) <= startThread {
 			for i := 0; i < len(accountLists); i++ {
+				q.Add(1)
 				go initializeDriver(false, accountLists[i], headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint)
 			}
+			q.Wait()
 		} else {
 			//如果当前账户数大于启动线程数，那么就按照启动线程数启动线程
 			for i := 0; i < len(accountLists); i += startThread {
