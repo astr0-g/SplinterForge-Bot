@@ -62,7 +62,7 @@ func PrintWhite(username string, message string) {
 	color.Set(color.FgWhite)
 	fmt.Println("["+now.Format("2006-01-02 15:04:05")+"]", username+":", message)
 }
-func printInfo(){
+func printInfo() {
 	fmt.Println("+-------------------------------------------------+")
 	fmt.Println("|          Welcome to SplinterForge Bot!          |")
 	fmt.Println("|          Open source Github repository          |")
@@ -699,28 +699,27 @@ func DriverGet(URL string, wd selenium.WebDriver) {
 	`
 	wd.ExecuteScript(script, nil)
 }
-func DriverElementWaitAndClick(wd selenium.WebDriver, xpath string) {
+func DriverElementWaitAndClick(wd selenium.WebDriver, xpath string) bool {
 	byXpath := selenium.ByXPATH
-	for {
+	for i := 0; i < 10; i++ {
 		element, err := wd.FindElement(byXpath, xpath)
-		if err != nil {
-			// panic(err)
-		}
-		isEnabled, err := element.IsEnabled()
-		if err != nil {
-			// panic(err)
-		}
-		if isEnabled {
-			err = element.Click()
-			if err != nil {
-				continue
-			} else {
-				break
+		if err == nil {
+			isEnabled, err1 := element.IsEnabled()
+			if err1 != nil {
+				if isEnabled {
+					err = element.Click()
+					if err != nil {
+						continue
+					} else {
+						return true
+					}
+				}
 			}
-
 		}
-		time.Sleep(1 * time.Second)
+		time.Sleep(500 * time.Millisecond)
 	}
+	return false
+
 }
 func DriverwaitForElement(wd selenium.WebDriver, xpath string) (bool, error) {
 	for i := 0; i < 5; i++ {
@@ -912,7 +911,7 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 				continue
 			}
 		}
-		
+
 		if showForgeReward {
 			DriverElementWaitAndClick(wd, "/html/body/app/div[1]/slcards/div[4]/div[2]/button[2]")
 			for {
@@ -931,7 +930,7 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 					PrintYellow(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", resultdmg, resultpoints, forgium, electrum))
 					break
 				} else {
-					time.Sleep(5*time.Second)
+					time.Sleep(5 * time.Second)
 					continue
 				}
 			}
