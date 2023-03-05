@@ -28,54 +28,11 @@ import (
 
 	"splinterforge/spstruct"
 )
-
-func printResultBox(userName string, data [][]string, selectResult bool) {
-	sort.Slice(data, func(i, j int) bool {
-		return data[i][0] < data[j][0]
-	})
-
-	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Card", "ID", "Name", "Results"})
-	for _, row := range data {
-		table.Append(row)
-	}
-
-	if selectResult {
-		PrintGreen(userName, "Card selection results:")
-		table.Render()
-		color.Set(color.FgWhite)
-	} else {
-		PrintYellow(userName, "Card selection results:")
-		table.Render()
-		color.Set(color.FgWhite)
-	}
-}
-func printConfigSettings(totalAccounts int, headless bool, closeDriverWhileSleeping bool, startThread int, startThreadInterval int, showForgeReward bool, showTotalForgeBalance bool, autoSelectCard bool, autoSelectHero bool, autoSelectSleepTime bool) {
-	data := [][]string{
-		{"TOTAL_ACCOUNTS_LOADED", fmt.Sprint(totalAccounts)},
-		{"HEADLESS", fmt.Sprint(headless)},
-		{"CLOSE_DRIVER_WHILE_SLEEPING", fmt.Sprint(closeDriverWhileSleeping)},
-		{"START_THREAD", fmt.Sprint(startThread)},
-		{"START_THREAD_INTERVAL(seconds)", fmt.Sprint(startThreadInterval)},
-		{"SHOW_FORGE_REWARD", fmt.Sprint(showForgeReward)},
-		{"SHOW_TOTAL_FORGE_BALANCE", fmt.Sprint(showTotalForgeBalance)},
-		{"AUTO_SELECT_CARD", fmt.Sprint(autoSelectCard)},
-		{"AUTO_SELECT_HERO", fmt.Sprint(autoSelectHero)},
-		{"AUTO_SELECT_SLEEPTIME", fmt.Sprint(autoSelectSleepTime)},
-	}
-
-	sort.Slice(data, func(i, j int) bool {
-		return data[i][0] < data[j][0]
-	})
-
-	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Settings", "Value"})
-	for _, row := range data {
-		table.Append(row)
-	}
-	table.Render()
-}
-
+var (
+	accountLists                                                                                                                                                                                                                                                                    = []spstruct.UserData{}
+	w                                                                                                                                                                                                                                                                               = &sync.WaitGroup{}
+	headless, startThread, startThreadInterval, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint = getConfig("config/config.txt")
+)
 func PrintYellow(username string, message string) {
 	now := time.Now()
 	color.Set(color.FgYellow)
@@ -101,6 +58,65 @@ func PrintWhite(username string, message string) {
 	color.Set(color.FgWhite)
 	fmt.Println("["+now.Format("2006-01-02 15:04:05")+"]", username+":", message)
 }
+func printResultBox(userName string, data [][]string, selectResult bool) {
+	sort.Slice(data, func(i, j int) bool {
+		return data[i][0] < data[j][0]
+	})
+
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"Card", "ID", "Name", "Results"})
+	for _, row := range data {
+		table.Append(row)
+	}
+
+	if selectResult {
+		PrintGreen(userName, "Card selection results:")
+		table.Render()
+		color.Set(color.FgWhite)
+	} else {
+		PrintYellow(userName, "Card selection results:")
+		table.Render()
+		color.Set(color.FgWhite)
+	}
+}
+func PrintAccountDetails(userName string, name interface{}, key interface{}){
+	res, _ := grequests.Post(fmt.Sprintf("%s/users/keyLogin",splinterforgeAPIEndpoint), &grequests.RequestOptions{
+		JSON: map[string]string{
+			"username": name.(string),
+			"key":      key.(string),
+		},
+		Headers: map[string]string{
+			"Content-Type": "application/json",
+		},
+	})
+	var powerRes = spstruct.KeyLoginResData{}
+	json.Unmarshal(res.Bytes(), &powerRes)
+	PrintWhite(userName, fmt.Sprintf("Account balance %s Forge, current mana %s / %s.", strconv.FormatFloat(powerRes.Sc.Balance, 'f', 2, 64), strconv.Itoa(powerRes.Stamina.Current),strconv.Itoa(powerRes.Stamina.Max)))
+}
+func printConfigSettings(totalAccounts int, headless bool, startThread int, startThreadInterval int, showForgeReward bool, showAccountDetails bool, autoSelectCard bool, autoSelectHero bool, autoSelectSleepTime bool) {
+	data := [][]string{
+		{"TOTAL_ACCOUNTS_LOADED", fmt.Sprint(totalAccounts)},
+		{"HEADLESS", fmt.Sprint(headless)},
+		{"START_THREAD", fmt.Sprint(startThread)},
+		{"START_THREAD_INTERVAL(seconds)", fmt.Sprint(startThreadInterval)},
+		{"SHOW_FORGE_REWARD", fmt.Sprint(showForgeReward)},
+		{"SHOW_ACCOUNT_DETAILS", fmt.Sprint(showAccountDetails)},
+		{"AUTO_SELECT_CARD", fmt.Sprint(autoSelectCard)},
+		{"AUTO_SELECT_HERO", fmt.Sprint(autoSelectHero)},
+		{"AUTO_SELECT_SLEEPTIME", fmt.Sprint(autoSelectSleepTime)},
+	}
+
+	sort.Slice(data, func(i, j int) bool {
+		return data[i][0] < data[j][0]
+	})
+
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"Settings", "Value"})
+	for _, row := range data {
+		table.Append(row)
+	}
+	table.Render()
+}
 func getCardName(cardId string) (string, error) {
 	file, err := os.Open("data/cardMapping.json")
 	if err != nil {
@@ -122,7 +138,6 @@ func getCardName(cardId string) (string, error) {
 
 	return "", fmt.Errorf("card id %s not found", cardId)
 }
-
 func getAccountData(filePath string, lineNumber int) (string, string, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
@@ -149,7 +164,6 @@ func getAccountData(filePath string, lineNumber int) (string, string, error) {
 	}
 	return "", "", nil
 }
-
 func getCardSettingData(filePath string, lineNumber int) (string, string, []string, []string, int, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
@@ -178,30 +192,110 @@ func getCardSettingData(filePath string, lineNumber int) (string, string, []stri
 
 	return "", "", nil, nil, 0, nil
 }
-func elementWaitAndClick(wd selenium.WebDriver, xpath string) {
-	byXpath := selenium.ByXPATH
-	for {
-		element, err := wd.FindElement(byXpath, xpath)
-		if err != nil {
-			panic(err)
-		}
-		isEnabled, err := element.IsEnabled()
-		if err != nil {
-			panic(err)
-		}
-		if isEnabled {
-			err = element.Click()
-			if err != nil {
-				continue
-			} else {
-				break
-			}
-			
-		}
-		time.Sleep(1 * time.Second)
+func getConfig(filePath string) (bool, int, int, bool, bool, bool, bool, bool, string, string, string) {
+	file, err := os.Open(filePath)
+	if err != nil {
+		PrintRed("SF", "Error Reading Config.txt file")
+		panic(err)
 	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+
+	var (
+		headless                 bool
+		startThread              int
+		startThreadInterval      int
+		showForgeReward          bool
+		showAccountDetails    bool
+		autoSelectCard           bool
+		autoSelectHero           bool
+		autoSelectSleepTime      bool
+		splinterforgeAPIEndpoint string
+		splinterlandAPIEndpoint  string
+		publicAPIEndpoint        string
+	)
+
+	for scanner.Scan() {
+		line := scanner.Text()
+		if strings.Contains(line, "=") {
+			parts := strings.Split(line, "=")
+			key := strings.TrimSpace(parts[0])
+			value := strings.TrimSpace(parts[1])
+			switch key {
+			case "HEADLESS":
+				headless = value == "true"
+			case "START_THREAD":
+				startThread, _ = strconv.Atoi(value)
+			case "START_THREAD_INTERVAL":
+				startThreadInterval, _ = strconv.Atoi(value)
+			case "SHOW_FORGE_REWARD":
+				showForgeReward = value == "true"
+			case "SHOW_ACCOUNT_DETAILS":
+				showAccountDetails = value == "true"
+			case "AUTO_SELECT_CARD":
+				autoSelectCard = value == "true"
+			case "AUTO_SELECT_SLEEPTIME":
+				autoSelectSleepTime = value == "true"
+			case "AUTO_SELECT_HERO":
+				autoSelectHero = value == "true"
+			case "SPLINTERFORGE_API_ENDPOINT":
+				splinterforgeAPIEndpoint = value
+			case "SPLINTERLAND_API_ENDPOINT":
+				splinterlandAPIEndpoint = value
+			case "PUBLIC_API_ENDPOINT":
+				publicAPIEndpoint = value
+			}
+		}
+	}
+	return headless, startThread, startThreadInterval, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint
 }
-func fetchHeroSelect(publicAPIEndpoint string, bossName string) (string, error) {
+func getLines(filePath string) (int, error) {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return 0, err
+	}
+	defer file.Close()
+	scanner := bufio.NewScanner(file)
+	lineCount := 0
+	for scanner.Scan() {
+		lineCount++
+	}
+	if err := scanner.Err(); err != nil {
+		return 0, err
+	}
+	return lineCount, nil
+}
+func getAccountDetails(name interface{}, key interface{}) int {
+	res, _ := grequests.Post(fmt.Sprintf("%s/users/keyLogin",splinterforgeAPIEndpoint), &grequests.RequestOptions{
+		JSON: map[string]string{
+			"username": name.(string),
+			"key":      key.(string),
+		},
+		Headers: map[string]string{
+			"Content-Type": "application/json",
+		},
+	})
+	var powerRes = spstruct.KeyLoginResData{}
+	json.Unmarshal(res.Bytes(), &powerRes)
+	reusltTime, _ := getTimeDiff(powerRes.Stamina.Last)
+	CurrentStamina := powerRes.Stamina.Current + reusltTime
+	if CurrentStamina > powerRes.Stamina.Max{
+		CurrentStamina = powerRes.Stamina.Max
+	}
+	return CurrentStamina
+}
+func getTimeDiff(oldTime string) (int, error) {
+	now := time.Now()
+	t, err := time.Parse(time.RFC3339, oldTime)
+	if err != nil {
+		return 0, err
+	}
+	diff := int(now.Unix() - t.Unix())
+	diffInMinutes := diff / 60
+	return diffInMinutes, nil
+}
+func fetchselectHero(publicAPIEndpoint string, bossName string) (string, error) {
 	bossID := fetchBossID(bossName)
 
 	requestBody := map[string]interface{}{
@@ -237,7 +331,6 @@ func fetchHeroSelect(publicAPIEndpoint string, bossName string) (string, error) 
 	heroTypeToChoose := strings.Split(responseData["heroTypes"].(string), " ")[0]
 	return heroTypeToChoose, nil
 }
-
 func fetchBossID(bossName string) string {
 	url := fmt.Sprintf("%s/boss/getBosses",splinterforgeAPIEndpoint)
 
@@ -258,169 +351,6 @@ func fetchBossID(bossName string) string {
 	}
 
 	return ""
-}
-func checkPopUp(wd selenium.WebDriver, millisecond int) {
-	defer func() {
-	}()
-	if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/success-modal/section/div[1]/div[4]/div/button"); err == nil {
-		if err = element.Click(); err != nil {
-
-		}
-	}
-	if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/login-modal/div/div/div/div[2]/div[3]/button"); err == nil {
-		if err = element.Click(); err != nil {
-
-		}
-	}
-	duration := time.Duration(millisecond) * time.Millisecond
-	time.Sleep(duration)
-}
-func DriverGet(URL string, wd selenium.WebDriver) {
-	err := wd.Get(URL)
-	if err != nil {
-		panic(err)
-	}
-	script := `
-	    var imgs = document.getElementsByTagName('img');
-	    for (var i = 0; i < imgs.length; i++) {
-	        imgs[i].parentNode.removeChild(imgs[i]);
-	    }
-	    var style = document.createElement('style');
-	    style.innerHTML = 'img { opacity: 0 }';
-	    document.head.appendChild(style);
-	    var style = document.createElement('style');
-	    style.innerHTML = '* { background-image: none !important; }';
-	    document.head.appendChild(style);
-	    var style = document.createElement('style');
-	    style.innerHTML = '* { color: transparent !important; }';
-	    document.head.appendChild(style);
-	    var style = document.createElement('style');
-	    style.innerHTML = 'img.fade_image { display: none !important; }';
-	    document.head.appendChild(style);
-	    var style = document.createElement('style');
-	    style.innerHTML = '* { transition: paused !important; }';
-	    document.head.appendChild(style);
-	`
-	wd.ExecuteScript(script, nil)
-}
-func checklogin(userName string, wd selenium.WebDriver) bool {
-	for i := 0; i < 10; i++ {
-		el, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[2]/div[2]/a/div[2]")
-		if err != nil {
-			time.Sleep(3 * time.Second)
-			continue
-		}
-		text, _ := el.Text()
-		if text == userName {
-			return true
-		}
-		time.Sleep(1 * time.Second)
-	}
-	return false
-}
-func login(userName string, postingKey string, wd selenium.WebDriver) bool {
-	err := wd.SetImplicitWaitTimeout(5 * time.Second)
-	if err != nil {
-		panic(err)
-	}
-	DriverGet("chrome-extension://jcacnejopjdphbnjgfaaobbfafkihpep/popup.html", wd)
-
-	elementWaitAndClick(wd, "/html/body/div/div/div[4]/div[2]/div[5]/button")
-
-	el, _ := wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div[1]/div/div[1]/div/input")
-	el.SendKeys("Aa123Aa123!!")
-	el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div[1]/div/div[2]/div/input")
-	el.SendKeys("Aa123Aa123!!")
-	el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div[1]/button/div")
-	el.Click()
-	el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div[1]/div[2]/div/div[2]/button[1]/div")
-	el.Click()
-	el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div[1]/div[2]/div/div[2]/div[1]/div/input")
-	el.SendKeys(userName)
-	el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div[1]/div[2]/div/div[2]/div[2]/div/input")
-	el.SendKeys(postingKey)
-	el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div[1]/div[2]/div/div[2]/div[2]/div/input")
-	time.Sleep(2 * time.Second)
-	el.SendKeys("\ue007")
-	el, err = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div[4]/div")
-	if err != nil{
-		PrintRed(userName,"Login failure! Please check your accounts.txt file or it is a server error.")
-		return false
-	}
-	hiveKeyChainLogin, _ := el.Text()
-	if hiveKeyChainLogin != "HIVE KEYCHAIN"{
-		PrintRed(userName,"Login failure! Please check your accounts.txt file or it is a server error.")
-		return false
-	} else {
-		err = wd.ResizeWindow("bigger", 1565, 1080)
-		if err != nil {
-			println("can not change size")
-		}
-		DriverGet("https://splinterforge.io/#/", wd)
-
-		el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/success-modal/section/div[1]/div[4]/div/button")
-		el.Click()
-		el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div/div/a/div[1]")
-		el.Click()
-		el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/login-modal/div/div/div/div[2]/div[2]/input")
-		el.SendKeys(userName)
-		el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/login-modal/div/div/div/div[2]/div[3]/button")
-		el.Click()
-		for {
-			handles, _ := wd.WindowHandles()
-			if len(handles) == 2 {
-				break
-			}
-		}
-		handles, _ := wd.WindowHandles()
-		wd.SwitchWindow(handles[1])
-		el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div/div[3]/div[1]/div/div")
-		el.Click()
-		el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div/div[3]/div[2]/button[2]/div")
-		el.Click()
-		wd.SwitchWindow(handles[0])
-		checklogin(userName, wd)
-		PrintGreen(userName, "Login successful!")
-		return true
-	}
-	
-}
-func initializeAccount(accountNo int) (string, string, string, string, []spstruct.CardSelection, int) {
-
-	userName, postingKey, err := getAccountData("config/accounts.txt", accountNo)
-	if err != nil || userName == "" || postingKey == "" {
-		PrintRed("ERROR","Error in loading accounts.txt, please add username or posting key and try again.")
-	}
-	heroesType, bossId, playingSummoners, playingMonster, timeSleepInMinute, err := getCardSettingData("config/cardSettings.txt", accountNo)
-	if err != nil {
-		PrintRed("ERROR","Error loading cardSettings.txt file")
-	}
-	playingSummonersList := make([]spstruct.Summoners, 0, len(playingSummoners))
-	playingMonsterList := make([]spstruct.MonsterId, 0, len(playingMonster))
-	for _, i := range playingSummoners {
-		cardName, _ := getCardName(i)
-		playingSummonersList = append(playingSummonersList, spstruct.Summoners{
-			PlayingSummonersDiv:  fmt.Sprintf("//div/img[@id='%s']", i),
-			PlayingSummonersID:   i,
-			PlayingSummonersName: cardName,
-		})
-	}
-	for _, i := range playingMonster {
-		cardName, _ := getCardName(i)
-		playingMonsterList = append(playingMonsterList, spstruct.MonsterId{
-			PlayingMontersDiv:   fmt.Sprintf("//div/img[@id='%s']", i),
-			PlayingMonstersID:   i,
-			PlayingMonstersName: cardName,
-		})
-	}
-	var cardSelectionList = []spstruct.CardSelection{}
-	cardSelection := spstruct.CardSelection{
-		PlayingSummoners: playingSummonersList,
-		PlayingMonsters:  playingMonsterList,
-	}
-	cardSelectionList = append(cardSelectionList, cardSelection)
-
-	return userName, postingKey, heroesType, bossId, cardSelectionList, timeSleepInMinute
 }
 func fetchPlayerCard(userName string, splinterlandAPIEndpoint string) ([]int, error) {
 	url := fmt.Sprintf("%s/cards/collection/%s", splinterlandAPIEndpoint, userName)
@@ -520,7 +450,7 @@ func fetchBattleCards(bossName string, userName string, splinterlandAPIEndpoint 
 
 	return string(jsonResponse), nil
 }
-func autoSelectCards(cardSelection []spstruct.CardSelection, bossName string, userName string, splinterlandAPIEndpoint string, publicAPIEndpoint string, autoSelectCard bool) ([]spstruct.CardSelection, bool, error) {
+func selectCards(cardSelection []spstruct.CardSelection, bossName string, userName string, splinterlandAPIEndpoint string, publicAPIEndpoint string, autoSelectCard bool) ([]spstruct.CardSelection, bool, error) {
 	if autoSelectCard {
 		PrintWhite(
 			userName, fmt.Sprintf("Auto selecting playing cards for desire boss: %s", bossName))
@@ -583,12 +513,11 @@ func autoSelectCards(cardSelection []spstruct.CardSelection, bossName string, us
 		return cardSelection, false, nil
 	}
 }
-
-func heroSelect(heroesType string, userName string, wd selenium.WebDriver, auto_select_hero bool, publicAPIEndpoint string, bossName string) {
+func selectHero(heroesType string, userName string, wd selenium.WebDriver, auto_select_hero bool, publicAPIEndpoint string, bossName string) {
 	checkPopUp(wd, 1000)
 	heroTypes := [3]string{"Warrior", "Wizard", "Ranger"}
 	if auto_select_hero {
-		hero_type, err := fetchHeroSelect(publicAPIEndpoint, bossName)
+		hero_type, err := fetchselectHero(publicAPIEndpoint, bossName)
 		if err == nil {
 			PrintWhite(userName, fmt.Sprintf("Auto selecting heroes type: %s for desired boss: %s", hero_type, bossName))
 			for i, val := range heroTypes {
@@ -620,7 +549,7 @@ func heroSelect(heroesType string, userName string, wd selenium.WebDriver, auto_
 	el.Click()
 	PrintWhite(userName, fmt.Sprintf("Selected hero type: %s", hero_type))
 }
-func bossSelect(userName string, bossIdToSelect string, wd selenium.WebDriver) (string, string, error) {
+func selectBoss(userName string, bossIdToSelect string, wd selenium.WebDriver) (string, string, error) {
 	wd.SetImplicitWaitTimeout(2 * time.Second)
 	for {
 		el, _ := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[1]/a[5]/div[1]")
@@ -660,26 +589,6 @@ func bossSelect(userName string, bossIdToSelect string, wd selenium.WebDriver) (
 
 	}
 }
-func waitForElement(wd selenium.WebDriver, xpath string) (bool, error) {
-	for i := 0; i < 5; i++ {
-		_, err := wd.FindElement(selenium.ByXPATH, xpath)
-		if err != nil {
-			time.Sleep(100 * time.Millisecond)
-			continue
-		} else {
-			return true, nil
-		}
-
-	}
-	return false, nil
-}
-func restartThreading(userName string){
-	for _, v := range accountLists {
-		if v.UserName == userName {
-			initializeDriver(v, headless, closeDriverWhileSleeping, showForgeReward, showTotalForgeBalance, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint)
-		}
-	}
-}
 func selectSummoners(userName string, seletedNumOfSummoners int, cardDiv string, wd selenium.WebDriver) bool {
 	scroolTime := 0
 	clickedTime := 0
@@ -693,7 +602,7 @@ func selectSummoners(userName string, seletedNumOfSummoners int, cardDiv string,
 			el.Click()
 			time.Sleep(1 * time.Second)
 			checkCardDiv := fmt.Sprintf("/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/div[1]/div[2]/div[%s]", strconv.Itoa(seletedNumOfSummoners))
-			success, _ := waitForElement(wd, checkCardDiv)
+			success, _ := DriverwaitForElement(wd, checkCardDiv)
 			if success {
 				result = true
 				break
@@ -728,7 +637,7 @@ func selectMonsters(userName string, seletedNumOfMonsters int, cardDiv string, w
 		} else {
 			el.Click()
 			checkCardDiv := fmt.Sprintf("/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/div[2]/div[2]/div[%s]", strconv.Itoa(seletedNumOfMonsters))
-			success, _ := waitForElement(wd, checkCardDiv)
+			success, _ := DriverwaitForElement(wd, checkCardDiv)
 			if success {
 				result = true
 				break
@@ -749,103 +658,176 @@ func selectMonsters(userName string, seletedNumOfMonsters int, cardDiv string, w
 	wd.ExecuteScript("window.scrollBy(0, -4000)", nil)
 	time.Sleep(1 * time.Second)
 	return result
-
 }
-func PrintAccountDetails(userName string, name interface{}, key interface{}){
-	res, _ := grequests.Post(fmt.Sprintf("%s/users/keyLogin",splinterforgeAPIEndpoint), &grequests.RequestOptions{
-		JSON: map[string]string{
-			"username": name.(string),
-			"key":      key.(string),
-		},
-		Headers: map[string]string{
-			"Content-Type": "application/json",
-		},
-	})
-	var powerRes = spstruct.KeyLoginResData{}
-	json.Unmarshal(res.Bytes(), &powerRes)
-	PrintWhite(userName, fmt.Sprintf("Account balance %s Forge, current mana %s / %s.", strconv.FormatFloat(powerRes.Sc.Balance, 'f', 2, 64), strconv.Itoa(powerRes.Stamina.Current),strconv.Itoa(powerRes.Stamina.Max)))
-}
-func getAccountDetails(name interface{}, key interface{}) int {
-	res, _ := grequests.Post(fmt.Sprintf("%s/users/keyLogin",splinterforgeAPIEndpoint), &grequests.RequestOptions{
-		JSON: map[string]string{
-			"username": name.(string),
-			"key":      key.(string),
-		},
-		Headers: map[string]string{
-			"Content-Type": "application/json",
-		},
-	})
-	var powerRes = spstruct.KeyLoginResData{}
-	json.Unmarshal(res.Bytes(), &powerRes)
-	reusltTime, _ := CaculateTimeDiff(powerRes.Stamina.Last)
-	CurrentStamina := powerRes.Stamina.Current + reusltTime
-	if CurrentStamina > powerRes.Stamina.Max{
-		CurrentStamina = powerRes.Stamina.Max
-	}
-	return CurrentStamina
-}
-func getConfig(filePath string) (bool, bool, int, int, bool, bool, bool, bool, bool, string, string, string) {
-	file, err := os.Open(filePath)
+func DriverGet(URL string, wd selenium.WebDriver) {
+	err := wd.Get(URL)
 	if err != nil {
-		PrintRed("SF", "Error Reading Config.txt file")
 		panic(err)
 	}
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
-
-	var (
-		headless                 bool
-		closeDriverWhileSleeping bool
-		startThread              int
-		startThreadInterval      int
-		showForgeReward          bool
-		showTotalForgeBalance    bool
-		autoSelectCard           bool
-		autoSelectHero           bool
-		autoSelectSleepTime      bool
-		splinterforgeAPIEndpoint string
-		splinterlandAPIEndpoint  string
-		publicAPIEndpoint        string
-	)
-
-	for scanner.Scan() {
-		line := scanner.Text()
-		if strings.Contains(line, "=") {
-			parts := strings.Split(line, "=")
-			key := strings.TrimSpace(parts[0])
-			value := strings.TrimSpace(parts[1])
-			switch key {
-			case "HEADLESS":
-				headless = value == "true"
-			case "CLOSE_DRIVER_WHILE_SLEEPING":
-				closeDriverWhileSleeping = value == "true"
-			case "START_THREAD":
-				startThread, _ = strconv.Atoi(value)
-			case "START_THREAD_INTERVAL":
-				startThreadInterval, _ = strconv.Atoi(value)
-			case "SHOW_FORGE_REWARD":
-				showForgeReward = value == "true"
-			case "SHOW_TOTAL_FORGE_BALANCE":
-				showTotalForgeBalance = value == "true"
-			case "AUTO_SELECT_CARD":
-				autoSelectCard = value == "true"
-			case "AUTO_SELECT_SLEEPTIME":
-				autoSelectSleepTime = value == "true"
-			case "AUTO_SELECT_HERO":
-				autoSelectHero = value == "true"
-			case "SPLINTERFORGE_API_ENDPOINT":
-				splinterforgeAPIEndpoint = value
-			case "SPLINTERLAND_API_ENDPOINT":
-				splinterlandAPIEndpoint = value
-			case "PUBLIC_API_ENDPOINT":
-				publicAPIEndpoint = value
+	script := `
+	    var imgs = document.getElementsByTagName('img');
+	    for (var i = 0; i < imgs.length; i++) {
+	        imgs[i].parentNode.removeChild(imgs[i]);
+	    }
+	    var style = document.createElement('style');
+	    style.innerHTML = 'img { opacity: 0 }';
+	    document.head.appendChild(style);
+	    var style = document.createElement('style');
+	    style.innerHTML = '* { background-image: none !important; }';
+	    document.head.appendChild(style);
+	    var style = document.createElement('style');
+	    style.innerHTML = '* { color: transparent !important; }';
+	    document.head.appendChild(style);
+	    var style = document.createElement('style');
+	    style.innerHTML = 'img.fade_image { display: none !important; }';
+	    document.head.appendChild(style);
+	    var style = document.createElement('style');
+	    style.innerHTML = '* { transition: paused !important; }';
+	    document.head.appendChild(style);
+	`
+	wd.ExecuteScript(script, nil)
+}
+func DriverElementWaitAndClick(wd selenium.WebDriver, xpath string) {
+	byXpath := selenium.ByXPATH
+	for {
+		element, err := wd.FindElement(byXpath, xpath)
+		if err != nil {
+			panic(err)
+		}
+		isEnabled, err := element.IsEnabled()
+		if err != nil {
+			panic(err)
+		}
+		if isEnabled {
+			err = element.Click()
+			if err != nil {
+				continue
+			} else {
+				break
 			}
+			
+		}
+		time.Sleep(1 * time.Second)
+	}
+}
+func DriverwaitForElement(wd selenium.WebDriver, xpath string) (bool, error) {
+	for i := 0; i < 5; i++ {
+		_, err := wd.FindElement(selenium.ByXPATH, xpath)
+		if err != nil {
+			time.Sleep(100 * time.Millisecond)
+			continue
+		} else {
+			return true, nil
+		}
+
+	}
+	return false, nil
+}
+func checkPopUp(wd selenium.WebDriver, millisecond int) {
+	defer func() {
+	}()
+	if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/success-modal/section/div[1]/div[4]/div/button"); err == nil {
+		if err = element.Click(); err != nil {
+
 		}
 	}
-	return headless, closeDriverWhileSleeping, startThread, startThreadInterval, showForgeReward, showTotalForgeBalance, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint
+	if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/login-modal/div/div/div/div[2]/div[3]/button"); err == nil {
+		if err = element.Click(); err != nil {
+
+		}
+	}
+	duration := time.Duration(millisecond) * time.Millisecond
+	time.Sleep(duration)
 }
-func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType string,timeSleepInMinute int, cardSelection []spstruct.CardSelection, autoSelectHero bool, autoSelectCard bool, autoSelectSleepTime bool, splinterlandAPIEndpoint string, publicAPIEndpoint string) {
+func checklogin(userName string, wd selenium.WebDriver) bool {
+	for i := 0; i < 10; i++ {
+		el, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[2]/div[2]/a/div[2]")
+		if err != nil {
+			time.Sleep(3 * time.Second)
+			continue
+		}
+		text, _ := el.Text()
+		if text == userName {
+			return true
+		}
+		time.Sleep(1 * time.Second)
+	}
+	return false
+}
+func accountRestartCoroutine(userName string){
+	for _, v := range accountLists {
+		if v.UserName == userName {
+			initializeDriver(v, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint)
+		}
+	}
+}
+func accountLogin(userName string, postingKey string, wd selenium.WebDriver) bool {
+	err := wd.SetImplicitWaitTimeout(5 * time.Second)
+	if err != nil {
+		panic(err)
+	}
+	DriverGet("chrome-extension://jcacnejopjdphbnjgfaaobbfafkihpep/popup.html", wd)
+
+	DriverElementWaitAndClick(wd, "/html/body/div/div/div[4]/div[2]/div[5]/button")
+
+	el, _ := wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div[1]/div/div[1]/div/input")
+	el.SendKeys("Aa123Aa123!!")
+	el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div[1]/div/div[2]/div/input")
+	el.SendKeys("Aa123Aa123!!")
+	el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div[1]/button/div")
+	el.Click()
+	el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div[1]/div[2]/div/div[2]/button[1]/div")
+	el.Click()
+	el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div[1]/div[2]/div/div[2]/div[1]/div/input")
+	el.SendKeys(userName)
+	el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div[1]/div[2]/div/div[2]/div[2]/div/input")
+	el.SendKeys(postingKey)
+	el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div[1]/div[2]/div/div[2]/div[2]/div/input")
+	time.Sleep(2 * time.Second)
+	el.SendKeys("\ue007")
+	el, err = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div[4]/div")
+	if err != nil{
+		PrintRed(userName,"Login failure! Please check your accounts.txt file or it is a server error.")
+		return false
+	}
+	hiveKeyChainLogin, _ := el.Text()
+	if hiveKeyChainLogin != "HIVE KEYCHAIN"{
+		PrintRed(userName,"Login failure! Please check your accounts.txt file or it is a server error.")
+		return false
+	} else {
+		err = wd.ResizeWindow("bigger", 1565, 1080)
+		if err != nil {
+			println("can not change size")
+		}
+		DriverGet("https://splinterforge.io/#/", wd)
+
+		el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/success-modal/section/div[1]/div[4]/div/button")
+		el.Click()
+		el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div/div/a/div[1]")
+		el.Click()
+		el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/login-modal/div/div/div/div[2]/div[2]/input")
+		el.SendKeys(userName)
+		el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/login-modal/div/div/div/div[2]/div[3]/button")
+		el.Click()
+		for {
+			handles, _ := wd.WindowHandles()
+			if len(handles) == 2 {
+				break
+			}
+		}
+		handles, _ := wd.WindowHandles()
+		wd.SwitchWindow(handles[1])
+		el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div/div[3]/div[1]/div/div")
+		el.Click()
+		el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div/div[3]/div[2]/button[2]/div")
+		el.Click()
+		wd.SwitchWindow(handles[0])
+		checklogin(userName, wd)
+		PrintGreen(userName, "Login successful!")
+		return true
+	}
+}
+func accountBattle(wd selenium.WebDriver, userName string, bossId string, heroesType string,timeSleepInMinute int, cardSelection []spstruct.CardSelection, autoSelectHero bool, autoSelectCard bool, autoSelectSleepTime bool, splinterlandAPIEndpoint string, publicAPIEndpoint string) {
 	CookiesStatus := true
 	Unexpected := false
 	
@@ -853,10 +835,10 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 	key, _ := wd.ExecuteScript("return localStorage.getItem('forge:key');", nil)
 	
 	starttimestamp := time.Now().Unix()
-	bossName, bossIdToSelect, _ := bossSelect(userName, bossId, wd)
-	heroSelect(heroesType, userName, wd, autoSelectHero, publicAPIEndpoint, bossName)
-	bossSelect(userName, bossIdToSelect, wd)
-	cardSelection, _, _ = autoSelectCards(cardSelection, bossName, userName, splinterlandAPIEndpoint, publicAPIEndpoint, autoSelectCard)
+	bossName, bossIdToSelect, _ := selectBoss(userName, bossId, wd)
+	selectHero(heroesType, userName, wd, autoSelectHero, publicAPIEndpoint, bossName)
+	selectBoss(userName, bossIdToSelect, wd)
+	cardSelection, _, _ = selectCards(cardSelection, bossName, userName, splinterlandAPIEndpoint, publicAPIEndpoint, autoSelectCard)
 	seletedNumOfSummoners := 1
 	el, _ := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/button")
 	el.Click()
@@ -907,7 +889,7 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 				if strings.Contains(dd.Message, fmt.Sprintf("%s/boss/fight_boss",splinterforgeAPIEndpoint)) && strings.Contains(dd.Message, "\"method\":\"Network.requestWillBeSent\"") {
 					json.Unmarshal([]byte(dd.Message), &fitRes)
 					json.Unmarshal([]byte(fitRes.Message.Params.Request.PostData), &fitPostData)
-					PrintWhite(userName, "Battle Success, fetching results...")
+					PrintWhite(userName, "Battle was successful.")
 					returnJsonResult = true
 					break
 				}
@@ -919,26 +901,31 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 				continue
 			}
 		}
-		elementWaitAndClick(wd,"/html/body/app/div[1]/slcards/div[4]/div[2]/button[2]")
-		for{
-			el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/div[1]/replay/section/rewards-modal/section/div[1]/div[1]/div[2]/span[1]/span")
-			resultdmg, _ := el.Text()
-			el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/div[1]/replay/section/rewards-modal/section/div[1]/div[1]/div[2]/span[2]/span[2]")
-			resultpoints, _ := el.Text()
-			el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/div[1]/replay/section/rewards-modal/section/div[1]/div[1]/p[1]")
-			resultsstring, _ := el.Text()
-			re := regexp.MustCompile(`(\d+\.\d+)\s+Forgium\s+and\s+([\d\.]+)\s+Electrum`)
-			matches := re.FindStringSubmatch(resultsstring)
-			if len(matches) == 3 && resultpoints != "" && resultdmg !=""{
-				forgium, _ := strconv.ParseFloat(matches[1], 64)
-				electrum, _ := strconv.ParseFloat(matches[2], 64)
-				PrintYellow(userName,fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.",resultdmg,resultpoints, forgium, electrum))
-				break
-			} else {
-				continue
+		if showForgeReward {
+			DriverElementWaitAndClick(wd,"/html/body/app/div[1]/slcards/div[4]/div[2]/button[2]")
+			for {
+				el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/div[1]/replay/section/rewards-modal/section/div[1]/div[1]/div[2]/span[1]/span")
+				resultdmg, _ := el.Text()
+				el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/div[1]/replay/section/rewards-modal/section/div[1]/div[1]/div[2]/span[2]/span[2]")
+				resultpoints, _ := el.Text()
+				el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/div[1]/replay/section/rewards-modal/section/div[1]/div[1]/p[1]")
+				resultsstring, _ := el.Text()
+				re := regexp.MustCompile(`(\d+\.\d+)\s+Forgium\s+and\s+([\d\.]+)\s+Electrum`)
+				matches := re.FindStringSubmatch(resultsstring)
+				if len(matches) == 3 && resultpoints != "" && resultdmg !=""{
+					forgium, _ := strconv.ParseFloat(matches[1], 64)
+					electrum, _ := strconv.ParseFloat(matches[2], 64)
+					PrintYellow(userName,fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.",resultdmg,resultpoints, forgium, electrum))
+					break
+				} else {
+					continue
+				}
 			}
 		}
+		
+		if showAccountDetails{
 		PrintAccountDetails(userName, name, key)
+		}
 		wd.Close()
 		PrintWhite(userName,"Successful generated Cookies, the account will continue play with this setup.")
 		for {
@@ -959,7 +946,7 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 			})
 			if err == nil {
 				printResultBox(userName, printData, selectResult)
-				PrintWhite(userName, "Battle Success, fetching results...")
+				PrintWhite(userName, "Battle was successful.")
 				if strings.Contains(reFit.String(), "not enough mana!") {
 					PrintYellow(userName, "Insufficient stamina, entering a rest state of inactivity for 1 hour...")
 					time.Sleep(1 * time.Hour)
@@ -971,9 +958,13 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 				} else if strings.Contains(reFit.String(), "totalDmg") && strings.Contains(reFit.String(), "points") {
 					var fitReturnData = spstruct.FitReturnData{}
 					json.Unmarshal(reFit.Bytes(), &fitReturnData)
-					PrintYellow(userName,fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.",strconv.Itoa(fitReturnData.TotalDmg),strconv.Itoa(fitReturnData.Points), fitReturnData.Rewards[0].Qty, fitReturnData.Rewards[1].Qty))
+					if showForgeReward{
+						PrintYellow(userName,fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.",strconv.Itoa(fitReturnData.TotalDmg),strconv.Itoa(fitReturnData.Points), fitReturnData.Rewards[0].Qty, fitReturnData.Rewards[1].Qty))
+					}
 					time.Sleep(5 * time.Second)
-					PrintAccountDetails(userName, name, key)
+					if showAccountDetails{
+						PrintAccountDetails(userName, name, key)
+					}
 					continue
 				} else {
 					Unexpected = true
@@ -987,23 +978,22 @@ func Battle(wd selenium.WebDriver, userName string, bossId string, heroesType st
 			}
 		}
 		if !CookiesStatus || Unexpected {
-			restartThreading(userName)
+			accountRestartCoroutine(userName)
 		}
 	} else {
 		if (CurrentStamina < manaused){
 			wd.Close()
 			PrintYellow(userName, "Insufficient stamina, entering a rest state of inactivity for 1 hour...")
 			time.Sleep(1 * time.Hour)
-			restartThreading(userName)
+			accountRestartCoroutine(userName)
 		} else if (manaused<15){
 			wd.Close()
 			PrintYellow(userName, "Card Selected not meet 15 mana requirements, restarting...")
-			restartThreading(userName)
+			accountRestartCoroutine(userName)
 		}
 	}
 }
-
-func initializeDriver(userData spstruct.UserData, headless bool, closeDriverWhileSleeping bool, showForgeReward bool, showTotalForgeBalance bool, autoSelectCard bool, autoSelectHero bool, autoSelectSleepTime bool, splinterforgeAPIEndpoint string, splinterlandAPIEndpoint string, publicAPIEndpoint string) {
+func initializeDriver(userData spstruct.UserData, headless bool, showForgeReward bool, showAccountDetails bool, autoSelectCard bool, autoSelectHero bool, autoSelectSleepTime bool, splinterforgeAPIEndpoint string, splinterlandAPIEndpoint string, publicAPIEndpoint string) {
 	extensionData, err := ioutil.ReadFile("data/hivekeychain.crx")
 	if err != nil {
 		println((1))
@@ -1063,41 +1053,54 @@ func initializeDriver(userData spstruct.UserData, headless bool, closeDriverWhil
 		os.Exit(1)
 	}
 	defer driver.Quit()
-	loginResult := login(userData.UserName, userData.PostingKey, driver)
+	loginResult := accountLogin(userData.UserName, userData.PostingKey, driver)
 	if loginResult {
 		checkPopUp(driver, 1000)
-		Battle(driver, userData.UserName, userData.BossID, userData.HeroesType,userData.TimeSleepInMinute, userData.CardSelection, autoSelectHero, autoSelectCard, autoSelectSleepTime,splinterlandAPIEndpoint, publicAPIEndpoint)
+		accountBattle(driver, userData.UserName, userData.BossID, userData.HeroesType,userData.TimeSleepInMinute, userData.CardSelection, autoSelectHero, autoSelectCard, autoSelectSleepTime,splinterlandAPIEndpoint, publicAPIEndpoint)
 	} else {
 		driver.Close()
 		PrintYellow(userData.UserName,"Retrying in 30 seconds...")
 		time.Sleep(30 * time.Second)
-		restartThreading(userData.UserName)
+		accountRestartCoroutine(userData.UserName)
 	}
 }
+func initializeAccount(accountNo int) (string, string, string, string, []spstruct.CardSelection, int) {
 
-func countLines(filePath string) (int, error) {
-	file, err := os.Open(filePath)
+	userName, postingKey, err := getAccountData("config/accounts.txt", accountNo)
+	if err != nil || userName == "" || postingKey == "" {
+		PrintRed("ERROR","Error in loading accounts.txt, please add username or posting key and try again.")
+	}
+	heroesType, bossId, playingSummoners, playingMonster, timeSleepInMinute, err := getCardSettingData("config/cardSettings.txt", accountNo)
 	if err != nil {
-		return 0, err
+		PrintRed("ERROR","Error loading cardSettings.txt file")
 	}
-	defer file.Close()
-	scanner := bufio.NewScanner(file)
-	lineCount := 0
-	for scanner.Scan() {
-		lineCount++
+	playingSummonersList := make([]spstruct.Summoners, 0, len(playingSummoners))
+	playingMonsterList := make([]spstruct.MonsterId, 0, len(playingMonster))
+	for _, i := range playingSummoners {
+		cardName, _ := getCardName(i)
+		playingSummonersList = append(playingSummonersList, spstruct.Summoners{
+			PlayingSummonersDiv:  fmt.Sprintf("//div/img[@id='%s']", i),
+			PlayingSummonersID:   i,
+			PlayingSummonersName: cardName,
+		})
 	}
-	if err := scanner.Err(); err != nil {
-		return 0, err
+	for _, i := range playingMonster {
+		cardName, _ := getCardName(i)
+		playingMonsterList = append(playingMonsterList, spstruct.MonsterId{
+			PlayingMontersDiv:   fmt.Sprintf("//div/img[@id='%s']", i),
+			PlayingMonstersID:   i,
+			PlayingMonstersName: cardName,
+		})
 	}
-	return lineCount, nil
+	var cardSelectionList = []spstruct.CardSelection{}
+	cardSelection := spstruct.CardSelection{
+		PlayingSummoners: playingSummonersList,
+		PlayingMonsters:  playingMonsterList,
+	}
+	cardSelectionList = append(cardSelectionList, cardSelection)
+
+	return userName, postingKey, heroesType, bossId, cardSelectionList, timeSleepInMinute
 }
-
-var (
-	accountLists                                                                                                                                                                                                                                                                    = []spstruct.UserData{}
-	w                                                                                                                                                                                                                                                                               = &sync.WaitGroup{}
-	headless, closeDriverWhileSleeping, startThread, startThreadInterval, showForgeReward, showTotalForgeBalance, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint = getConfig("config/config.txt")
-)
-
 func initializeUserData() {
 	wd, err := selenium.NewChromeDriverService(SeleniumDriverCheck.AutoDownload_ChromeDriver(false), 9515)
 	if err != nil {
@@ -1105,7 +1108,7 @@ func initializeUserData() {
 		os.Exit(1)
 	}
 	defer wd.Stop()
-	lineCount, errCountLines := countLines("config/accounts.txt")
+	lineCount, errCountLines := getLines("config/accounts.txt")
 	if errCountLines == nil && lineCount > 1 {
 		for i := 0; i < lineCount-1; i++ {
 			w.Add(1)
@@ -1124,9 +1127,9 @@ func initializeUserData() {
 			}(i)
 		}
 		w.Wait()
-		printConfigSettings(lineCount-1, headless, closeDriverWhileSleeping, startThread, startThreadInterval, showForgeReward, showTotalForgeBalance, autoSelectCard, autoSelectHero, autoSelectSleepTime)
+		printConfigSettings(lineCount-1, headless, startThread, startThreadInterval, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime)
 		for _, v := range accountLists {
-			initializeDriver(v, headless, closeDriverWhileSleeping, showForgeReward, showTotalForgeBalance, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint)
+			initializeDriver(v, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint)
 			break
 		}
 	} else {
@@ -1134,18 +1137,6 @@ func initializeUserData() {
 		os.Exit(1)
 	}
 }
-
-func CaculateTimeDiff(oldTime string) (int, error) {
-	now := time.Now()
-	t, err := time.Parse(time.RFC3339, oldTime)
-	if err != nil {
-		return 0, err
-	}
-	diff := int(now.Unix() - t.Unix())
-	diffInMinutes := diff / 60
-	return diffInMinutes, nil
-}
-
 func main() {
 	initializeUserData()
 }
