@@ -3,7 +3,7 @@
   <br /><br /><strong>SplinterForge Bot</strong>
 </h1>
 
-[![Latest release](https://img.shields.io/github/v/release/Astr0-G/SplinterForge-Bot?label=Latest%20release&style=social)](https://github.com/Astr0-G/SplinterForge-Bot/releases/tag/v0.5-beta.1)
+[![Latest release](https://img.shields.io/github/v/release/Astr0-G/SplinterForge-Bot?label=Latest%20release&style=social)](https://github.com/Astr0-G/SplinterForge-Bot/releases/tag/v0.5-beta.2)
 [![Stars](https://img.shields.io/github/stars/Astr0-G/SplinterForge-Bot?style=social)](https://github.com/Astr0-G/SplinterForge-Bot/stargazers)
 [![Fork](https://img.shields.io/github/forks/Astr0-G/SplinterForge-Bot?style=social)](https://github.com/Astr0-G/SplinterForge-Bot/network/members)
 [![Watchers](https://img.shields.io/github/watchers/Astr0-G/SplinterForge-Bot?style=social)](https://github.com/Astr0-G/SplinterForge-Bot/watchers)
@@ -45,7 +45,7 @@ The goal of the SplinterForge Bot is to provide a lightweight and self-sufficien
 
 - **Planned features:**
   - Lower resource usage.
-  - API developement for card selection.(start testing in v0.5-beta.1)
+  - API developement for card selection.(start testing in v0.5-beta.2)
   - rewrite in statically-typed, object-oriented programming language(If you're interested, please direct message me and let's explore the possibility of working together).
 
 ---
@@ -65,7 +65,7 @@ The goal of the SplinterForge Bot is to provide a lightweight and self-sufficien
 
 # Newest Release Download link
 
-https://github.com/Astr0-G/SplinterForge-Bot/releases/tag/v0.5-beta.1
+https://github.com/Astr0-G/SplinterForge-Bot/releases/tag/v0.5-beta.2
 
 ---
 

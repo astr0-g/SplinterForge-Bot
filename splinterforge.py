@@ -128,7 +128,7 @@ def printResultBox(userName, data, selectResult):
         printYellow(f"{dataToPrint}\n")
 
 
-def printConfigSettings(totallaccounts, headless, close_driver_while_sleeping, start_thread, start_thread_interval, show_forge_reward, show_total_forge_balance, print_system_usage, check_system_usage_frequency, auto_select_card, auto_select_hero):
+def printConfigSettings(totallaccounts, headless, close_driver_while_sleeping, start_thread, start_thread_interval, show_forge_reward, show_total_forge_balance, print_system_usage, check_system_usage_frequency, auto_select_card, auto_select_hero, auto_select_sleeptime):
     data = [['TOTAL_ACCOUNTS_LOADED', totallaccounts],
             ['HEADLESS', headless],
             ['CLOSE_DRIVER_WHILE_SLEEPING', close_driver_while_sleeping],
@@ -140,7 +140,8 @@ def printConfigSettings(totallaccounts, headless, close_driver_while_sleeping, s
             ['CHECK_SYSTEM_USAGE_FREQUENCY(seconds)',
              check_system_usage_frequency],
             ['AUTO_SELECT_CARD', auto_select_card],
-            ['AUTO_SELECT_HERO', auto_select_hero]
+            ['AUTO_SELECT_HERO', auto_select_hero],
+            ['AUTO_SELECT_SLEEPTIME', auto_select_sleeptime]
             ]
     print(tabulate(data, headers=['Setting', 'Value'], tablefmt='grid'))
 
@@ -215,6 +216,7 @@ def getConfig(file_path):
         check_system_usage_frequency = None
         auto_select_card = None
         auto_select_hero = None
+        auto_select_sleeptime = None
         splinterland_api_endpoint = None
         public_api_endpoint = None
 
@@ -252,6 +254,8 @@ def getConfig(file_path):
                     check_system_usage_frequency = value
                 elif key == 'AUTO_SELECT_CARD':
                     auto_select_card = value
+                elif key == 'AUTO_SELECT_SLEEPTIME':
+                    auto_select_sleeptime = value
                 elif key == 'AUTO_SELECT_HERO':
                     auto_select_hero = value
                 elif key == 'SPLINTERLAND_API_ENDPOINT':
@@ -269,6 +273,7 @@ def getConfig(file_path):
                 check_system_usage_frequency,
                 auto_select_card,
                 auto_select_hero,
+                auto_select_sleeptime,
                 splinterland_api_endpoint,
                 public_api_endpoint)
 
@@ -763,14 +768,19 @@ def battle(cardSelection, userName, heroesType, driver, show_forge_reward, show_
                         userName, f"Your total balance is {forgebalance} Forge tokens.")
                 log_info.success(
                     userName, "The battle has ended!")
+                driver.refresh()
+                time.sleep(2)
                 return 1, manaUsed, autoSelectResult
-
             except:
                 log_info.success(
                     userName, "Encountering difficulty in reading the game results, but the battle has ended.")
+                driver.refresh()
+                time.sleep(2)
                 return 1, manaUsed, autoSelectResult
 
         else:
+            driver.refresh()
+            time.sleep(2)
             log_info.alerts(
                 userName, "Insufficient stamina, entering a rest state of inactivity for 1 hour...")
             return 2, manaUsed, autoSelectResult
@@ -784,12 +794,13 @@ def battle(cardSelection, userName, heroesType, driver, show_forge_reward, show_
         return 3, manaUsed, autoSelectResult
 
 
-def battleLoop(driver, userName, postingKey, heroesType, cardSelection, show_forge_reward, show_total_forge_balance, close_driver_while_sleeping, timeSleepInMinute, auto_select_card, auto_select_hero, splinterland_api_endpoint, public_api_endpoint):
+def battleLoop(driver, userName, postingKey, heroesType, cardSelection, show_forge_reward, show_total_forge_balance, close_driver_while_sleeping, timeSleepInMinute, auto_select_card, auto_select_hero, auto_select_sleeptime, splinterland_api_endpoint, public_api_endpoint):
     login(userName, postingKey, driver)
     while True:
         try:
             battleResult, manaUsed, autoSelectResult = battle(
                 cardSelection, userName, heroesType, driver, show_forge_reward, show_total_forge_balance, auto_select_card, auto_select_hero, splinterland_api_endpoint, public_api_endpoint)
+            time.sleep(1)
             if battleResult == 3:
                 log_info("restarting...")
             if close_driver_while_sleeping:
@@ -797,7 +808,7 @@ def battleLoop(driver, userName, postingKey, heroesType, cardSelection, show_for
             if battleResult == 2:
                 time.sleep(3600)
             elif battleResult == 1 and timeSleepInMinute != 0:
-                if autoSelectResult:
+                if autoSelectResult and auto_select_sleeptime:
                     log_info.alerts(userName,
                                     f"this account will enter a state of inactivity for {manaUsed} minutes based on auto selected info.")
                     time.sleep(int(manaUsed)*60)
@@ -812,7 +823,7 @@ def battleLoop(driver, userName, postingKey, heroesType, cardSelection, show_for
             pass
 
 
-def start(i, accountNo, headless, close_driver_while_sleeping, show_forge_reward, show_total_forge_balance, auto_select_card, auto_select_hero, splinterland_api_endpoint, public_api_endpoint):
+def start(i, accountNo, headless, close_driver_while_sleeping, show_forge_reward, show_total_forge_balance, auto_select_card, auto_select_hero, auto_select_sleeptime, splinterland_api_endpoint, public_api_endpoint):
     while True:
         try:
             try:
@@ -877,7 +888,7 @@ def start(i, accountNo, headless, close_driver_while_sleeping, show_forge_reward
                 time.sleep(5)
                 log_info("restarting...")
             battleLoop(driver, userName, postingKey, heroesType, cardSelection, show_forge_reward,
-                       show_total_forge_balance, close_driver_while_sleeping, timeSleepInMinute, auto_select_card, auto_select_hero, splinterland_api_endpoint, public_api_endpoint)
+                       show_total_forge_balance, close_driver_while_sleeping, timeSleepInMinute, auto_select_card, auto_select_hero, auto_select_sleeptime, splinterland_api_endpoint, public_api_endpoint)
 
         except Exception as e:
             print(e)
@@ -902,14 +913,14 @@ def kill_chromeanddriver():
                 break
 
 
-def startMulti(totallaccounts, headless, close_driver_while_sleeping, start_thread, start_thread_interval, show_forge_reward, show_total_forge_balance, auto_select_card, auto_select_hero, splinterland_api_endpoint, public_api_endpoint):
+def startMulti(totallaccounts, headless, close_driver_while_sleeping, start_thread, start_thread_interval, show_forge_reward, show_total_forge_balance, auto_select_card, auto_select_hero, auto_select_sleeptime, splinterland_api_endpoint, public_api_endpoint):
     # kill_chromeanddriver()
     chromedriver_autoinstaller.install()
     workers = []
     for i in range(totallaccounts):
         a = str(i + 1)
         workers.append(multiprocessing.Process(
-            target=start, args=(a, a, headless, close_driver_while_sleeping, show_forge_reward, show_total_forge_balance, auto_select_card, auto_select_hero, splinterland_api_endpoint, public_api_endpoint)))
+            target=start, args=(a, a, headless, close_driver_while_sleeping, show_forge_reward, show_total_forge_balance, auto_select_card, auto_select_hero, auto_select_sleeptime, splinterland_api_endpoint, public_api_endpoint)))
     current_threads = 0
     while workers or len(multiprocessing.active_children()) > 0:
         if current_threads < start_thread and workers:
@@ -943,7 +954,7 @@ async def main():
     printWelcome('Welcome to SplinterForge Bot!\nOpen source Github respositery\nhttps://github.com/Astr0-G/SplinterForge-Bot\nDiscord server\nhttps://discord.gg/pm8SGZkYcD')
     time.sleep(1)
     try:
-        headless, close_driver_while_sleeping, start_thread, start_thread_interval, show_forge_reward, show_total_forge_balance, print_system_usage, check_system_usage_frequency, auto_select_card, auto_select_hero, splinterland_api_endpoint, public_api_endpoint = getConfig(
+        headless, close_driver_while_sleeping, start_thread, start_thread_interval, show_forge_reward, show_total_forge_balance, print_system_usage, check_system_usage_frequency, auto_select_card, auto_select_hero, auto_select_sleeptime, splinterland_api_endpoint, public_api_endpoint = getConfig(
             'config/config.txt')
         totallaccounts = int(file_len("config/accounts.txt")) - 1
     except:
@@ -959,9 +970,9 @@ async def main():
     if totallaccounts < start_thread:
         start_thread = totallaccounts
     printConfigSettings(totallaccounts, headless, close_driver_while_sleeping, start_thread, start_thread_interval, show_forge_reward,
-                        show_total_forge_balance, print_system_usage, check_system_usage_frequency, auto_select_card, auto_select_hero)
+                        show_total_forge_balance, print_system_usage, check_system_usage_frequency, auto_select_card, auto_select_hero, auto_select_sleeptime)
     process_start_multi = multiprocessing.Process(target=startMulti, args=(
-        totallaccounts, headless, close_driver_while_sleeping, start_thread, start_thread_interval, show_forge_reward, show_total_forge_balance, auto_select_card, auto_select_hero, splinterland_api_endpoint, public_api_endpoint))
+        totallaccounts, headless, close_driver_while_sleeping, start_thread, start_thread_interval, show_forge_reward, show_total_forge_balance, auto_select_card, auto_select_hero, auto_select_sleeptime, splinterland_api_endpoint, public_api_endpoint))
     process_start_multi.start()
     if print_system_usage:
         await asyncio.gather(printSystemUsage(check_system_usage_frequency))
