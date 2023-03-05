@@ -932,7 +932,7 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 		}
 		wd.Close()
 		PrintWhite(userName, "Successful generated Cookies, the account will continue play with this setup.")
-		if wait == true {
+		if wait {
 			w.Done()
 		}
 		s.Add(1)
@@ -993,6 +993,7 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 
 		}()
 	} else {
+		PrintWhite(userName, "Successful generated Cookies, the account will continue play with this setup.")
 		if CurrentStamina < manaused {
 			wd.Close()
 			PrintYellow(userName, "Insufficient stamina, entering a rest state of inactivity for 1 hour...")
@@ -1164,5 +1165,4 @@ func initializeUserData() {
 }
 func main() {
 	initializeUserData()
-
 }
