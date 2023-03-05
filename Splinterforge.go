@@ -932,7 +932,7 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 		}
 		wd.Close()
 		PrintWhite(userName, "Successful generated Cookies, the account will continue play with this setup.")
-		if wait {
+		if wait == true {
 			w.Done()
 		}
 		s.Add(1)
@@ -994,11 +994,17 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 		}()
 	} else {
 		if CurrentStamina < manaused {
+			if wait == true {
+				w.Done()
+			}
 			wd.Close()
 			PrintYellow(userName, "Insufficient stamina, entering a rest state of inactivity for 1 hour...")
 			time.Sleep(1 * time.Hour)
 			accountRestartCoroutine(wait, userName)
 		} else if manaused < 15 {
+			if wait == true {
+				w.Done()
+			}
 			wd.Close()
 			PrintYellow(userName, "Card Selected not meet 15 mana requirements, restarting...")
 			accountRestartCoroutine(wait, userName)
@@ -1153,8 +1159,8 @@ func initializeUserData() {
 					w.Add(1)
 					go initializeDriver(true, accountLists[i+j], headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint)
 				}
-				w.Wait()
 			}
+			w.Wait()
 		}
 		s.Wait()
 	} else {
