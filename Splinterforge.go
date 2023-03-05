@@ -699,26 +699,21 @@ func DriverGet(URL string, wd selenium.WebDriver) {
 	`
 	wd.ExecuteScript(script, nil)
 }
-func DriverElementWaitAndClick(wd selenium.WebDriver, xpath string) bool {
+func DriverElementWaitAndClick(wd selenium.WebDriver, xpath string) {
 	byXpath := selenium.ByXPATH
-	for i := 0; i < 10; i++ {
+	for {
 		element, err := wd.FindElement(byXpath, xpath)
-		if err == nil {
-			isEnabled, err1 := element.IsEnabled()
-			if err1 == nil {
-				if isEnabled {
-					err = element.Click()
-					if err != nil {
-						continue
-					} else {
-						return true
-					}
-				}
+		isEnabled, err1 := element.IsEnabled()
+		if err == nil && err1 == nil && isEnabled {
+			err = element.Click()
+			if err != nil {
+				continue
+			} else {
+				return
 			}
+
 		}
-		time.Sleep(500 * time.Millisecond)
 	}
-	return false
 }
 func DriverwaitForElement(wd selenium.WebDriver, xpath string) (bool, error) {
 	for i := 0; i < 5; i++ {
