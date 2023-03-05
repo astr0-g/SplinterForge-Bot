@@ -62,6 +62,15 @@ func PrintWhite(username string, message string) {
 	color.Set(color.FgWhite)
 	fmt.Println("["+now.Format("2006-01-02 15:04:05")+"]", username+":", message)
 }
+func printInfo(){
+	fmt.Println("+-------------------------------------------------+")
+	fmt.Println("|          Welcome to SplinterForge Bot!          |")
+	fmt.Println("|          Open source Github repository          |")
+	fmt.Println("|   https://github.com/Astr0-G/SplinterForge-Bot  |")
+	fmt.Println("|                  Discord server                 |")
+	fmt.Println("|          https://discord.gg/pm8SGZkYcD          |")
+	fmt.Println("+-------------------------------------------------+")
+}
 func printResultBox(userName string, data [][]string, selectResult bool) {
 	sort.Slice(data, func(i, j int) bool {
 		return data[i][0] < data[j][0]
@@ -695,11 +704,11 @@ func DriverElementWaitAndClick(wd selenium.WebDriver, xpath string) {
 	for {
 		element, err := wd.FindElement(byXpath, xpath)
 		if err != nil {
-			panic(err)
+			// panic(err)
 		}
 		isEnabled, err := element.IsEnabled()
 		if err != nil {
-			panic(err)
+			// panic(err)
 		}
 		if isEnabled {
 			err = element.Click()
@@ -903,6 +912,7 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 				continue
 			}
 		}
+		
 		if showForgeReward {
 			DriverElementWaitAndClick(wd, "/html/body/app/div[1]/slcards/div[4]/div[2]/button[2]")
 			for {
@@ -1167,5 +1177,6 @@ func initializeUserData() {
 	}
 }
 func main() {
+	printInfo()
 	initializeUserData()
 }
