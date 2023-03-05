@@ -924,15 +924,11 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 				}
 			}
 		}
-
 		if showAccountDetails {
 			PrintAccountDetails(userName, name, key)
 		}
 		wd.Close()
 		PrintWhite(userName, "Successful generated Cookies, the account will continue play with this setup.")
-		if wait == true {
-			w.Done()
-		}
 		s.Add(1)
 		go func() {
 			for {
@@ -990,6 +986,9 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 			}
 
 		}()
+		if wait == true {
+			w.Done()
+		}
 	} else {
 		if CurrentStamina < manaused {
 			wd.Close()
@@ -1150,7 +1149,6 @@ func initializeUserData() {
 				for j := 0; j < startThread; j++ {
 					w.Add(1)
 					go initializeDriver(true, accountLists[i+j], headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint)
-					time.Sleep(3 * time.Second)
 				}
 				w.Wait()
 			}
