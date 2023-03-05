@@ -31,6 +31,7 @@ import (
 
 var (
 	accountLists                                                                                                                                                                                               = []spstruct.UserData{}
+	r                                                                                                                                                                                                          = &sync.WaitGroup{}
 	w                                                                                                                                                                                                          = &sync.WaitGroup{}
 	s                                                                                                                                                                                                          = &sync.WaitGroup{}
 	headless, startThread, startThreadInterval, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint = getConfig("config/config.txt")
@@ -1121,7 +1122,7 @@ func initializeUserData() {
 	lineCount, errCountLines := getLines("config/accounts.txt")
 	if errCountLines == nil && lineCount > 1 {
 		for i := 0; i < lineCount-1; i++ {
-			w.Add(1)
+			r.Add(1)
 			go func(num int) {
 				userName, postingKey, heroesType, bossId, cardSelection, timeSleepInMinute := initializeAccount(num + 1)
 				accountLists = append(accountLists, spstruct.UserData{
@@ -1133,10 +1134,10 @@ func initializeUserData() {
 					TimeSleepInMinute: timeSleepInMinute,
 				})
 
-				w.Done()
+				r.Done()
 			}(i)
 		}
-		w.Wait()
+		r.Wait()
 		printConfigSettings(lineCount-1, headless, startThread, startThreadInterval, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime)
 		//判断 > 如果当前账户数小于启动线程数，那么就按照账户数启动线程
 
