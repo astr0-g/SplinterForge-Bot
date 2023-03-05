@@ -946,7 +946,6 @@ func accountBattle(wd selenium.WebDriver, userName string, bossId string, heroes
 			})
 			if err == nil {
 				printResultBox(userName, printData, selectResult)
-				PrintWhite(userName, "Battle was successful.")
 				if strings.Contains(reFit.String(), "not enough mana!") {
 					PrintYellow(userName, "Insufficient stamina, entering a rest state of inactivity for 1 hour...")
 					time.Sleep(1 * time.Hour)
@@ -956,6 +955,7 @@ func accountBattle(wd selenium.WebDriver, userName string, bossId string, heroes
 					PrintRed(userName, "Cookies Error, Restarting...")
 					break
 				} else if strings.Contains(reFit.String(), "totalDmg") && strings.Contains(reFit.String(), "points") {
+					PrintWhite(userName, "Battle was successful.")
 					var fitReturnData = spstruct.FitReturnData{}
 					json.Unmarshal(reFit.Bytes(), &fitReturnData)
 					if showForgeReward{
