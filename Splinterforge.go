@@ -35,8 +35,6 @@ var (
 	w                                                                                                                                                                                                          = &sync.WaitGroup{}
 	s                                                                                                                                                                                                          = &sync.WaitGroup{}
 	headless, startThread, startThreadInterval, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint = getConfig("config/config.txt")
-	RunningTasskList                                                                                                                                                                                           = spstruct.TaskThreadList{}
-	WaitingTasskList                                                                                                                                                                                           = spstruct.ThreadWaitList{}
 )
 
 func PrintYellow(username string, message string) {
@@ -398,7 +396,7 @@ func fetchPlayerCard(userName string, splinterlandAPIEndpoint string) ([]int, er
 		panic(err)
 	}
 	var cardList spstruct.CardList
-	err = json.Unmarshal([]byte(jsonString), &cardList)
+	err = json.Unmarshal(jsonString, &cardList)
 	if err != nil {
 		panic(err)
 	}
@@ -994,17 +992,11 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 		}()
 	} else {
 		if CurrentStamina < manaused {
-			if wait == true {
-				w.Done()
-			}
 			wd.Close()
 			PrintYellow(userName, "Insufficient stamina, entering a rest state of inactivity for 1 hour...")
 			time.Sleep(1 * time.Hour)
 			accountRestartCoroutine(wait, userName)
 		} else if manaused < 15 {
-			if wait == true {
-				w.Done()
-			}
 			wd.Close()
 			PrintYellow(userName, "Card Selected not meet 15 mana requirements, restarting...")
 			accountRestartCoroutine(wait, userName)
