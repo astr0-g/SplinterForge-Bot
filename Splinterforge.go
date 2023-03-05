@@ -1148,7 +1148,7 @@ func initializeUserData() {
 		printConfigSettings(lineCount-1, headless, startThread, startThreadInterval, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime)
 		//判断 > 如果当前账户数小于启动线程数，那么就按照账户数启动线程
 
-		if len(accountLists) < startThread {
+		if len(accountLists) <= startThread {
 			for i := 0; i < len(accountLists); i++ {
 				go initializeDriver(false, accountLists[i], headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint)
 			}
@@ -1159,8 +1159,9 @@ func initializeUserData() {
 					w.Add(1)
 					go initializeDriver(true, accountLists[i+j], headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint)
 				}
+				w.Wait()
 			}
-			w.Wait()
+
 		}
 		s.Wait()
 	} else {
