@@ -899,6 +899,8 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 				if strings.Contains(dd.Message, fmt.Sprintf("%s/boss/fight_boss", splinterforgeAPIEndpoint)) && strings.Contains(dd.Message, "\"method\":\"Network.requestWillBeSent\"") {
 					json.Unmarshal([]byte(dd.Message), &fitRes)
 					json.Unmarshal([]byte(fitRes.Message.Params.Request.PostData), &fitPostData)
+					fmt.Println(fitRes.Message.Params.RequestID)
+					fmt.Println(GetReponseBody(wd.SessionID(), fitRes.Message.Params.RequestID))
 					PrintWhite(userName, "Battle was successful!")
 					returnJsonResult = true
 					break
@@ -1178,4 +1180,24 @@ func initializeUserData() {
 func main() {
 	printInfo()
 	initializeUserData()
+}
+
+func GetReponseBody(sessionId string, requestId string) string {
+	//Post http://localhost:9222/wd/hub/session/d34931eb122d0fb598ccc386ba25862e/goog/cdp/execute
+	res, err := grequests.Post(fmt.Sprintf("http://localhost:9515/wd/hub/session/%s/goog/cdp/execute", sessionId),
+		&grequests.RequestOptions{
+			JSON: map[string]interface{}{
+				"cmd": "Network.getResponseBody",
+				"params": map[string]string{
+					"requestId": requestId,
+				},
+			},
+		})
+	if err == nil {
+		return res.String()
+	} else {
+		fmt.Println("GetReponseBody error > ", err)
+		return ""
+	}
+
 }
