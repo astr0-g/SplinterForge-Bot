@@ -1150,6 +1150,7 @@ func initializeUserData() {
 				for j := 0; j < startThread; j++ {
 					w.Add(1)
 					go initializeDriver(true, accountLists[i+j], headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint)
+					time.Sleep(3 * time.Second)
 				}
 				w.Wait()
 			}
