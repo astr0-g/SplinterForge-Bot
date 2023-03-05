@@ -988,8 +988,9 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 			}
 			if !CookiesStatus || Unexpected {
 				accountRestartCoroutine(wait, userName)
+				s.Done()
 			}
-			s.Done()
+
 		}()
 	} else {
 		if CurrentStamina < manaused {
