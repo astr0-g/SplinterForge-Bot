@@ -889,7 +889,7 @@ func accountBattle(wd selenium.WebDriver, userName string, bossId string, heroes
 				if strings.Contains(dd.Message, fmt.Sprintf("%s/boss/fight_boss",splinterforgeAPIEndpoint)) && strings.Contains(dd.Message, "\"method\":\"Network.requestWillBeSent\"") {
 					json.Unmarshal([]byte(dd.Message), &fitRes)
 					json.Unmarshal([]byte(fitRes.Message.Params.Request.PostData), &fitPostData)
-					PrintWhite(userName, "Battle was successful.")
+					PrintWhite(userName, "Battle was successful!")
 					returnJsonResult = true
 					break
 				}
@@ -955,7 +955,7 @@ func accountBattle(wd selenium.WebDriver, userName string, bossId string, heroes
 					PrintRed(userName, "Cookies Error, Restarting...")
 					break
 				} else if strings.Contains(reFit.String(), "totalDmg") && strings.Contains(reFit.String(), "points") {
-					PrintWhite(userName, "Battle was successful.")
+					PrintWhite(userName, "Battle was successful!")
 					var fitReturnData = spstruct.FitReturnData{}
 					json.Unmarshal(reFit.Bytes(), &fitReturnData)
 					if showForgeReward{
