@@ -10,7 +10,6 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
-	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -913,14 +912,16 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 				resultpoints, _ := el.Text()
 				el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/div[1]/replay/section/rewards-modal/section/div[1]/div[1]/p[1]")
 				resultsstring, _ := el.Text()
-				re := regexp.MustCompile(`(\d+\.\d+)\s+Forgium\s+and\s+([\d\.]+)\s+Electrum`)
-				matches := re.FindStringSubmatch(resultsstring)
-				if len(matches) == 3 && resultpoints != "" && resultdmg != "" {
-					forgium, _ := strconv.ParseFloat(matches[1], 64)
-					electrum, _ := strconv.ParseFloat(matches[2], 64)
+				if resultpoints != "" && resultdmg != "" {
+					parts := strings.Split(resultsstring, " ")
+					forgiumStr := parts[3]
+					electrumStr := parts[6]
+					forgium, _ := strconv.ParseFloat(forgiumStr, 64)
+					electrum, _ := strconv.ParseFloat(electrumStr, 64)
 					PrintYellow(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", resultdmg, resultpoints, forgium, electrum))
 					break
 				} else {
+					time.Sleep(5*time.Second)
 					continue
 				}
 			}
