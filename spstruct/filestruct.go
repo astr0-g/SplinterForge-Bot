@@ -1,6 +1,9 @@
 package spstruct
 
-import "time"
+import (
+	"sync"
+	"time"
+)
 
 type FitBossPostData struct {
 	Username  string                   `json:"username"`
@@ -10,7 +13,6 @@ type FitBossPostData struct {
 	DeckPower int                      `json:"deckPower"`
 	Memo      string                   `json:"memo"`
 }
-
 type FitBossRequestsData struct {
 	Message struct {
 		Method string `json:"method"`
@@ -62,7 +64,6 @@ type FitBossRequestsData struct {
 	} `json:"message"`
 	Webview string `json:"webview"`
 }
-
 type FitReturnData struct {
 	Date   int64  `json:"date"`
 	Player string `json:"player"`
@@ -88,7 +89,6 @@ type FitReturnData struct {
 		} `json:"rules"`
 	} `json:"newRules"`
 }
-
 type KeyLoginResData struct {
 	Stamina struct {
 		Last    string `json:"last"`
@@ -268,7 +268,6 @@ type KeyLoginResData struct {
 	} `json:"config"`
 	Message string `json:"message"`
 }
-
 type KeyLoginPostData struct {
 	Message struct {
 		Method string `json:"method"`
@@ -320,24 +319,20 @@ type KeyLoginPostData struct {
 	} `json:"message"`
 	Webview string `json:"webview"`
 }
-
 type MonsterId struct {
 	PlayingMonstersID   string `json:"playingMonstersId"`
 	PlayingMonstersName string `json:"playingMonstersName"`
 	PlayingMontersDiv   string `json:"playingMontersDiv"`
 }
-
 type Summoners struct {
 	PlayingSummonersDiv  string `json:"playingSummonersDiv"`
 	PlayingSummonersID   string `json:"playingSummonersId"`
 	PlayingSummonersName string `json:"playingSummonersName"`
 }
-
 type CardSelection struct {
 	PlayingMonsters  []MonsterId `json:"PlayingMonsters"`
 	PlayingSummoners []Summoners `json:"playingSummoners"`
 }
-
 type UserData struct {
 	BossID            string          `json:"bossId"`
 	CardSelection     []CardSelection `json:"cardSelection"`
@@ -356,4 +351,21 @@ type BattleCardsRequestBody struct {
 	BossName string `json:"bossName"`
 	BossId   string `json:"bossId"`
 	Team     []int  `json:"team"`
+}
+
+type TaskThreadList struct {
+	TaskList map[string]struct {
+		// 任务名称
+		TaskName string
+		// 任务状态
+		TaskStatus string
+		// 任务执行时间
+		TaskTime string
+	}
+	Lock *sync.Mutex
+}
+
+type ThreadWaitList struct {
+	TaskName []string
+	Lock     *sync.Mutex
 }
