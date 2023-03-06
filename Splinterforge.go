@@ -308,6 +308,37 @@ func getTimeDiff(oldTime string) (int, error) {
 	diffInMinutes := diff / 60
 	return diffInMinutes, nil
 }
+func GetReponseBody(sessionId string, requestId string, userName string) string {
+	res, err := grequests.Post(fmt.Sprintf("http://localhost:9515/wd/hub/session/%s/goog/cdp/execute", sessionId),
+		&grequests.RequestOptions{
+			JSON: map[string]interface{}{
+				"cmd": "Network.getResponseBody",
+				"params": map[string]string{
+					"requestId": requestId,
+				},
+			},
+		})
+	if err == nil {
+		var fitReturnData = spstruct.FitReturnData{}
+		json.Unmarshal(res.Bytes(), &fitReturnData)
+		fmt.Println(fitReturnData)
+		// fmt.Println(fitReturnData.TotalDmg)
+		// fmt.Println(fitReturnData.Points)
+		// fmt.Println(fitReturnData.Rewards[0])
+		// fmt.Println(fitReturnData.Rewards[1])
+		// if showForgeReward {
+		// 	PrintYellow(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", strconv.Itoa(fitReturnData.TotalDmg), strconv.Itoa(fitReturnData.Points), fitReturnData.Rewards[0].Qty, fitReturnData.Rewards[1].Qty))
+		// }
+		time.Sleep(5 * time.Second)
+		return res.String()
+
+	} else {
+		fmt.Println("GetReponseBody error > ", err)
+		return ""
+	}
+	
+
+}
 func fetchselectHero(publicAPIEndpoint string, bossName string) (string, error) {
 	bossID := fetchBossID(bossName)
 
@@ -894,7 +925,7 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 					json.Unmarshal([]byte(dd.Message), &fitRes)
 					json.Unmarshal([]byte(fitRes.Message.Params.Request.PostData), &fitPostData)
 					fmt.Println(fitRes.Message.Params.RequestID)
-					fmt.Println(GetReponseBody(wd.SessionID(), fitRes.Message.Params.RequestID))
+					fmt.Println(GetReponseBody(wd.SessionID(), fitRes.Message.Params.RequestID,userName))
 					PrintWhite(userName, "Battle was successful!")
 					returnJsonResult = true
 					break
@@ -1176,22 +1207,4 @@ func main() {
 	initializeUserData()
 }
 
-func GetReponseBody(sessionId string, requestId string) string {
-	//Post http://localhost:9222/wd/hub/session/d34931eb122d0fb598ccc386ba25862e/goog/cdp/execute
-	res, err := grequests.Post(fmt.Sprintf("http://localhost:9515/wd/hub/session/%s/goog/cdp/execute", sessionId),
-		&grequests.RequestOptions{
-			JSON: map[string]interface{}{
-				"cmd": "Network.getResponseBody",
-				"params": map[string]string{
-					"requestId": requestId,
-				},
-			},
-		})
-	if err == nil {
-		return res.String()
-	} else {
-		fmt.Println("GetReponseBody error > ", err)
-		return ""
-	}
 
-}
