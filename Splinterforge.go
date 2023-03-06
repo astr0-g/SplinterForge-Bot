@@ -63,6 +63,11 @@ func PrintWhite(username string, message string) {
 	color.Set(color.FgWhite)
 	fmt.Println("["+now.Format("2006-01-02 15:04:05")+"]", username+":", message)
 }
+func PrintGold(username string, message string) {
+	now := time.Now()
+	color.Set(color.FgHiYellow)
+	fmt.Println("["+now.Format("2006-01-02 15:04:05")+"]", username+":", message)
+}
 func printInfo() {
 	fmt.Println("+-------------------------------------------------+")
 	fmt.Println("|          Welcome to SplinterForge Bot!          |")
@@ -318,14 +323,6 @@ func GetReponseBody(sessionId string, requestId string, userName string) (string
 	if err == nil {
 		var fitResponseData = spstruct.GetResponseBody{}
 		json.Unmarshal(res.Bytes(), &fitResponseData)
-		fmt.Println(fitResponseData.Value.Body)
-		// fmt.Println(fitReturnData.TotalDmg)
-		// fmt.Println(fitReturnData.Points)
-		// fmt.Println(fitReturnData.Rewards[0])
-		// fmt.Println(fitReturnData.Rewards[1])
-		// if showForgeReward {
-		// 	PrintYellow(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", strconv.Itoa(fitReturnData.TotalDmg), strconv.Itoa(fitReturnData.Points), fitReturnData.Rewards[0].Qty, fitReturnData.Rewards[1].Qty))
-		// }
 		time.Sleep(5 * time.Second)
 		return res.String(), nil
 
@@ -860,13 +857,11 @@ func accountLogin(userName string, postingKey string, wd selenium.WebDriver) boo
 	}
 }
 func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId string, heroesType string, timeSleepInMinute int, cardSelection []spstruct.CardSelection, autoSelectHero bool, autoSelectCard bool, autoSelectSleepTime bool, splinterlandAPIEndpoint string, publicAPIEndpoint string) {
+	starttimestamp := time.Now().Unix()
 	CookiesStatus := true
 	Unexpected := false
-
 	name, _ := wd.ExecuteScript("return localStorage.getItem('forge:username');", nil)
 	key, _ := wd.ExecuteScript("return localStorage.getItem('forge:key');", nil)
-
-	starttimestamp := time.Now().Unix()
 	bossName, bossIdToSelect, _ := selectBoss(userName, bossId, wd)
 	selectHero(heroesType, userName, wd, autoSelectHero, publicAPIEndpoint, bossName)
 	selectBoss(userName, bossIdToSelect, wd)
@@ -906,55 +901,47 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 		printResultBox(userName, printData, selectResult)
 		battletimestamp := time.Now().Unix()
 		if battletimestamp-starttimestamp < 30 {
-			time.Sleep((time.Duration(battletimestamp) - time.Duration(starttimestamp) + 1) * time.Second)
+			time.Sleep(time.Duration(starttimestamp) + 30 - time.Duration(time.Now().Unix()) * time.Second)
 		}
 		el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/button[1]/div[2]/span")
 		el.Click()
 		returnJsonResult := false
-		postJsonResult := false
+		postJsonResult := !showForgeReward
+		fetchTime := 0
 		fitPostData := spstruct.FitBossPostData{}
 		fitRes := spstruct.FitBossRequestsData{}
 		for {
 			netLogs, _ := wd.Log("performance")
 			for _, netLog := range netLogs {
-				if strings.Contains(netLog.Message, fmt.Sprintf("%s/boss/fight_boss", splinterforgeAPIEndpoint)) && strings.Contains(netLog.Message, "\"method\":\"Network.requestWillBeSent\"") {
+				if returnJsonResult == false && strings.Contains(netLog.Message, fmt.Sprintf("%s/boss/fight_boss", splinterforgeAPIEndpoint)) && strings.Contains(netLog.Message, "\"method\":\"Network.requestWillBeSent\"") {
 					json.Unmarshal([]byte(netLog.Message), &fitRes)
 					json.Unmarshal([]byte(fitRes.Message.Params.Request.PostData), &fitPostData)
-					fmt.Println(fitRes.Message.Params.RequestID)
+					PrintWhite(userName, "Battle was successful!")
 					returnJsonResult = true
 				}
-				if strings.Contains(netLog.Message, fmt.Sprintf("%s/boss/fight_boss", splinterforgeAPIEndpoint)) && strings.Contains(netLog.Message, "\"method\":\"Network.responseReceived\"") {
+				if  showForgeReward == true && postJsonResult == false && strings.Contains(netLog.Message, fmt.Sprintf("%s/boss/fight_boss", splinterforgeAPIEndpoint)) && strings.Contains(netLog.Message, "\"method\":\"Network.responseReceived\""){
 					var GetResponseBody = spstruct.GetResponseBody{}
 					var GetRewardBody = spstruct.CDPFitReturnData{}
 					resString, err := GetReponseBody(wd.SessionID(), fitRes.Message.Params.RequestID, userName)
 					if err == nil {
 						json.Unmarshal([]byte(resString), &GetResponseBody)
-						fmt.Println("resString", resString)
-						fmt.Println("GetResponseBody", GetResponseBody)
-						fmt.Println("GetResponseBody.Value", GetResponseBody.Value)
-						fmt.Println("GetResponseBody.Value.Body", GetResponseBody.Value.Body)
-						PrintWhite(userName, "Battle was successful!")
-						err1 := json.Unmarshal([]byte(GetResponseBody.Value.Body), &GetRewardBody)
+						json.Unmarshal([]byte(GetResponseBody.Value.Body), &GetRewardBody)
 						PrintYellow(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", strconv.Itoa(GetRewardBody.TotalDmg), strconv.Itoa(GetRewardBody.Points), GetRewardBody.Rewards[0].Qty, GetRewardBody.Rewards[1].Qty))
-						fmt.Println("--------------------------------------------------------------------------------------")
-						fmt.Println("TotalDmg", GetRewardBody.TotalDmg, err1)
-						fmt.Println("Rewards 1 > ", GetRewardBody.Rewards[0], err1)
-						fmt.Println("Rewards 1 Details > ", GetRewardBody.Rewards[0].Name, GetRewardBody.Rewards[0].Qty, GetRewardBody.Rewards[0].Type)
-						fmt.Println("Rewards 2 > ", GetRewardBody.Rewards[1], err1)
-						fmt.Println("Rewards 2 Details > ", GetRewardBody.Rewards[1].Name, GetRewardBody.Rewards[1].Qty, GetRewardBody.Rewards[1].Type)
-						fmt.Println("Points", GetRewardBody.Points, err1)
 						postJsonResult = true
 					}
 				}
 			}
 			if returnJsonResult == true && postJsonResult == true {
 				break
+			} else if fetchTime >= 15 {
+				break
 			} else {
 				time.Sleep(2 * time.Second)
+				fetchTime++
 				continue
 			}
 		}
-		if showForgeReward {
+		if postJsonResult == false && showForgeReward == true{
 			DriverElementWaitAndClick(wd, "/html/body/app/div[1]/slcards/div[4]/div[2]/button[2]")
 			for {
 				el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/div[1]/replay/section/rewards-modal/section/div[1]/div[1]/div[2]/span[1]/span")
@@ -981,7 +968,7 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 			PrintAccountDetails(userName, name, key)
 		}
 		wd.Close()
-		PrintWhite(userName, "Successful generated Cookies, the account will continue play with this setup.")
+		PrintGold(userName, "Successful generated Cookies, the account will continue play with this setup.")
 		s.Add(1)
 		go func() {
 			for {
