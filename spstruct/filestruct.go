@@ -64,6 +64,31 @@ type FitBossRequestsData struct {
 	} `json:"message"`
 	Webview string `json:"webview"`
 }
+type FitReturnData struct {
+	Date   int64  `json:"date"`
+	Player string `json:"player"`
+	Boss   string `json:"boss"`
+	//Team     []map[string]interface{} `json:"team"`
+	//Actions  []map[string]interface{} `json:"actions"`
+	TotalDmg int        `json:"totalDmg"` // 总伤害
+	Points   int        `json:"points"`   // 分数
+	Rewards  []struct { // 奖励
+		Type string  `json:"type"`
+		Name string  `json:"name"`
+		Qty  float32 `json:"qty"`
+	} `json:"rewards"`
+	UniqueRules []string `json:"uniqueRules"`
+	Ppd         int      `json:"ppd"`
+	ID          string   `json:"id"`
+	NewRules    struct {
+		Message string `json:"message"`
+		Rules   struct {
+			Active bool     `json:"active"`
+			BossID string   `json:"boss_id"`
+			Rules  []string `json:"rules"`
+		} `json:"rules"`
+	} `json:"newRules"`
+}
 type KeyLoginResData struct {
 	Stamina struct {
 		Last    string `json:"last"`
@@ -354,7 +379,7 @@ type GetResponseBody struct {
 	} `json:"value"`
 }
 
-type FitReturnData struct {
+type CDPFitReturnData struct {
 	Date    int64         `json:"date"`
 	Player  string        `json:"player"`
 	Boss    string        `json:"boss"`
