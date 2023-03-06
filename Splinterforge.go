@@ -948,6 +948,7 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 						PrintWhite(userName, "Battle was successful!")
 
 						err1 := json.Unmarshal([]byte(GetResponseBody.Value.Body), &GetRewardBody)
+						PrintYellow(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", strconv.Itoa(GetRewardBody.TotalDmg), strconv.Itoa(GetRewardBody.Points), GetRewardBody.Rewards[0].Qty, GetRewardBody.Rewards[1].Qty))
 						fmt.Println("--------------------------------------------------------------------------------------")
 						fmt.Println("TotalDmg", GetRewardBody.TotalDmg, err1)
 						fmt.Println("Rewards 1 > ", GetRewardBody.Rewards[0], err1)
@@ -1184,10 +1185,10 @@ func initializeAccount(accountNo int) (string, string, string, string, []spstruc
 func initializeUserData() {
 	cfg := yacspin.Config{
 		Frequency:       100 * time.Millisecond,
-		CharSet:         yacspin.CharSets[78],
+		CharSet:         yacspin.CharSets[59],
 		Suffix:          " Initialization Driver",
 		SuffixAutoColon: true,
-		StopCharacter:   "✓",
+		StopCharacter:   " ✓",
 		StopColors:      []string{"fgGreen"},
 		StopMessage:     "Success!",
 	}
@@ -1203,10 +1204,10 @@ func initializeUserData() {
 	spinner.Stop()
 	cfg = yacspin.Config{
 		Frequency:       100 * time.Millisecond,
-		CharSet:         yacspin.CharSets[78],
+		CharSet:         yacspin.CharSets[59],
 		Suffix:          " Reading config folder",
 		SuffixAutoColon: true,
-		StopCharacter:   "✓",
+		StopCharacter:   " ✓",
 		StopColors:      []string{"fgGreen"},
 		StopMessage:     "Success!",
 	}
@@ -1242,10 +1243,10 @@ func initializeUserData() {
 		if len(accountLists) <= startThread {
 			cfg = yacspin.Config{
 				Frequency:       100 * time.Millisecond,
-				CharSet:         yacspin.CharSets[78],
+				CharSet:         yacspin.CharSets[59],
 				Suffix:          " Reduce threading to ",
 				SuffixAutoColon: true,
-				StopCharacter:   "✓",
+				StopCharacter:   " ✓",
 				StopColors:      []string{"fgGreen"},
 				StopMessage:     strconv.Itoa(len(accountLists)),
 			}
