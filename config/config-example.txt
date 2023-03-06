@@ -6,7 +6,6 @@ HEADLESS=true
 ## START_THREAD_INTERNAL in seconds, before starting another set of
 ## threads of START_THREAD.
 START_THREAD=4
-START_THREAD_INTERVAL=150
 
 ###############Show Rewards Settings################
 ## Showing FORGE rewards after each battle

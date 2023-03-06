@@ -24,6 +24,7 @@ import (
 	"github.com/tebeka/selenium"
 	"github.com/tebeka/selenium/chrome"
 	"github.com/tebeka/selenium/log"
+	"github.com/theckman/yacspin"
 
 	"splinterforge/spstruct"
 )
@@ -34,7 +35,7 @@ var (
 	r                                                                                                                                                                                                          = &sync.WaitGroup{}
 	w                                                                                                                                                                                                          = &sync.WaitGroup{}
 	s                                                                                                                                                                                                          = &sync.WaitGroup{}
-	headless, startThread, startThreadInterval, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint = getConfig("config/config.txt")
+	headless, startThread, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint = getConfig("config/config.txt")
 )
 
 func PrintYellow(username string, message string) {
@@ -106,12 +107,11 @@ func PrintAccountDetails(userName string, name interface{}, key interface{}) {
 	json.Unmarshal(res.Bytes(), &powerRes)
 	PrintWhite(userName, fmt.Sprintf("Account balance %s Forge, current mana %s / %s.", strconv.FormatFloat(powerRes.Sc.Balance, 'f', 2, 64), strconv.Itoa(powerRes.Stamina.Current), strconv.Itoa(powerRes.Stamina.Max)))
 }
-func printConfigSettings(totalAccounts int, headless bool, startThread int, startThreadInterval int, showForgeReward bool, showAccountDetails bool, autoSelectCard bool, autoSelectHero bool, autoSelectSleepTime bool) {
+func printConfigSettings(totalAccounts int, headless bool, startThread int,  showForgeReward bool, showAccountDetails bool, autoSelectCard bool, autoSelectHero bool, autoSelectSleepTime bool) {
 	data := [][]string{
 		{"TOTAL_ACCOUNTS_LOADED", fmt.Sprint(totalAccounts)},
 		{"HEADLESS", fmt.Sprint(headless)},
-		{"START_THREAD", fmt.Sprint(startThread)},
-		{"START_THREAD_INTERVAL(seconds)", fmt.Sprint(startThreadInterval)},
+		{"THREADING", fmt.Sprint(startThread)},
 		{"SHOW_FORGE_REWARD", fmt.Sprint(showForgeReward)},
 		{"SHOW_ACCOUNT_DETAILS", fmt.Sprint(showAccountDetails)},
 		{"AUTO_SELECT_CARD", fmt.Sprint(autoSelectCard)},
@@ -205,7 +205,7 @@ func getCardSettingData(filePath string, lineNumber int) (string, string, []stri
 
 	return "", "", nil, nil, 0, nil
 }
-func getConfig(filePath string) (bool, int, int, bool, bool, bool, bool, bool, string, string, string) {
+func getConfig(filePath string) (bool, int, bool, bool, bool, bool, bool, string, string, string) {
 	file, err := os.Open(filePath)
 	if err != nil {
 		PrintRed("SF", "Error Reading Config.txt file")
@@ -218,7 +218,6 @@ func getConfig(filePath string) (bool, int, int, bool, bool, bool, bool, bool, s
 	var (
 		headless                 bool
 		startThread              int
-		startThreadInterval      int
 		showForgeReward          bool
 		showAccountDetails       bool
 		autoSelectCard           bool
@@ -238,10 +237,8 @@ func getConfig(filePath string) (bool, int, int, bool, bool, bool, bool, bool, s
 			switch key {
 			case "HEADLESS":
 				headless = value == "true"
-			case "START_THREAD":
+			case "THREADING":
 				startThread, _ = strconv.Atoi(value)
-			case "START_THREAD_INTERVAL":
-				startThreadInterval, _ = strconv.Atoi(value)
 			case "SHOW_FORGE_REWARD":
 				showForgeReward = value == "true"
 			case "SHOW_ACCOUNT_DETAILS":
@@ -261,7 +258,7 @@ func getConfig(filePath string) (bool, int, int, bool, bool, bool, bool, bool, s
 			}
 		}
 	}
-	return headless, startThread, startThreadInterval, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint
+	return headless, startThread, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint
 }
 func getLines(filePath string) (int, error) {
 	file, err := os.Open(filePath)
@@ -1157,14 +1154,42 @@ func initializeAccount(accountNo int) (string, string, string, string, []spstruc
 
 	return userName, postingKey, heroesType, bossId, cardSelectionList, timeSleepInMinute
 }
+
 func initializeUserData() {
+	cfg := yacspin.Config{
+		Frequency:       100 * time.Millisecond,
+		CharSet:         yacspin.CharSets[78],
+		Suffix:          " Initialization Driver",
+		SuffixAutoColon: true,
+		StopCharacter:   "✓",
+		StopColors:      []string{"fgGreen"},
+		StopMessage:     "Success!",
+	}
+	spinner, _ := yacspin.New(cfg)
+	spinner.Start()
+	spinner.Message("Checking...")
 	wd, err := selenium.NewChromeDriverService(SeleniumDriverCheck.AutoDownload_ChromeDriver(false), 9515)
 	if err != nil {
 		fmt.Printf("Failed to create ChromeDriver service: %s\n", err)
 		os.Exit(1)
 	}
 	defer wd.Stop()
+	spinner.Stop()
+	cfg = yacspin.Config{
+		Frequency:       100 * time.Millisecond,
+		CharSet:         yacspin.CharSets[78],
+		Suffix:          " Reading config folder",
+		SuffixAutoColon: true,
+		StopCharacter:   "✓",
+		StopColors:      []string{"fgGreen"},
+		StopMessage:     "Success!",
+	}
+	spinner, _ = yacspin.New(cfg)
+	spinner.Start()
+	spinner.Message("reading accounts.txt...")
 	lineCount, errCountLines := getLines("config/accounts.txt")
+	time.Sleep(500*time.Millisecond)
+	spinner.Message("reading cardSettings.txt...")
 	if errCountLines == nil && lineCount > 1 {
 		for i := 0; i < lineCount-1; i++ {
 			r.Add(1)
@@ -1183,10 +1208,13 @@ func initializeUserData() {
 			}(i)
 		}
 		r.Wait()
-		printConfigSettings(lineCount-1, headless, startThread, startThreadInterval, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime)
+		spinner.Message("reading config.txt...")
+		time.Sleep(500*time.Millisecond)
+		spinner.Stop()
+		printConfigSettings(lineCount-1, headless, startThread, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime)
 		//判断 > 如果当前账户数小于启动线程数，那么就按照账户数启动线程
-
 		if len(accountLists) <= startThread {
+			
 			for i := 0; i < len(accountLists); i++ {
 				q.Add(1)
 				go initializeDriver(false, accountLists[i], headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint)
