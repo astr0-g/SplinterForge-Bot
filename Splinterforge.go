@@ -319,16 +319,9 @@ func GetReponseBody(sessionId string, requestId string, userName string) string 
 			},
 		})
 	if err == nil {
-		var fitReturnData = spstruct.FitReturnData{}
-		json.Unmarshal(res.Bytes(), &fitReturnData)
-		fmt.Println(fitReturnData)
-		// fmt.Println(fitReturnData.TotalDmg)
-		// fmt.Println(fitReturnData.Points)
-		// fmt.Println(fitReturnData.Rewards[0])
-		// fmt.Println(fitReturnData.Rewards[1])
-		// if showForgeReward {
-		// 	PrintYellow(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", strconv.Itoa(fitReturnData.TotalDmg), strconv.Itoa(fitReturnData.Points), fitReturnData.Rewards[0].Qty, fitReturnData.Rewards[1].Qty))
-		// }
+		var fitResponseData = spstruct.GetResponseBody{}
+		json.Unmarshal(res.Bytes(), &fitResponseData)
+		fmt.Println(fitResponseData.Value.Body.Rewards)
 		time.Sleep(5 * time.Second)
 		return res.String()
 
@@ -336,7 +329,6 @@ func GetReponseBody(sessionId string, requestId string, userName string) string 
 		fmt.Println("GetReponseBody error > ", err)
 		return ""
 	}
-	
 
 }
 func fetchselectHero(publicAPIEndpoint string, bossName string) (string, error) {
@@ -914,8 +906,8 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 		}
 		el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/button[1]/div[2]/span")
 		el.Click()
-
 		returnJsonResult := false
+		postJsonResult := false
 		fitPostData := spstruct.FitBossPostData{}
 		fitRes := spstruct.FitBossRequestsData{}
 		for {
@@ -925,13 +917,28 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 					json.Unmarshal([]byte(dd.Message), &fitRes)
 					json.Unmarshal([]byte(fitRes.Message.Params.Request.PostData), &fitPostData)
 					fmt.Println(fitRes.Message.Params.RequestID)
-					fmt.Println(GetReponseBody(wd.SessionID(), fitRes.Message.Params.RequestID,userName))
-					PrintWhite(userName, "Battle was successful!")
 					returnJsonResult = true
 					break
 				}
 			}
 			if returnJsonResult {
+				break
+			} else {
+				time.Sleep(2 * time.Second)
+				continue
+			}
+		}
+		for {
+			d, _ := wd.Log("performance")
+			for _, dd := range d {
+				if strings.Contains(dd.Message, fmt.Sprintf("%s/boss/fight_boss", splinterforgeAPIEndpoint)) && strings.Contains(dd.Message, "\"method\":\"Network.responseReceived\"") {
+					fmt.Println(GetReponseBody(wd.SessionID(), fitRes.Message.Params.RequestID, userName))
+					PrintWhite(userName, "Battle was successful!")
+					postJsonResult = true
+					break
+				}
+			}
+			if postJsonResult {
 				break
 			} else {
 				time.Sleep(2 * time.Second)
@@ -1206,5 +1213,3 @@ func main() {
 	printInfo()
 	initializeUserData()
 }
-
-
