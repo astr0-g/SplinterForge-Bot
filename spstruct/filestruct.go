@@ -369,3 +369,12 @@ type ThreadWaitList struct {
 	TaskName []string
 	Lock     *sync.Mutex
 }
+
+type GetResponseBody struct {
+	SessionID string `json:"sessionId"`
+	Status    int    `json:"status"`
+	Value     struct {
+		Base64Encoded bool          `json:"base64Encoded"`
+		Body          FitReturnData `json:"body"`
+	} `json:"value"`
+}
