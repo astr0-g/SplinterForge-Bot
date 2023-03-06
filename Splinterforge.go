@@ -305,7 +305,7 @@ func getTimeDiff(oldTime string) (int, error) {
 	diffInMinutes := diff / 60
 	return diffInMinutes, nil
 }
-func GetReponseBody(sessionId string, requestId string, userName string) string {
+func GetReponseBody(sessionId string, requestId string, userName string) (string, error) {
 	res, err := grequests.Post(fmt.Sprintf("http://localhost:9515/wd/hub/session/%s/goog/cdp/execute", sessionId),
 		&grequests.RequestOptions{
 			JSON: map[string]interface{}{
@@ -318,13 +318,20 @@ func GetReponseBody(sessionId string, requestId string, userName string) string 
 	if err == nil {
 		var fitResponseData = spstruct.GetResponseBody{}
 		json.Unmarshal(res.Bytes(), &fitResponseData)
-		fmt.Println(fitResponseData.Value.Body.Rewards)
+		fmt.Println(fitResponseData.Value.Body)
+		// fmt.Println(fitReturnData.TotalDmg)
+		// fmt.Println(fitReturnData.Points)
+		// fmt.Println(fitReturnData.Rewards[0])
+		// fmt.Println(fitReturnData.Rewards[1])
+		// if showForgeReward {
+		// 	PrintYellow(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", strconv.Itoa(fitReturnData.TotalDmg), strconv.Itoa(fitReturnData.Points), fitReturnData.Rewards[0].Qty, fitReturnData.Rewards[1].Qty))
+		// }
 		time.Sleep(5 * time.Second)
-		return res.String()
+		return res.String(), nil
 
 	} else {
 		fmt.Println("GetReponseBody error > ", err)
-		return ""
+		return "", err
 	}
 
 }
@@ -929,15 +936,34 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 			d, _ := wd.Log("performance")
 			for _, dd := range d {
 				if strings.Contains(dd.Message, fmt.Sprintf("%s/boss/fight_boss", splinterforgeAPIEndpoint)) && strings.Contains(dd.Message, "\"method\":\"Network.responseReceived\"") {
-					fmt.Println(GetReponseBody(wd.SessionID(), fitRes.Message.Params.RequestID, userName))
-					PrintWhite(userName, "Battle was successful!")
-					postJsonResult = true
-					break
+					var GetResponseBody = spstruct.GetResponseBody{}
+					var GetRewardBody = spstruct.FitReturnData{}
+					resString, err := GetReponseBody(wd.SessionID(), fitRes.Message.Params.RequestID, userName)
+					if err == nil {
+						json.Unmarshal([]byte(resString), &GetResponseBody)
+						fmt.Println("resString", resString)
+						fmt.Println("GetResponseBody", GetResponseBody)
+						fmt.Println("GetResponseBody.Value", GetResponseBody.Value)
+						fmt.Println("GetResponseBody.Value.Body", GetResponseBody.Value.Body)
+						PrintWhite(userName, "Battle was successful!")
+
+						err1 := json.Unmarshal([]byte(GetResponseBody.Value.Body), &GetRewardBody)
+						fmt.Println("--------------------------------------------------------------------------------------")
+						fmt.Println("TotalDmg", GetRewardBody.TotalDmg, err1)
+						fmt.Println("Rewards 1 > ", GetRewardBody.Rewards[0], err1)
+						fmt.Println("Rewards 1 Details > ", GetRewardBody.Rewards[0].Name, GetRewardBody.Rewards[0].Qty, GetRewardBody.Rewards[0].Type)
+						fmt.Println("Rewards 2 > ", GetRewardBody.Rewards[1], err1)
+						fmt.Println("Rewards 2 Details > ", GetRewardBody.Rewards[1].Name, GetRewardBody.Rewards[1].Qty, GetRewardBody.Rewards[1].Type)
+						fmt.Println("Points", GetRewardBody.Points, err1)
+						postJsonResult = true
+						break
+					}
 				}
 			}
 			if postJsonResult {
 				break
 			} else {
+				PrintYellow(userName, "Not found yet , Retrying……")
 				time.Sleep(2 * time.Second)
 				continue
 			}
