@@ -30,11 +30,11 @@ import (
 )
 
 var (
-	accountLists                                                                                                                                                                                               = []spstruct.UserData{}
-	q                                                                                                                                                                                                          = &sync.WaitGroup{}
-	r                                                                                                                                                                                                          = &sync.WaitGroup{}
-	w                                                                                                                                                                                                          = &sync.WaitGroup{}
-	s                                                                                                                                                                                                          = &sync.WaitGroup{}
+	accountLists                                                                                                                                                                          = []spstruct.UserData{}
+	q                                                                                                                                                                                     = &sync.WaitGroup{}
+	r                                                                                                                                                                                     = &sync.WaitGroup{}
+	w                                                                                                                                                                                     = &sync.WaitGroup{}
+	s                                                                                                                                                                                     = &sync.WaitGroup{}
 	headless, startThread, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint = getConfig("config/config.txt")
 )
 
@@ -107,7 +107,7 @@ func PrintAccountDetails(userName string, name interface{}, key interface{}) {
 	json.Unmarshal(res.Bytes(), &powerRes)
 	PrintWhite(userName, fmt.Sprintf("Account balance %s Forge, current mana %s / %s.", strconv.FormatFloat(powerRes.Sc.Balance, 'f', 2, 64), strconv.Itoa(powerRes.Stamina.Current), strconv.Itoa(powerRes.Stamina.Max)))
 }
-func printConfigSettings(totalAccounts int, headless bool, startThread int,  showForgeReward bool, showAccountDetails bool, autoSelectCard bool, autoSelectHero bool, autoSelectSleepTime bool) {
+func printConfigSettings(totalAccounts int, headless bool, startThread int, showForgeReward bool, showAccountDetails bool, autoSelectCard bool, autoSelectHero bool, autoSelectSleepTime bool) {
 	data := [][]string{
 		{"TOTAL_ACCOUNTS_LOADED", fmt.Sprint(totalAccounts)},
 		{"HEADLESS", fmt.Sprint(headless)},
@@ -915,29 +915,15 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 		fitPostData := spstruct.FitBossPostData{}
 		fitRes := spstruct.FitBossRequestsData{}
 		for {
-			d, _ := wd.Log("performance")
-			for _, dd := range d {
-				if strings.Contains(dd.Message, fmt.Sprintf("%s/boss/fight_boss", splinterforgeAPIEndpoint)) && strings.Contains(dd.Message, "\"method\":\"Network.requestWillBeSent\"") {
-					json.Unmarshal([]byte(dd.Message), &fitRes)
+			netLogs, _ := wd.Log("performance")
+			for _, netLog := range netLogs {
+				if strings.Contains(netLog.Message, fmt.Sprintf("%s/boss/fight_boss", splinterforgeAPIEndpoint)) && strings.Contains(netLog.Message, "\"method\":\"Network.requestWillBeSent\"") {
+					json.Unmarshal([]byte(netLog.Message), &fitRes)
 					json.Unmarshal([]byte(fitRes.Message.Params.Request.PostData), &fitPostData)
 					fmt.Println(fitRes.Message.Params.RequestID)
 					returnJsonResult = true
-					break
 				}
-			}
-			if returnJsonResult {
-				break
-			} else {
-				time.Sleep(2 * time.Second)
-				continue
-			}
-		}
-		for {
-			e, _ := wd.Log("performance")
-			for _, dd := range e {
-				fmt.Println(dd.Message)
-
-				if strings.Contains(dd.Message, fmt.Sprintf("%s/boss/fight_boss", splinterforgeAPIEndpoint)) && strings.Contains(dd.Message, "\"method\":\"Network.responseReceived\"") {
+				if strings.Contains(netLog.Message, fmt.Sprintf("%s/boss/fight_boss", splinterforgeAPIEndpoint)) && strings.Contains(netLog.Message, "\"method\":\"Network.responseReceived\"") {
 					var GetResponseBody = spstruct.GetResponseBody{}
 					var GetRewardBody = spstruct.CDPFitReturnData{}
 					resString, err := GetReponseBody(wd.SessionID(), fitRes.Message.Params.RequestID, userName)
@@ -958,20 +944,16 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 						fmt.Println("Rewards 2 Details > ", GetRewardBody.Rewards[1].Name, GetRewardBody.Rewards[1].Qty, GetRewardBody.Rewards[1].Type)
 						fmt.Println("Points", GetRewardBody.Points, err1)
 						postJsonResult = true
-						break
-					
 					}
 				}
 			}
-			if postJsonResult {
+			if returnJsonResult == true && postJsonResult == true {
 				break
 			} else {
-				PrintYellow(userName, "Not found yet , Retrying……")
 				time.Sleep(2 * time.Second)
 				continue
 			}
 		}
-
 		if showForgeReward {
 			DriverElementWaitAndClick(wd, "/html/body/app/div[1]/slcards/div[4]/div[2]/button[2]")
 			for {
@@ -1217,7 +1199,7 @@ func initializeUserData() {
 	spinner.Start()
 	spinner.Message("reading accounts.txt...")
 	lineCount, errCountLines := getLines("config/accounts.txt")
-	time.Sleep(500*time.Millisecond)
+	time.Sleep(500 * time.Millisecond)
 	spinner.Message("reading cardSettings.txt...")
 	if errCountLines == nil && lineCount > 1 {
 		for i := 0; i < lineCount-1; i++ {
@@ -1238,7 +1220,7 @@ func initializeUserData() {
 		}
 		r.Wait()
 		spinner.Message("reading config.txt...")
-		time.Sleep(500*time.Millisecond)
+		time.Sleep(500 * time.Millisecond)
 		spinner.Stop()
 		printConfigSettings(lineCount-1, headless, startThread, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime)
 		//判断 > 如果当前账户数小于启动线程数，那么就按照账户数启动线程
