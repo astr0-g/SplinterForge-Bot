@@ -1226,7 +1226,6 @@ func initializeUserData() {
 				}
 				w.Wait()
 			}
-
 		}
 		s.Wait()
 	} else {
