@@ -64,31 +64,6 @@ type FitBossRequestsData struct {
 	} `json:"message"`
 	Webview string `json:"webview"`
 }
-type FitReturnData struct {
-	Date   int64  `json:"date"`
-	Player string `json:"player"`
-	Boss   string `json:"boss"`
-	//Team     []map[string]interface{} `json:"team"`
-	//Actions  []map[string]interface{} `json:"actions"`
-	TotalDmg int        `json:"totalDmg"` // 总伤害
-	Points   int        `json:"points"`   // 分数
-	Rewards  []struct { // 奖励
-		Type string  `json:"type"`
-		Name string  `json:"name"`
-		Qty  float32 `json:"qty"`
-	} `json:"rewards"`
-	UniqueRules []string `json:"uniqueRules"`
-	Ppd         int      `json:"ppd"`
-	ID          string   `json:"id"`
-	NewRules    struct {
-		Message string `json:"message"`
-		Rules   struct {
-			Active bool     `json:"active"`
-			BossID string   `json:"boss_id"`
-			Rules  []string `json:"rules"`
-		} `json:"rules"`
-	} `json:"newRules"`
-}
 type KeyLoginResData struct {
 	Stamina struct {
 		Last    string `json:"last"`
@@ -374,7 +349,45 @@ type GetResponseBody struct {
 	SessionID string `json:"sessionId"`
 	Status    int    `json:"status"`
 	Value     struct {
-		Base64Encoded bool          `json:"base64Encoded"`
-		Body          FitReturnData `json:"body"`
+		Base64Encoded bool   `json:"base64Encoded"`
+		Body          string `json:"body"`
 	} `json:"value"`
+}
+
+type FitReturnData struct {
+	Date    int64         `json:"date"`
+	Player  string        `json:"player"`
+	Boss    string        `json:"boss"`
+	Team    []interface{} `json:"team"`
+	Actions []struct {
+		Turn               string `json:"turn"`
+		TurnID             int    `json:"turnID"`
+		Value              int    `json:"value"`
+		Action             string `json:"action"`
+		Target             string `json:"target"`
+		TargetID           int    `json:"targetID"`
+		Log                string `json:"log,omitempty"`
+		BossStartingHealth int    `json:"boss_starting_health,omitempty"`
+		BossStartingArmor  int    `json:"boss_starting_armor,omitempty"`
+	} `json:"actions"`
+	TotalDmg int `json:"totalDmg"`
+	Points   int `json:"points"`
+	Rewards  []struct {
+		Type string `json:"type"`
+		Name string `json:"name"`
+		Qty  int    `json:"qty"`
+	} `json:"rewards"`
+	UniqueRules []string `json:"uniqueRules"`
+	Ppd         int      `json:"ppd"`
+	StatMod     int      `json:"statMod"`
+	ThreshPen   int      `json:"threshPen"`
+	ID          string   `json:"id"`
+	NewRules    struct {
+		Message string `json:"message"`
+		Rules   struct {
+			Active bool     `json:"active"`
+			BossID string   `json:"boss_id"`
+			Rules  []string `json:"rules"`
+		} `json:"rules"`
+	} `json:"newRules"`
 }
