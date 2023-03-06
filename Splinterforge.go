@@ -935,6 +935,7 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 		for {
 			d, _ := wd.Log("performance")
 			for _, dd := range d {
+				fmt.Println(dd.Message)
 				if strings.Contains(dd.Message, fmt.Sprintf("%s/boss/fight_boss", splinterforgeAPIEndpoint)) && strings.Contains(dd.Message, "\"method\":\"Network.responseReceived\"") {
 					var GetResponseBody = spstruct.GetResponseBody{}
 					var GetRewardBody = spstruct.CDPFitReturnData{}
