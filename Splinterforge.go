@@ -1240,7 +1240,18 @@ func initializeUserData() {
 		printConfigSettings(lineCount-1, headless, startThread, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime)
 		//判断 > 如果当前账户数小于启动线程数，那么就按照账户数启动线程
 		if len(accountLists) <= startThread {
-			
+			cfg = yacspin.Config{
+				Frequency:       100 * time.Millisecond,
+				CharSet:         yacspin.CharSets[78],
+				Suffix:          " Reduce threading to ",
+				SuffixAutoColon: true,
+				StopCharacter:   "✓",
+				StopColors:      []string{"fgGreen"},
+				StopMessage:     strconv.Itoa(len(accountLists)),
+			}
+			spinner, _ = yacspin.New(cfg)
+			spinner.Start()
+			spinner.Stop()
 			for i := 0; i < len(accountLists); i++ {
 				q.Add(1)
 				go initializeDriver(false, accountLists[i], headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint)
