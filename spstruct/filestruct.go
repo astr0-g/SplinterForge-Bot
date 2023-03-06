@@ -400,7 +400,7 @@ type CDPFitReturnData struct {
 	Rewards  []struct {
 		Type string `json:"type"`
 		Name string `json:"name"`
-		Qty  int    `json:"qty"`
+		Qty  float64`json:"qty"`
 	} `json:"rewards"`
 	UniqueRules []string `json:"uniqueRules"`
 	Ppd         int      `json:"ppd"`

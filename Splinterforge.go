@@ -933,9 +933,10 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 			}
 		}
 		for {
-			d, _ := wd.Log("performance")
-			for _, dd := range d {
+			e, _ := wd.Log("performance")
+			for _, dd := range e {
 				fmt.Println(dd.Message)
+
 				if strings.Contains(dd.Message, fmt.Sprintf("%s/boss/fight_boss", splinterforgeAPIEndpoint)) && strings.Contains(dd.Message, "\"method\":\"Network.responseReceived\"") {
 					var GetResponseBody = spstruct.GetResponseBody{}
 					var GetRewardBody = spstruct.CDPFitReturnData{}
@@ -947,7 +948,6 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 						fmt.Println("GetResponseBody.Value", GetResponseBody.Value)
 						fmt.Println("GetResponseBody.Value.Body", GetResponseBody.Value.Body)
 						PrintWhite(userName, "Battle was successful!")
-
 						err1 := json.Unmarshal([]byte(GetResponseBody.Value.Body), &GetRewardBody)
 						PrintYellow(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", strconv.Itoa(GetRewardBody.TotalDmg), strconv.Itoa(GetRewardBody.Points), GetRewardBody.Rewards[0].Qty, GetRewardBody.Rewards[1].Qty))
 						fmt.Println("--------------------------------------------------------------------------------------")
@@ -959,6 +959,7 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 						fmt.Println("Points", GetRewardBody.Points, err1)
 						postJsonResult = true
 						break
+					
 					}
 				}
 			}
@@ -1242,18 +1243,6 @@ func initializeUserData() {
 		printConfigSettings(lineCount-1, headless, startThread, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime)
 		//判断 > 如果当前账户数小于启动线程数，那么就按照账户数启动线程
 		if len(accountLists) <= startThread {
-			cfg = yacspin.Config{
-				Frequency:       100 * time.Millisecond,
-				CharSet:         yacspin.CharSets[59],
-				Suffix:          " Reduce threading to ",
-				SuffixAutoColon: true,
-				StopCharacter:   " ✓",
-				StopColors:      []string{"fgGreen"},
-				StopMessage:     strconv.Itoa(len(accountLists)),
-			}
-			spinner, _ = yacspin.New(cfg)
-			spinner.Start()
-			spinner.Stop()
 			for i := 0; i < len(accountLists); i++ {
 				q.Add(1)
 				go initializeDriver(false, accountLists[i], headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint)
