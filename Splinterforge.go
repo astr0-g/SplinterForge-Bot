@@ -225,7 +225,9 @@ func getConfig(filePath string) (bool, int, bool, bool, bool, bool, bool, string
 	file, err := os.Open(filePath)
 	if err != nil {
 		PrintRed("SF", "Error Reading Config.txt file")
-		panic(err)
+		PrintWhite("SF", "Terminating in 10 seconds...")
+		time.Sleep(10*time.Second)
+		os.Exit(1)
 	}
 	defer file.Close()
 
@@ -273,6 +275,12 @@ func getConfig(filePath string) (bool, int, bool, bool, bool, bool, bool, string
 				publicAPIEndpoint = value
 			}
 		}
+	}
+	if threadingLimit == 0 || splinterforgeAPIEndpoint == "" || splinterlandAPIEndpoint == "" || publicAPIEndpoint == ""{
+		PrintRed("SF","Error reading config.txt file.")
+		PrintWhite("SF", "Terminating in 10 seconds...")
+		time.Sleep(10*time.Second)
+		os.Exit(1)
 	}
 	return headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint
 }
@@ -1156,6 +1164,7 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 	}
 }
 func initializeDriver(wait bool, userData spstruct.UserData, headless bool, showForgeReward bool, showAccountDetails bool, autoSelectCard bool, autoSelectHero bool, autoSelectSleepTime bool, splinterforgeAPIEndpoint string, splinterlandAPIEndpoint string, publicAPIEndpoint string) {
+	PrintWhite(userData.UserName,"Initializing...")
 	extensionData, err := ioutil.ReadFile("data/hivekeychain.crx")
 	if err != nil {
 		println((1))
@@ -1230,12 +1239,18 @@ func initializeDriver(wait bool, userData spstruct.UserData, headless bool, show
 	}
 }
 func initializeAccount(accountNo int) (string, string, string, string, []spstruct.CardSelection, int) {
-
 	userName, postingKey, err := getAccountData("config/accounts.txt", accountNo)
 	if err != nil || userName == "" || postingKey == "" {
 		PrintRed("ERROR", "Error in loading accounts.txt, please add username or posting key and try again.")
 	}
 	heroesType, bossId, playingSummoners, playingMonster, timeSleepInMinute, err := getCardSettingData("config/cardSettings.txt", accountNo)
+	if heroesType == "" || bossId == ""{
+		fmt.Println("")
+		PrintRed("SF",fmt.Sprintf("Error loading cardSettings.txt file for account %s",strconv.Itoa(accountNo)))
+		PrintWhite("SF","Terminating in 10 seconds...")
+		time.Sleep(10*time.Second)
+		os.Exit(1)
+	}
 	if err != nil {
 		PrintRed("ERROR", "Error loading cardSettings.txt file")
 	}
@@ -1302,8 +1317,8 @@ func initializeUserData() {
 	spinner.Message("reading accounts.txt...")
 	lineCount, errCountLines := getLines("config/accounts.txt")
 	time.Sleep(500 * time.Millisecond)
-	spinner.Message("reading cardSettings.txt...")
 	if errCountLines == nil && lineCount > 1 {
+		spinner.Message("reading cardSettings.txt...")
 		for i := 0; i < lineCount-1; i++ {
 			r.Add(1)
 			time.Sleep(50*time.Millisecond)
@@ -1338,7 +1353,10 @@ func initializeUserData() {
 		}
 		s.Wait()
 	} else {
-		fmt.Print("Please add accounts in accounts.txt\n")
+		fmt.Println("")
+		PrintRed("SF","Please add accounts in accounts.txt")
+		PrintWhite("SF", "Terminating in 10 seconds...")
+		time.Sleep(10*time.Second)
 		os.Exit(1)
 	}
 }
