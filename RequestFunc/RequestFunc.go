@@ -50,6 +50,7 @@ func FetchselectHero(publicAPIEndpoint string, bossName string, splinterforgeAPI
 	heroTypeToChoose := strings.Split(responseData["heroTypes"].(string), " ")[0]
 	return heroTypeToChoose, nil
 }
+
 func FetchBossID(bossName string, splinterforgeAPIEndpoint string) string {
 	url := fmt.Sprintf("%s/boss/getBosses", splinterforgeAPIEndpoint)
 
@@ -71,6 +72,7 @@ func FetchBossID(bossName string, splinterforgeAPIEndpoint string) string {
 
 	return ""
 }
+
 func FetchPlayerCard(userName string, splinterlandAPIEndpoint string) ([]int, error) {
 	url := fmt.Sprintf("%s/cards/collection/%s", splinterlandAPIEndpoint, userName)
 	method := "GET"
@@ -126,6 +128,7 @@ func FetchPlayerCard(userName string, splinterlandAPIEndpoint string) ([]int, er
 	}
 	return cardDetailIDs, nil
 }
+
 func FetchBattleCards(bossName string, userName string, splinterlandAPIEndpoint string, publicAPIEndpoint string) (string, error) {
 	cardsId, err := FetchPlayerCard(userName, splinterlandAPIEndpoint)
 	if err != nil {
@@ -169,6 +172,7 @@ func FetchBattleCards(bossName string, userName string, splinterlandAPIEndpoint 
 
 	return string(jsonResponse), nil
 }
+
 func GetReponseBody(sessionId string, requestId string, userName string) (string, error) {
 	res, err := grequests.Post(fmt.Sprintf("http://localhost:9515/wd/hub/session/%s/goog/cdp/execute", sessionId),
 		&grequests.RequestOptions{
@@ -189,5 +193,4 @@ func GetReponseBody(sessionId string, requestId string, userName string) (string
 		fmt.Println("GetReponseBody error > ", err)
 		return "", err
 	}
-
 }

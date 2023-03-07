@@ -35,87 +35,87 @@ func AccountLogin(userName string, postingKey string, wd selenium.WebDriver) boo
 
 	el, err := wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div[1]/div/div[1]/div/input")
 	if err != nil {
-		colorprint.PrintRed(userName, "Login Error!")
+		ColorPrint.PrintRed(userName, "Login Error!")
 		return false
 	}
 	err = el.SendKeys("Aa123Aa123!!")
 	if err != nil {
-		colorprint.PrintRed(userName, "Login Error!")
+		ColorPrint.PrintRed(userName, "Login Error!")
 		return false
 	}
 	el, err = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div[1]/div/div[2]/div/input")
 	if err != nil {
-		colorprint.PrintRed(userName, "Login Error!")
+		ColorPrint.PrintRed(userName, "Login Error!")
 		return false
 	}
 	err = el.SendKeys("Aa123Aa123!!")
 	if err != nil {
-		colorprint.PrintRed(userName, "Login Error!")
+		ColorPrint.PrintRed(userName, "Login Error!")
 		return false
 	}
 	el, err = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div[1]/button/div")
 	if err != nil {
-		colorprint.PrintRed(userName, "Login Error!")
+		ColorPrint.PrintRed(userName, "Login Error!")
 		return false
 	}
 	err = el.Click()
 	if err != nil {
-		colorprint.PrintRed(userName, "Login Error!")
+		ColorPrint.PrintRed(userName, "Login Error!")
 		return false
 	}
 	el, err = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div[1]/div[2]/div/div[2]/button[1]/div")
 	if err != nil {
-		colorprint.PrintRed(userName, "Login Error!")
+		ColorPrint.PrintRed(userName, "Login Error!")
 		return false
 	}
 	err = el.Click()
 	if err != nil {
-		colorprint.PrintRed(userName, "Login Error!")
+		ColorPrint.PrintRed(userName, "Login Error!")
 		return false
 	}
 	el, err = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div[1]/div[2]/div/div[2]/div[1]/div/input")
 	if err != nil {
-		colorprint.PrintRed(userName, "Login Error!")
+		ColorPrint.PrintRed(userName, "Login Error!")
 		return false
 	}
 	err = el.SendKeys(userName)
 	if err != nil {
-		colorprint.PrintRed(userName, "Login Error!")
+		ColorPrint.PrintRed(userName, "Login Error!")
 		return false
 	}
 	el, err = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div[1]/div[2]/div/div[2]/div[2]/div/input")
 	if err != nil {
-		colorprint.PrintRed(userName, "Login Error!")
+		ColorPrint.PrintRed(userName, "Login Error!")
 		return false
 	}
 	err = el.SendKeys(postingKey)
 	if err != nil {
-		colorprint.PrintRed(userName, "Login Error!")
+		ColorPrint.PrintRed(userName, "Login Error!")
 		return false
 	}
 	el, err = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div[1]/div[2]/div/div[2]/div[2]/div/input")
 	if err != nil {
-		colorprint.PrintRed(userName, "Login Error!")
+		ColorPrint.PrintRed(userName, "Login Error!")
 		return false
 	}
 	time.Sleep(2 * time.Second)
 	err = el.SendKeys("\ue007")
 	if err != nil {
-		colorprint.PrintRed(userName, "Login Error!")
+		ColorPrint.PrintRed(userName, "Login Error!")
 		return false
 	}
 	el, err = wd.FindElement(selenium.ByXPATH, "/html/body/div/div/div[4]/div")
 	if err != nil {
-		colorprint.PrintRed(userName, "Login failure! Please check your accounts.txt file or it is a server error.")
+		ColorPrint.PrintRed(userName, "Login failure! Please check your accounts.txt file or it is a server error.")
 		return false
 	}
 	hiveKeyChainLogin, err := el.Text()
 	if err != nil {
-		colorprint.PrintRed(userName, "Login Error!")
+		ColorPrint.PrintRed(userName, "Login Error!")
 		return false
 	}
 	if hiveKeyChainLogin != "HIVE KEYCHAIN" {
-		colorprint.PrintRed(userName, "Login failure! Please check your accounts.txt file or it is a server error.")
+		ColorPrint.PrintRed(userName, "Login failure! Please check your accounts.txt file or it is a server error.")
 		return false
 	} else {
 		err = wd.ResizeWindow("bigger", 1565, 1080)
@@ -126,25 +126,25 @@ func AccountLogin(userName string, postingKey string, wd selenium.WebDriver) boo
 
 		el, err = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/success-modal/section/div[1]/div[4]/div/button")
 		if err != nil {
-			colorprint.PrintRed(userName, "Login Error!")
+			ColorPrint.PrintRed(userName, "Login Error!")
 			return false
 		}
 		el.Click()
 		el, err = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div/div/a/div[1]")
 		if err != nil {
-			colorprint.PrintRed(userName, "Login Error!")
+			ColorPrint.PrintRed(userName, "Login Error!")
 			return false
 		}
 		el.Click()
 		el, err = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/login-modal/div/div/div/div[2]/div[2]/input")
 		if err != nil {
-			colorprint.PrintRed(userName, "Login Error!")
+			ColorPrint.PrintRed(userName, "Login Error!")
 			return false
 		}
 		el.SendKeys(userName)
 		el, err = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/login-modal/div/div/div/div[2]/div[3]/button")
 		if err != nil {
-			colorprint.PrintRed(userName, "Login Error!")
+			ColorPrint.PrintRed(userName, "Login Error!")
 			return false
 		}
 		el.Click()
@@ -162,10 +162,11 @@ func AccountLogin(userName string, postingKey string, wd selenium.WebDriver) boo
 		el.Click()
 		wd.SwitchWindow(handles[0])
 		Checklogin(userName, wd)
-		colorprint.PrintGreen(userName, "Login successful!")
+		ColorPrint.PrintGreen(userName, "Login successful!")
 		return true
 	}
 }
+
 func Checklogin(userName string, wd selenium.WebDriver) bool {
 	for i := 0; i < 10; i++ {
 		el, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[2]/div[2]/a/div[2]")
@@ -181,25 +182,26 @@ func Checklogin(userName string, wd selenium.WebDriver) bool {
 	}
 	return false
 }
+
 func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId string, headless bool, heroesType string, timeSleepInMinute int, cardSelection []SpStruct.CardSelection, autoSelectHero bool, autoSelectCard bool, autoSelectSleepTime bool, splinterlandAPIEndpoint string, publicAPIEndpoint string, splinterforgeAPIEndpoint string, showForgeReward bool, showAccountDetails bool, s *sync.WaitGroup, w *sync.WaitGroup, accountLists []SpStruct.UserData) {
 	starttimestamp := time.Now().Unix()
 	CookiesStatus := true
 	Unexpected := false
 	name, _ := wd.ExecuteScript("return localStorage.getItem('forge:username');", nil)
 	key, _ := wd.ExecuteScript("return localStorage.getItem('forge:key');", nil)
-	bossName, bossIdToSelect, _ := gamefunc.SelectBoss(userName, bossId, wd)
-	gamefunc.SelectHero(heroesType, userName, wd, autoSelectHero, publicAPIEndpoint, bossName, splinterforgeAPIEndpoint)
-	gamefunc.SelectBoss(userName, bossIdToSelect, wd)
-	cardSelection, _, _ = gamefunc.SelectCards(cardSelection, bossName, userName, splinterlandAPIEndpoint, publicAPIEndpoint, autoSelectCard)
+	bossName, bossIdToSelect, _ := GameFunc.SelectBoss(userName, bossId, wd)
+	GameFunc.SelectHero(heroesType, userName, wd, autoSelectHero, publicAPIEndpoint, bossName, splinterforgeAPIEndpoint)
+	GameFunc.SelectBoss(userName, bossIdToSelect, wd)
+	cardSelection, _, _ = GameFunc.SelectCards(cardSelection, bossName, userName, splinterlandAPIEndpoint, publicAPIEndpoint, autoSelectCard)
 	seletedNumOfSummoners := 1
 	el, _ := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/button")
 	el.Click()
-	colorprint.PrintWhite(userName, "Participating in battles...")
+	ColorPrint.PrintWhite(userName, "Participating in battles...")
 	printData := [][]string{}
 	selectResult := true
 	for _, selection := range cardSelection {
 		for i, playingSummoner := range selection.PlayingSummoners {
-			result := gamefunc.SelectSummoners(userName, seletedNumOfSummoners, playingSummoner.PlayingSummonersDiv, wd)
+			result := GameFunc.SelectSummoners(userName, seletedNumOfSummoners, playingSummoner.PlayingSummonersDiv, wd)
 			if result {
 				seletedNumOfSummoners++
 				printData = append(printData, []string{fmt.Sprintf("Summoners #%d", i+1), playingSummoner.PlayingSummonersID, playingSummoner.PlayingSummonersName, "success"})
@@ -207,7 +209,7 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 		}
 		seletedNumOfMonsters := 1
 		for j, playingMonster := range selection.PlayingMonsters {
-			result := gamefunc.SelectMonsters(userName, seletedNumOfMonsters, playingMonster.PlayingMontersDiv, wd)
+			result := GameFunc.SelectMonsters(userName, seletedNumOfMonsters, playingMonster.PlayingMontersDiv, wd)
 			if result {
 				seletedNumOfMonsters++
 				printData = append(printData, []string{fmt.Sprintf("Monsters #%d", j+1), playingMonster.PlayingMonstersID, playingMonster.PlayingMonstersName, "success"})
@@ -245,7 +247,7 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 				if returnJsonResult == false && strings.Contains(netLog.Message, fmt.Sprintf("%s/boss/fight_boss", splinterforgeAPIEndpoint)) && strings.Contains(netLog.Message, "\"method\":\"Network.requestWillBeSent\"") {
 					json.Unmarshal([]byte(netLog.Message), &fitRes)
 					json.Unmarshal([]byte(fitRes.Message.Params.Request.PostData), &fitPostData)
-					colorprint.PrintGreen(userName, "Battle was successful!")
+					ColorPrint.PrintGreen(userName, "Battle was successful!")
 					returnJsonResult = true
 				}
 				if showForgeReward == true && postJsonResult == false && strings.Contains(netLog.Message, fmt.Sprintf("%s/boss/fight_boss", splinterforgeAPIEndpoint)) && strings.Contains(netLog.Message, "\"method\":\"Network.responseReceived\"") {
@@ -255,7 +257,7 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 					if err == nil {
 						json.Unmarshal([]byte(resString), &GetResponseBody)
 						json.Unmarshal([]byte(GetResponseBody.Value.Body), &GetRewardBody)
-						colorprint.PrintCyan(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", strconv.Itoa(GetRewardBody.TotalDmg), strconv.Itoa(GetRewardBody.Points), GetRewardBody.Rewards[0].Qty, GetRewardBody.Rewards[1].Qty))
+						ColorPrint.PrintCyan(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", strconv.Itoa(GetRewardBody.TotalDmg), strconv.Itoa(GetRewardBody.Points), GetRewardBody.Rewards[0].Qty, GetRewardBody.Rewards[1].Qty))
 						postJsonResult = true
 					}
 				}
@@ -286,7 +288,7 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 						electrumStr := parts[6]
 						forgium, _ := strconv.ParseFloat(forgiumStr, 64)
 						electrum, _ := strconv.ParseFloat(electrumStr, 64)
-						colorprint.PrintCyan(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", resultdmg, resultpoints, forgium, electrum))
+						ColorPrint.PrintCyan(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", resultdmg, resultpoints, forgium, electrum))
 						break
 					} else {
 						time.Sleep(5 * time.Second)
@@ -294,25 +296,25 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 					}
 				}
 			} else {
-				colorprint.PrintRed(userName, "Encountering difficulty in reading the game results, but the battle has ended.")
+				ColorPrint.PrintRed(userName, "Encountering difficulty in reading the game results, but the battle has ended.")
 			}
 		}
 		if showAccountDetails {
 			LogFunc.PrintAccountDetails(userName, name, key, splinterforgeAPIEndpoint)
 		}
-		colorprint.PrintGold(userName, "Successful generated Cookies, the account will continue play with this setup.")
+		ColorPrint.PrintGold(userName, "Successful generated Cookies, the account will continue play with this setup.")
 		wd.Close()
 		s.Add(1)
 		go func() {
 			for {
 				if autoSelectSleepTime {
-					colorprint.PrintWhite(userName, fmt.Sprintf("this account will enter a state of inactivity for %s minutes based on auto selected info.", mana))
+					ColorPrint.PrintWhite(userName, fmt.Sprintf("this account will enter a state of inactivity for %s minutes based on auto selected info.", mana))
 					time.Sleep(time.Duration(manaused) * time.Minute)
 				} else {
-					colorprint.PrintWhite(userName, fmt.Sprintf("According to your configuration, this account will enter a state of inactivity for %s minutes.", strconv.Itoa(timeSleepInMinute)))
+					ColorPrint.PrintWhite(userName, fmt.Sprintf("According to your configuration, this account will enter a state of inactivity for %s minutes.", strconv.Itoa(timeSleepInMinute)))
 					time.Sleep(time.Duration(timeSleepInMinute) * time.Minute)
 				}
-				colorprint.PrintWhite(userName, "Participating in battles with current setup...")
+				ColorPrint.PrintWhite(userName, "Participating in battles with current setup...")
 				reFit, err := grequests.Post(fmt.Sprintf("%s/boss/fight_boss", splinterforgeAPIEndpoint), &grequests.RequestOptions{
 					JSON: fitPostData,
 					Headers: map[string]string{
@@ -323,19 +325,19 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 				if err == nil {
 					LogFunc.PrintResultBox(userName, printData, selectResult)
 					if strings.Contains(reFit.String(), "not enough mana!") {
-						colorprint.PrintYellow(userName, "Insufficient stamina, entering a rest state of inactivity for 1 hour...")
+						ColorPrint.PrintYellow(userName, "Insufficient stamina, entering a rest state of inactivity for 1 hour...")
 						time.Sleep(1 * time.Hour)
 						continue
 					} else if strings.Contains(reFit.String(), "decoded message was invalid") {
 						CookiesStatus = false
-						colorprint.PrintRed(userName, "Cookies Error, Restarting...")
+						ColorPrint.PrintRed(userName, "Cookies Error, Restarting...")
 						break
 					} else if strings.Contains(reFit.String(), "totalDmg") && strings.Contains(reFit.String(), "points") {
-						colorprint.PrintGreen(userName, "Battle was successful!")
+						ColorPrint.PrintGreen(userName, "Battle was successful!")
 						var fitReturnData = SpStruct.FitReturnData{}
 						json.Unmarshal(reFit.Bytes(), &fitReturnData)
 						if showForgeReward {
-							colorprint.PrintCyan(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", strconv.Itoa(fitReturnData.TotalDmg), strconv.Itoa(fitReturnData.Points), fitReturnData.Rewards[0].Qty, fitReturnData.Rewards[1].Qty))
+							ColorPrint.PrintCyan(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", strconv.Itoa(fitReturnData.TotalDmg), strconv.Itoa(fitReturnData.Points), fitReturnData.Rewards[0].Qty, fitReturnData.Rewards[1].Qty))
 						}
 						time.Sleep(5 * time.Second)
 						if showAccountDetails {
@@ -344,11 +346,11 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 						continue
 					} else {
 						Unexpected = true
-						colorprint.PrintRed(userName, "Unexpected Error, Restarting...")
+						ColorPrint.PrintRed(userName, "Unexpected Error, Restarting...")
 						break
 					}
 				} else {
-					colorprint.PrintRed(userName, "Game server API error, Restarting...")
+					ColorPrint.PrintRed(userName, "Game server API error, Restarting...")
 					Unexpected = true
 					break
 				}
@@ -368,18 +370,19 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 		}
 		if CurrentStamina < manaused {
 			wd.Close()
-			colorprint.PrintYellow(userName, "Insufficient stamina, entering a rest state of inactivity for 1 hour...")
+			ColorPrint.PrintYellow(userName, "Insufficient stamina, entering a rest state of inactivity for 1 hour...")
 			time.Sleep(1 * time.Hour)
 			AccountRestartCoroutine(accountLists, false, userName, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, s, w)
 		} else if manaused < 15 {
 			wd.Close()
-			colorprint.PrintYellow(userName, "Card Selected not meet 15 mana requirements, restarting...")
+			ColorPrint.PrintYellow(userName, "Card Selected not meet 15 mana requirements, restarting...")
 			AccountRestartCoroutine(accountLists, false, userName, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, s, w)
 		}
 	}
 }
+
 func InitializeDriver(wait bool, userData SpStruct.UserData, headless bool, showForgeReward bool, showAccountDetails bool, autoSelectCard bool, autoSelectHero bool, autoSelectSleepTime bool, splinterforgeAPIEndpoint string, splinterlandAPIEndpoint string, publicAPIEndpoint string, accountLists []SpStruct.UserData, s *sync.WaitGroup, w *sync.WaitGroup) {
-	colorprint.PrintWhite(userData.UserName, "Initializing...")
+	ColorPrint.PrintWhite(userData.UserName, "Initializing...")
 	extensionData, err := ioutil.ReadFile("data/hivekeychain.crx")
 	if err != nil {
 		println((1))
@@ -441,18 +444,19 @@ func InitializeDriver(wait bool, userData SpStruct.UserData, headless bool, show
 	defer driver.Quit()
 	loginResult := AccountLogin(userData.UserName, userData.PostingKey, driver)
 	if loginResult {
-		gamefunc.CheckPopUp(driver, 1000)
+		GameFunc.CheckPopUp(driver, 1000)
 		AccountBattle(wait, driver, userData.UserName, userData.BossID, headless, userData.HeroesType, userData.TimeSleepInMinute, userData.CardSelection, autoSelectHero, autoSelectCard, autoSelectSleepTime, splinterlandAPIEndpoint, publicAPIEndpoint, splinterforgeAPIEndpoint, showForgeReward, showAccountDetails, s, w, accountLists)
 	} else {
 		driver.Close()
 		if wait == true {
 			w.Done()
 		}
-		colorprint.PrintYellow(userData.UserName, "Retrying in 30 seconds...")
+		ColorPrint.PrintYellow(userData.UserName, "Retrying in 30 seconds...")
 		time.Sleep(30 * time.Second)
 		AccountRestartCoroutine(accountLists, false, userData.UserName, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, s, w)
 	}
 }
+
 func AccountRestartCoroutine(accountLists []SpStruct.UserData, wait bool, userName string, headless bool, showForgeReward bool, showAccountDetails bool, autoSelectCard bool, autoSelectHero bool, autoSelectSleepTime bool, splinterforgeAPIEndpoint string, splinterlandAPIEndpoint string, publicAPIEndpoint string, s *sync.WaitGroup, w *sync.WaitGroup) {
 	for _, v := range accountLists {
 		if v.UserName == userName {

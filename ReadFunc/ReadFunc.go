@@ -34,6 +34,7 @@ func GetCardName(cardId string) (string, error) {
 
 	return "", fmt.Errorf("card id %s not found", cardId)
 }
+
 func GetAccountData(filePath string, lineNumber int) (string, string, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
@@ -60,6 +61,7 @@ func GetAccountData(filePath string, lineNumber int) (string, string, error) {
 	}
 	return "", "", nil
 }
+
 func GetCardSettingData(filePath string, lineNumber int) (string, string, []string, []string, int, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
@@ -88,11 +90,12 @@ func GetCardSettingData(filePath string, lineNumber int) (string, string, []stri
 
 	return "", "", nil, nil, 0, nil
 }
+
 func GetConfig(filePath string) (bool, int, bool, bool, bool, bool, bool, string, string, string) {
 	file, err := os.Open(filePath)
 	if err != nil {
-		colorprint.PrintRed("SF", "Error Reading Config.txt file")
-		colorprint.PrintWhite("SF", "Terminating in 10 seconds...")
+		ColorPrint.PrintRed("SF", "Error Reading Config.txt file")
+		ColorPrint.PrintWhite("SF", "Terminating in 10 seconds...")
 		time.Sleep(10 * time.Second)
 		os.Exit(1)
 	}
@@ -144,13 +147,14 @@ func GetConfig(filePath string) (bool, int, bool, bool, bool, bool, bool, string
 		}
 	}
 	if threadingLimit == 0 || splinterforgeAPIEndpoint == "" || splinterlandAPIEndpoint == "" || publicAPIEndpoint == "" {
-		colorprint.PrintRed("SF", "Error reading config.txt file.")
-		colorprint.PrintWhite("SF", "Terminating in 10 seconds...")
+		ColorPrint.PrintRed("SF", "Error reading config.txt file.")
+		ColorPrint.PrintWhite("SF", "Terminating in 10 seconds...")
 		time.Sleep(10 * time.Second)
 		os.Exit(1)
 	}
 	return headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint
 }
+
 func GetLines(filePath string) (int, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
@@ -167,6 +171,7 @@ func GetLines(filePath string) (int, error) {
 	}
 	return lineCount, nil
 }
+
 func GetAccountDetails(name interface{}, key interface{}, splinterforgeAPIEndpoint string) int {
 	res, _ := grequests.Post(fmt.Sprintf("%s/users/keyLogin", splinterforgeAPIEndpoint), &grequests.RequestOptions{
 		JSON: map[string]string{
@@ -186,6 +191,7 @@ func GetAccountDetails(name interface{}, key interface{}, splinterforgeAPIEndpoi
 	}
 	return CurrentStamina
 }
+
 func GetTimeDiff(oldTime string) (int, error) {
 	now := time.Now()
 	t, err := time.Parse(time.RFC3339, oldTime)

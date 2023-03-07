@@ -1,14 +1,12 @@
 accounts.txt
 cardSettings.txt
 config.txt
-main.exe
 pyinstaller.exe
 cleanup.spec
 splinterforge.spec
 dist
 build
 cleanup_icon.ico
-dual_gold.ico
 __pycache__
 test.py
 splinterforgetest.py

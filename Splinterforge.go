@@ -2,9 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/selenium-Driver-Check/SeleniumDriverCheck"
-	"github.com/tebeka/selenium"
-	"github.com/theckman/yacspin"
 	"os"
 	"splinterforge/ColorPrint"
 	"splinterforge/LogFunc"
@@ -14,6 +11,10 @@ import (
 	"strconv"
 	"sync"
 	"time"
+
+	"github.com/selenium-Driver-Check/SeleniumDriverCheck"
+	"github.com/tebeka/selenium"
+	"github.com/theckman/yacspin"
 )
 
 var (
@@ -27,18 +28,18 @@ var (
 func initializeAccount(accountNo int) (string, string, string, string, []SpStruct.CardSelection, int) {
 	userName, postingKey, err := ReadFunc.GetAccountData("config/accounts.txt", accountNo)
 	if err != nil || userName == "" || postingKey == "" {
-		colorprint.PrintRed("ERROR", "Error in loading accounts.txt, please add username or posting key and try again.")
+		ColorPrint.PrintRed("ERROR", "Error in loading accounts.txt, please add username or posting key and try again.")
 	}
 	heroesType, bossId, playingSummoners, playingMonster, timeSleepInMinute, err := ReadFunc.GetCardSettingData("config/cardSettings.txt", accountNo)
 	if heroesType == "" || bossId == "" {
 		fmt.Println("")
-		colorprint.PrintRed("SF", fmt.Sprintf("Error loading cardSettings.txt file for account %s", strconv.Itoa(accountNo)))
-		colorprint.PrintWhite("SF", "Terminating in 10 seconds...")
+		ColorPrint.PrintRed("SF", fmt.Sprintf("Error loading cardSettings.txt file for account %s", strconv.Itoa(accountNo)))
+		ColorPrint.PrintWhite("SF", "Terminating in 10 seconds...")
 		time.Sleep(10 * time.Second)
 		os.Exit(1)
 	}
 	if err != nil {
-		colorprint.PrintRed("ERROR", "Error loading cardSettings.txt file")
+		ColorPrint.PrintRed("ERROR", "Error loading cardSettings.txt file")
 	}
 	playingSummonersList := make([]SpStruct.Summoners, 0, len(playingSummoners))
 	playingMonsterList := make([]SpStruct.MonsterId, 0, len(playingMonster))
@@ -139,8 +140,8 @@ func initializeUserData() {
 		s.Wait()
 	} else {
 		fmt.Println("")
-		colorprint.PrintRed("SF", "Please add accounts in accounts.txt")
-		colorprint.PrintWhite("SF", "Terminating in 10 seconds...")
+		ColorPrint.PrintRed("SF", "Please add accounts in accounts.txt")
+		ColorPrint.PrintWhite("SF", "Terminating in 10 seconds...")
 		time.Sleep(10 * time.Second)
 		os.Exit(1)
 	}

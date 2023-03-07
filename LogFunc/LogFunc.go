@@ -23,6 +23,7 @@ func PrintInfo() {
 	fmt.Println("|          https://discord.gg/pm8SGZkYcD          |")
 	fmt.Println("+-------------------------------------------------+")
 }
+
 func PrintResultBox(userName string, data [][]string, selectResult bool) {
 	sort.Slice(data, func(i, j int) bool {
 		return data[i][0] < data[j][0]
@@ -35,15 +36,16 @@ func PrintResultBox(userName string, data [][]string, selectResult bool) {
 	}
 
 	if selectResult {
-		colorprint.PrintGreen(userName, "Card selection results:")
+		ColorPrint.PrintGreen(userName, "Card selection results:")
 		table.Render()
 		color.Set(color.FgWhite)
 	} else {
-		colorprint.PrintYellow(userName, "Card selection results:")
+		ColorPrint.PrintYellow(userName, "Card selection results:")
 		table.Render()
 		color.Set(color.FgWhite)
 	}
 }
+
 func PrintAccountDetails(userName string, name interface{}, key interface{}, splinterforgeAPIEndpoint string) {
 	res, _ := grequests.Post(fmt.Sprintf("%s/users/keyLogin", splinterforgeAPIEndpoint), &grequests.RequestOptions{
 		JSON: map[string]string{
@@ -56,8 +58,9 @@ func PrintAccountDetails(userName string, name interface{}, key interface{}, spl
 	})
 	var powerRes = SpStruct.KeyLoginResData{}
 	json.Unmarshal(res.Bytes(), &powerRes)
-	colorprint.PrintWhite(userName, fmt.Sprintf("Account balance %s Forge, current stamina %s / %s.", strconv.FormatFloat(powerRes.Sc.Balance, 'f', 2, 64), strconv.Itoa(powerRes.Stamina.Current), strconv.Itoa(powerRes.Stamina.Max)))
+	ColorPrint.PrintWhite(userName, fmt.Sprintf("Account balance %s Forge, current stamina %s / %s.", strconv.FormatFloat(powerRes.Sc.Balance, 'f', 2, 64), strconv.Itoa(powerRes.Stamina.Current), strconv.Itoa(powerRes.Stamina.Max)))
 }
+
 func PrintConfigSettings(totalAccounts int, headless bool, threadingLimit int, showForgeReward bool, showAccountDetails bool, autoSelectCard bool, autoSelectHero bool, autoSelectSleepTime bool) {
 	data := [][]string{
 		{"TOTAL_ACCOUNTS_LOADED", fmt.Sprint(totalAccounts)},
