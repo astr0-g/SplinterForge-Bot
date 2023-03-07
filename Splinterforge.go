@@ -31,7 +31,6 @@ import (
 
 var (
 	accountLists                                                                                                                                                                          = []spstruct.UserData{}
-	q                                                                                                                                                                                     = &sync.WaitGroup{}
 	r                                                                                                                                                                                     = &sync.WaitGroup{}
 	w                                                                                                                                                                                     = &sync.WaitGroup{}
 	s                                                                                                                                                                                     = &sync.WaitGroup{}
@@ -69,6 +68,7 @@ func PrintGold(username string, message string) {
 	fmt.Println("["+now.Format("2006-01-02 15:04:05")+"]", username+":", message)
 }
 func printInfo() {
+	color.Set(color.FgWhite)
 	fmt.Println("+-------------------------------------------------+")
 	fmt.Println("|          Welcome to SplinterForge Bot!          |")
 	fmt.Println("|          Open source Github repository          |")
@@ -135,6 +135,7 @@ func printConfigSettings(totalAccounts int, headless bool, threadingLimit int, s
 	}
 	table.Render()
 }
+
 func getCardName(cardId string) (string, error) {
 	file, err := os.Open("data/cardMapping.json")
 	if err != nil {
@@ -798,10 +799,10 @@ func checklogin(userName string, wd selenium.WebDriver) bool {
 	}
 	return false
 }
-func accountRestartCoroutine(wait bool,loop int, userName string) {
+func accountRestartCoroutine(wait bool, userName string) {
 	for _, v := range accountLists {
 		if v.UserName == userName {
-			initializeDriver(wait, loop, v, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint)
+			initializeDriver(wait, v, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint)
 		}
 	}
 }
@@ -947,7 +948,7 @@ func accountLogin(userName string, postingKey string, wd selenium.WebDriver) boo
 		return true
 	}
 }
-func accountBattle(wait bool, loop int, wd selenium.WebDriver, userName string, bossId string, heroesType string, timeSleepInMinute int, cardSelection []spstruct.CardSelection, autoSelectHero bool, autoSelectCard bool, autoSelectSleepTime bool, splinterlandAPIEndpoint string, publicAPIEndpoint string) {
+func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId string, heroesType string, timeSleepInMinute int, cardSelection []spstruct.CardSelection, autoSelectHero bool, autoSelectCard bool, autoSelectSleepTime bool, splinterlandAPIEndpoint string, publicAPIEndpoint string) {
 	starttimestamp := time.Now().Unix()
 	CookiesStatus := true
 	Unexpected := false
@@ -1090,7 +1091,7 @@ func accountBattle(wait bool, loop int, wd selenium.WebDriver, userName string, 
 					printResultBox(userName, printData, selectResult)
 					if strings.Contains(reFit.String(), "not enough mana!") {
 						PrintYellow(userName, "Insufficient stamina, entering a rest state of inactivity for 1 hour...")
-						time.Sleep(30 * time.Minute)
+						time.Sleep(1 * time.Hour)
 						continue
 					} else if strings.Contains(reFit.String(), "decoded message was invalid") {
 						CookiesStatus = false
@@ -1120,35 +1121,31 @@ func accountBattle(wait bool, loop int, wd selenium.WebDriver, userName string, 
 				}
 			}
 			if !CookiesStatus || Unexpected {
-				accountRestartCoroutine(false,loop, userName)
+				accountRestartCoroutine(false, userName)
 				s.Done()
 			}
 
 		}()
-		if wait == true && loop == 2 {
+		if wait == true {
 			w.Done()
-		} else if wait == true && loop == 1 {
-			q.Done()
-		}
+		} 
 	} else {
-		if wait == true && loop == 2 {
+		if wait == true {
 			w.Done()
-		} else if wait == true && loop == 1 {
-			q.Done()
-		}
+		} 
 		if CurrentStamina < manaused {
 			wd.Close()
 			PrintYellow(userName, "Insufficient stamina, entering a rest state of inactivity for 1 hour...")
-			time.Sleep(30 * time.Minute)
-			accountRestartCoroutine(false,loop, userName)
+			time.Sleep(1 * time.Hour)
+			accountRestartCoroutine(false, userName)
 		} else if manaused < 15 {
 			wd.Close()
 			PrintYellow(userName, "Card Selected not meet 15 mana requirements, restarting...")
-			accountRestartCoroutine(false,loop, userName)
+			accountRestartCoroutine(false, userName)
 		}
 	}
 }
-func initializeDriver(wait bool, loop int, userData spstruct.UserData, headless bool, showForgeReward bool, showAccountDetails bool, autoSelectCard bool, autoSelectHero bool, autoSelectSleepTime bool, splinterforgeAPIEndpoint string, splinterlandAPIEndpoint string, publicAPIEndpoint string) {
+func initializeDriver(wait bool, userData spstruct.UserData, headless bool, showForgeReward bool, showAccountDetails bool, autoSelectCard bool, autoSelectHero bool, autoSelectSleepTime bool, splinterforgeAPIEndpoint string, splinterlandAPIEndpoint string, publicAPIEndpoint string) {
 	extensionData, err := ioutil.ReadFile("data/hivekeychain.crx")
 	if err != nil {
 		println((1))
@@ -1211,17 +1208,15 @@ func initializeDriver(wait bool, loop int, userData spstruct.UserData, headless 
 	loginResult := accountLogin(userData.UserName, userData.PostingKey, driver)
 	if loginResult {
 		checkPopUp(driver, 1000)
-		accountBattle(wait, loop, driver, userData.UserName, userData.BossID, userData.HeroesType, userData.TimeSleepInMinute, userData.CardSelection, autoSelectHero, autoSelectCard, autoSelectSleepTime, splinterlandAPIEndpoint, publicAPIEndpoint)
+		accountBattle(wait, driver, userData.UserName, userData.BossID, userData.HeroesType, userData.TimeSleepInMinute, userData.CardSelection, autoSelectHero, autoSelectCard, autoSelectSleepTime, splinterlandAPIEndpoint, publicAPIEndpoint)
 	} else {
 		driver.Close()
-		if wait == true && loop == 2 {
+		if wait == true {
 			w.Done()
-		} else if wait == true && loop == 1 {
-			q.Done()
-		}
+		} 
 		PrintYellow(userData.UserName, "Retrying in 30 seconds...")
 		time.Sleep(30 * time.Second)
-		accountRestartCoroutine(false,loop, userData.UserName)
+		accountRestartCoroutine(false, userData.UserName)
 	}
 }
 func initializeAccount(accountNo int) (string, string, string, string, []spstruct.CardSelection, int) {
@@ -1263,12 +1258,13 @@ func initializeAccount(accountNo int) (string, string, string, string, []spstruc
 }
 
 func initializeUserData() {
+	printInfo()
 	cfg := yacspin.Config{
 		Frequency:       100 * time.Millisecond,
 		CharSet:         yacspin.CharSets[59],
 		Suffix:          " Initialization Driver",
 		SuffixAutoColon: true,
-		StopCharacter:   " ✓",
+		StopCharacter:   " pass",
 		StopColors:      []string{"fgGreen"},
 		StopMessage:     "Success!",
 	}
@@ -1287,7 +1283,7 @@ func initializeUserData() {
 		CharSet:         yacspin.CharSets[59],
 		Suffix:          " Reading config folder",
 		SuffixAutoColon: true,
-		StopCharacter:   " ✓",
+		StopCharacter:   " pass",
 		StopColors:      []string{"fgGreen"},
 		StopMessage:     "Success!",
 	}
@@ -1300,6 +1296,7 @@ func initializeUserData() {
 	if errCountLines == nil && lineCount > 1 {
 		for i := 0; i < lineCount-1; i++ {
 			r.Add(1)
+			time.Sleep(50*time.Millisecond)
 			go func(num int) {
 				userName, postingKey, heroesType, bossId, cardSelection, timeSleepInMinute := initializeAccount(num + 1)
 				accountLists = append(accountLists, spstruct.UserData{
@@ -1310,7 +1307,6 @@ func initializeUserData() {
 					CardSelection:     cardSelection,
 					TimeSleepInMinute: timeSleepInMinute,
 				})
-
 				r.Done()
 			}(i)
 		}
@@ -1319,25 +1315,16 @@ func initializeUserData() {
 		time.Sleep(500 * time.Millisecond)
 		spinner.Stop()
 		printConfigSettings(lineCount-1, headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime)
-		//判断 > 如果当前账户数小于启动线程数，那么就按照账户数启动线程
-		if len(accountLists) <= threadingLimit {
-			for i := 0; i < len(accountLists); i++ {
-				q.Add(1)
-				go initializeDriver(false,1, accountLists[i], headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint)
+		for i := 0; i < len(accountLists); i += threadingLimit {
+			if len(accountLists) - i < threadingLimit {
+				threadingLimit = len(accountLists) - i
 			}
-			q.Wait()
-		} else {
-			//如果当前账户数大于启动线程数，那么就按照启动线程数启动线程
-			for i := 0; i < len(accountLists); i += threadingLimit {
-				if len(accountLists) - i < threadingLimit {
-					threadingLimit = len(accountLists) - i
-				}
-				for j := 0; j < threadingLimit; j++ {
-					w.Add(1)
-					go initializeDriver(true,2, accountLists[i+j], headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint)
-				}
-				w.Wait()
+			for j := 0; j < threadingLimit; j++ {
+				w.Add(1)
+				go initializeDriver(true, accountLists[i+j], headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint)
 			}
+			w.Wait()
+			printInfo()
 		}
 		s.Wait()
 	} else {
@@ -1346,6 +1333,5 @@ func initializeUserData() {
 	}
 }
 func main() {
-	printInfo()
 	initializeUserData()
 }
