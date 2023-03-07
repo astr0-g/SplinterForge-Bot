@@ -5,7 +5,7 @@ HEADLESS=true
 ## The bot will start with threads of START_THREAD, and then wait for
 ## START_THREAD_INTERNAL in seconds, before starting another set of
 ## threads of START_THREAD.
-THREADING=5
+THREADING=3
 
 ###############Show Rewards Settings################
 ## Showing FORGE rewards after each battle
