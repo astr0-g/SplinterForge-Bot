@@ -2,14 +2,13 @@
 ## When the HEADLESS option is set to true, the browser will be hidden.
 HEADLESS=true
 
-## The bot will start with threads of START_THREAD, and then wait for
-## START_THREAD_INTERNAL in seconds, before starting another set of
-## threads of START_THREAD.
-THREADING=3
+## The bot will initiate a group of THREADING number of threads to work together. 
+## Once a group finishes its assigned task, the next group will start working.
+THREADING=5
 
 ###############Show Rewards Settings################
-## Showing FORGE rewards after each battle
-## this could result in slower completion time for the bot.
+## Choose to show FORGE rewards and other battle results after each battle.
+## Choose to show Account details such as forge balance and stamina after each battle.
 SHOW_FORGE_REWARD=true
 SHOW_ACCOUNT_DETAILS=true
 
