@@ -42,6 +42,11 @@ func PrintYellow(username string, message string) {
 	color.Set(color.FgYellow)
 	fmt.Println("["+now.Format("2006-01-02 15:04:05")+"]", username+":", message)
 }
+func PrintPurple(username string, message string) {
+	now := time.Now()
+	color.Set(color.FgMagenta)
+	fmt.Println("["+now.Format("2006-01-02 15:04:05")+"]", username+":", message)
+}
 func PrintRed(username string, message string) {
 	now := time.Now()
 	color.Set(color.FgRed)
@@ -65,6 +70,11 @@ func PrintWhite(username string, message string) {
 func PrintGold(username string, message string) {
 	now := time.Now()
 	color.Set(color.FgHiYellow)
+	fmt.Println("["+now.Format("2006-01-02 15:04:05")+"]", username+":", message)
+}
+func PrintCyan(username string, message string){
+	now := time.Now()
+	color.Set(color.FgCyan)
 	fmt.Println("["+now.Format("2006-01-02 15:04:05")+"]", username+":", message)
 }
 func printInfo() {
@@ -494,7 +504,7 @@ func selectCards(cardSelection []spstruct.CardSelection, bossName string, userNa
 			userName, fmt.Sprintf("Auto selecting playing cards for desire boss: %s", bossName))
 		playingDeck, err := fetchBattleCards(bossName, userName, splinterlandAPIEndpoint, publicAPIEndpoint)
 		if err != nil {
-			PrintYellow(userName, "API Error, Fetch Battle cards failed.")
+			PrintPurple(userName, "API Error, Fetch Battle cards failed.")
 			return cardSelection, false, err
 		}
 		playingDeckBytes := []byte(playingDeck)
@@ -544,7 +554,7 @@ func selectCards(cardSelection []spstruct.CardSelection, bossName string, userNa
 			cardSelectionList = append(cardSelectionList, cardSelection)
 			return cardSelectionList, true, nil
 		} else {
-			PrintYellow(userName, "Auto selecting playing cards deck failed, you might have too less cards in the account, will continue play with your card setting.")
+			PrintPurple(userName, "Auto selecting playing cards deck failed, you might have too less cards in the account, will continue play with your card setting.")
 			return cardSelection, false, nil
 		}
 	} else {
@@ -1012,7 +1022,7 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 				if returnJsonResult == false && strings.Contains(netLog.Message, fmt.Sprintf("%s/boss/fight_boss", splinterforgeAPIEndpoint)) && strings.Contains(netLog.Message, "\"method\":\"Network.requestWillBeSent\"") {
 					json.Unmarshal([]byte(netLog.Message), &fitRes)
 					json.Unmarshal([]byte(fitRes.Message.Params.Request.PostData), &fitPostData)
-					PrintWhite(userName, "Battle was successful!")
+					PrintGreen(userName, "Battle was successful!")
 					returnJsonResult = true
 				}
 				if  showForgeReward == true && postJsonResult == false && strings.Contains(netLog.Message, fmt.Sprintf("%s/boss/fight_boss", splinterforgeAPIEndpoint)) && strings.Contains(netLog.Message, "\"method\":\"Network.responseReceived\""){
@@ -1022,7 +1032,7 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 					if err == nil {
 						json.Unmarshal([]byte(resString), &GetResponseBody)
 						json.Unmarshal([]byte(GetResponseBody.Value.Body), &GetRewardBody)
-						PrintYellow(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", strconv.Itoa(GetRewardBody.TotalDmg), strconv.Itoa(GetRewardBody.Points), GetRewardBody.Rewards[0].Qty, GetRewardBody.Rewards[1].Qty))
+						PrintCyan(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", strconv.Itoa(GetRewardBody.TotalDmg), strconv.Itoa(GetRewardBody.Points), GetRewardBody.Rewards[0].Qty, GetRewardBody.Rewards[1].Qty))
 						postJsonResult = true
 					}
 				}
@@ -1053,7 +1063,7 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 						electrumStr := parts[6]
 						forgium, _ := strconv.ParseFloat(forgiumStr, 64)
 						electrum, _ := strconv.ParseFloat(electrumStr, 64)
-						PrintYellow(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", resultdmg, resultpoints, forgium, electrum))
+						PrintCyan(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", resultdmg, resultpoints, forgium, electrum))
 						break
 					} else {
 						time.Sleep(5 * time.Second)
@@ -1098,11 +1108,11 @@ func accountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 						PrintRed(userName, "Cookies Error, Restarting...")
 						break
 					} else if strings.Contains(reFit.String(), "totalDmg") && strings.Contains(reFit.String(), "points") {
-						PrintWhite(userName, "Battle was successful!")
+						PrintGreen(userName, "Battle was successful!")
 						var fitReturnData = spstruct.FitReturnData{}
 						json.Unmarshal(reFit.Bytes(), &fitReturnData)
 						if showForgeReward {
-							PrintYellow(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", strconv.Itoa(fitReturnData.TotalDmg), strconv.Itoa(fitReturnData.Points), fitReturnData.Rewards[0].Qty, fitReturnData.Rewards[1].Qty))
+							PrintCyan(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", strconv.Itoa(fitReturnData.TotalDmg), strconv.Itoa(fitReturnData.Points), fitReturnData.Rewards[0].Qty, fitReturnData.Rewards[1].Qty))
 						}
 						time.Sleep(5 * time.Second)
 						if showAccountDetails {
