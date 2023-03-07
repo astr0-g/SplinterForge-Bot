@@ -189,9 +189,7 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 	Unexpected := false
 	name, _ := wd.ExecuteScript("return localStorage.getItem('forge:username');", nil)
 	key, _ := wd.ExecuteScript("return localStorage.getItem('forge:key');", nil)
-	bossName, bossIdToSelect, _ := GameFunc.SelectBoss(userName, bossId, wd)
-	GameFunc.SelectHero(heroesType, userName, wd, autoSelectHero, publicAPIEndpoint, bossName, splinterforgeAPIEndpoint)
-	GameFunc.SelectBoss(userName, bossIdToSelect, wd)
+	bossName, _, _ := GameFunc.SelectBoss(userName, bossId, wd)
 	cardSelection, _, _ = GameFunc.SelectCards(cardSelection, bossName, userName, splinterlandAPIEndpoint, publicAPIEndpoint, autoSelectCard)
 	seletedNumOfSummoners := 1
 	el, _ := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/button")
@@ -199,6 +197,7 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 	ColorPrint.PrintWhite(userName, "Participating in battles...")
 	printData := [][]string{}
 	selectResult := true
+	GameFunc.SelectHero(heroesType, userName, wd, autoSelectHero, publicAPIEndpoint, bossName, splinterforgeAPIEndpoint)
 	for _, selection := range cardSelection {
 		for i, playingSummoner := range selection.PlayingSummoners {
 			result := GameFunc.SelectSummoners(userName, seletedNumOfSummoners, playingSummoner.PlayingSummonersDiv, wd)

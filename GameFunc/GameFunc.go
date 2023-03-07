@@ -97,7 +97,6 @@ func SelectCards(cardSelection []SpStruct.CardSelection, bossName string, userNa
 }
 
 func SelectHero(heroesType string, userName string, wd selenium.WebDriver, auto_select_hero bool, publicAPIEndpoint string, bossName string, splinterforgeAPIEndpoint string) {
-	CheckPopUp(wd, 1000)
 	heroTypes := [3]string{"Warrior", "Wizard", "Ranger"}
 	if auto_select_hero {
 		hero_type, err := RequestFunc.FetchselectHero(publicAPIEndpoint, bossName, splinterforgeAPIEndpoint)
@@ -122,10 +121,8 @@ func SelectHero(heroesType string, userName string, wd selenium.WebDriver, auto_
 	}()
 	heroIndex, _ := strconv.Atoi(heroesType)
 	hero_type := heroTypes[heroIndex-1]
-	el, _ := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[1]/a[4]")
-	el.Click()
-	bossXpath := "/html/body/app/div[1]/splinterforge-heros/div[3]/section/div/div/div[2]/div[1]"
-	el, _ = wd.FindElement(selenium.ByXPATH, bossXpath)
+	bossXpath := "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/section/div"
+	el, _ := wd.FindElement(selenium.ByXPATH, bossXpath)
 	el.Click()
 	bossSelectXpath := fmt.Sprintf("%s/ul/li[%s]", bossXpath, heroesType)
 	el, _ = wd.FindElement(selenium.ByXPATH, bossSelectXpath)
@@ -157,10 +154,7 @@ func SelectBoss(userName string, bossIdToSelect string, wd selenium.WebDriver) (
 					ColorPrint.PrintRed(userName, "The selected boss has been defeated, selecting another one automatically...")
 
 					if bossIdToSelect < "17" {
-						bossIdInt, err := strconv.Atoi(bossIdToSelect)
-						if err != nil {
-
-						}
+						bossIdInt, _ := strconv.Atoi(bossIdToSelect)
 						bossIdInt++
 						bossIdToSelect = strconv.Itoa(bossIdInt)
 					} else {
@@ -181,19 +175,27 @@ func SelectSummoners(userName string, seletedNumOfSummoners int, cardDiv string,
 	for scroolTime < 5 && clickedTime < 5 {
 		el, err := wd.FindElement(selenium.ByXPATH, cardDiv)
 		if err != nil {
+			wd.ExecuteScript("window.scrollBy(0, 450)", nil)
+			scroolTime++
 			continue
 		} else {
-			el.Click()
-			time.Sleep(1 * time.Second)
-			checkCardDiv := fmt.Sprintf("/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/div[1]/div[2]/div[%s]", strconv.Itoa(seletedNumOfSummoners))
-			success, _ := DriverAction.DriverwaitForElement(wd, checkCardDiv)
-			if success {
-				result = true
-				break
+			err = el.Click()
+			if err == nil {
+				time.Sleep(1 * time.Second)
+				checkCardDiv := fmt.Sprintf("/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/div[1]/div[2]/div[%s]", strconv.Itoa(seletedNumOfSummoners))
+				success, _ := DriverAction.DriverwaitForElement(wd, checkCardDiv)
+				if success {
+					result = true
+					break
+				} else {
+					clickedTime++
+				}
 			} else {
-				clickedTime++
+				wd.ExecuteScript("window.scrollBy(0, 450)", nil)
 				scroolTime++
+				continue
 			}
+			
 		}
 
 	}
@@ -213,22 +215,28 @@ func SelectMonsters(userName string, seletedNumOfMonsters int, cardDiv string, w
 	clickedTime := 0
 	result := false
 	time.Sleep(1 * time.Second)
-	for scroolTime < 5 && clickedTime < 5 {
+	for scroolTime < 7 && clickedTime < 5 {
 		el, err := wd.FindElement(selenium.ByXPATH, cardDiv)
 		if err != nil {
 			wd.ExecuteScript("window.scrollBy(0, 450)", nil)
 			scroolTime++
 			continue
 		} else {
-			el.Click()
-			checkCardDiv := fmt.Sprintf("/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/div[2]/div[2]/div[%s]", strconv.Itoa(seletedNumOfMonsters))
-			success, _ := DriverAction.DriverwaitForElement(wd, checkCardDiv)
-			if success {
-				result = true
-				break
+			err = el.Click()
+			if err == nil {
+				checkCardDiv := fmt.Sprintf("/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/div[2]/div[2]/div[%s]", strconv.Itoa(seletedNumOfMonsters))
+				success, _ := DriverAction.DriverwaitForElement(wd, checkCardDiv)
+				if success {
+					result = true
+					break
+				} else {
+					clickedTime++
+					wd.ExecuteScript("window.scrollBy(0, 450)", nil)
+					continue
+				}
 			} else {
-				clickedTime++
 				wd.ExecuteScript("window.scrollBy(0, 450)", nil)
+				scroolTime++
 				continue
 			}
 		}
