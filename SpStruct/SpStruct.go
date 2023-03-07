@@ -1,4 +1,4 @@
-package spstruct
+package SpStruct
 
 import (
 	"sync"
@@ -352,7 +352,6 @@ type BattleCardsRequestBody struct {
 	BossId   string `json:"bossId"`
 	Team     []int  `json:"team"`
 }
-
 type TaskThreadList struct {
 	TaskList map[string]struct {
 		// 任务名称
@@ -364,12 +363,10 @@ type TaskThreadList struct {
 	}
 	Lock *sync.Mutex
 }
-
 type ThreadWaitList struct {
 	TaskName []string
 	Lock     *sync.Mutex
 }
-
 type GetResponseBody struct {
 	SessionID string `json:"sessionId"`
 	Status    int    `json:"status"`
@@ -378,7 +375,6 @@ type GetResponseBody struct {
 		Body          string `json:"body"`
 	} `json:"value"`
 }
-
 type CDPFitReturnData struct {
 	Date    int64         `json:"date"`
 	Player  string        `json:"player"`
@@ -398,9 +394,9 @@ type CDPFitReturnData struct {
 	TotalDmg int `json:"totalDmg"`
 	Points   int `json:"points"`
 	Rewards  []struct {
-		Type string `json:"type"`
-		Name string `json:"name"`
-		Qty  float64`json:"qty"`
+		Type string  `json:"type"`
+		Name string  `json:"name"`
+		Qty  float64 `json:"qty"`
 	} `json:"rewards"`
 	UniqueRules []string `json:"uniqueRules"`
 	Ppd         int      `json:"ppd"`
