@@ -76,7 +76,7 @@ https://github.com/Astr0-G/SplinterForge-Bot/releases/tag/v1.0.0
 # Contributor
 
 [![Follow me on twitter](https://img.shields.io/twitter/follow/lil_astr_0.svg?style=social)](https://twitter.com/lil_astr_0)
-[![Follow me on github](https://img.shields.io/badge/github-@Quinlivanner-black.svg?style=flat&&labelColor=d0374b)](https://github.com/Quinlivanner)
+[![Follow me on github](https://img.shields.io/badge/github-@Quinlivanner-d0374b.svg?style=flat&&labelColor=blue)](https://github.com/Quinlivanner)
 
 # Donation
 
