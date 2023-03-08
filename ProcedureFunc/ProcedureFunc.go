@@ -4,10 +4,6 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github.com/levigross/grequests"
-	"github.com/tebeka/selenium"
-	"github.com/tebeka/selenium/chrome"
-	"github.com/tebeka/selenium/log"
 	"io/ioutil"
 	"os"
 	"splinterforge/DriverAction"
@@ -17,6 +13,11 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/levigross/grequests"
+	"github.com/tebeka/selenium"
+	"github.com/tebeka/selenium/chrome"
+	"github.com/tebeka/selenium/log"
 
 	"splinterforge/ColorPrint"
 	"splinterforge/GameFunc"
@@ -253,11 +254,13 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 					var GetResponseBody = SpStruct.GetResponseBody{}
 					var GetRewardBody = SpStruct.CDPFitReturnData{}
 					resString, err := RequestFunc.GetReponseBody(wd.SessionID(), fitRes.Message.Params.RequestID, userName)
-					if err == nil {
+					if err == nil && resString != "" {
 						json.Unmarshal([]byte(resString), &GetResponseBody)
 						json.Unmarshal([]byte(GetResponseBody.Value.Body), &GetRewardBody)
-						ColorPrint.PrintCyan(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", strconv.Itoa(GetRewardBody.TotalDmg), strconv.Itoa(GetRewardBody.Points), GetRewardBody.Rewards[0].Qty, GetRewardBody.Rewards[1].Qty))
-						postJsonResult = true
+						if GetRewardBody.TotalDmg >= 0 && GetRewardBody.Points >= 0  && GetRewardBody.Rewards[0].Qty >= 0 && GetRewardBody.Rewards[1].Qty >= 0 {
+							ColorPrint.PrintCyan(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", strconv.Itoa(GetRewardBody.TotalDmg), strconv.Itoa(GetRewardBody.Points), GetRewardBody.Rewards[0].Qty, GetRewardBody.Rewards[1].Qty))
+							postJsonResult = true
+						}
 					}
 				}
 			}
