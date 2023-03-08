@@ -124,7 +124,7 @@ func AccountLogin(userName string, postingKey string, wd selenium.WebDriver) boo
 			println("can not change size")
 		}
 		DriverAction.DriverGet("https://splinterforge.io/#/", wd)
-
+		GameFunc.CheckPopUp(wd, 1000)
 		el, err = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/success-modal/section/div[1]/div[4]/div/button")
 		if err != nil {
 			ColorPrint.PrintRed(userName, "Login Error!")
@@ -143,12 +143,13 @@ func AccountLogin(userName string, postingKey string, wd selenium.WebDriver) boo
 			return false
 		}
 		el.SendKeys(userName)
-		el, err = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/login-modal/div/div/div/div[2]/div[3]/button")
+		ellogin, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/login-modal/div/div/div/div[2]/div[3]/button")
 		if err != nil {
 			ColorPrint.PrintRed(userName, "Login Error!")
 			return false
 		}
-		el.Click()
+		ellogin.Click()
+		CheckloginButton(wd)
 		for {
 			handles, _ := wd.WindowHandles()
 			if len(handles) == 2 {
@@ -166,6 +167,18 @@ func AccountLogin(userName string, postingKey string, wd selenium.WebDriver) boo
 		ColorPrint.PrintGreen(userName, "Login successful!")
 		return true
 	}
+}
+
+func CheckloginButton(wd selenium.WebDriver){
+	defer func() {
+		if r := recover(); r != nil {
+		}
+	}()
+	wd.SetImplicitWaitTimeout(1 * time.Second)
+	el, _ := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/login-modal/div/div/div/div[2]/div[3]/div/input")
+	el.Click()
+	ellogin, _ := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/login-modal/div/div/div/div[2]/div[3]/button")
+	ellogin.Click()
 }
 
 func Checklogin(userName string, wd selenium.WebDriver) bool {
@@ -312,12 +325,13 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 		ColorPrint.PrintGold(userName, "Successful generated Cookies, the account will continue play with this setup.")
 		wd.Close()
 		s.Add(1)
+		enoughMana := true
 		go func() {
 			for {
-				if autoSelectSleepTime {
+				if autoSelectSleepTime == true && enoughMana == true{
 					ColorPrint.PrintWhite(userName, fmt.Sprintf("this account will enter a state of inactivity for %s minutes based on auto selected info.", mana))
 					time.Sleep(time.Duration(manaused) * time.Minute)
-				} else {
+				} else if autoSelectSleepTime == false && enoughMana == true {
 					ColorPrint.PrintWhite(userName, fmt.Sprintf("According to your configuration, this account will enter a state of inactivity for %s minutes.", strconv.Itoa(timeSleepInMinute)))
 					time.Sleep(time.Duration(timeSleepInMinute) * time.Minute)
 				}
@@ -334,6 +348,7 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 					if strings.Contains(reFit.String(), "not enough mana!") {
 						ColorPrint.PrintYellow(userName, "Insufficient stamina, entering a rest state of inactivity for 1 hour...")
 						time.Sleep(1 * time.Hour)
+						enoughMana = false
 						continue
 					} else if strings.Contains(reFit.String(), "decoded message was invalid") {
 						CookiesStatus = false
@@ -350,6 +365,7 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 						if showAccountDetails {
 							LogFunc.PrintAccountDetails(userName, name, key, splinterforgeAPIEndpoint)
 						}
+						enoughMana = true
 						continue
 					} else {
 						Unexpected = true
