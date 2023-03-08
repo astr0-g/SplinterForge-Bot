@@ -80,12 +80,6 @@ https://github.com/Astr0-G/SplinterForge-Bot/releases/tag/v1.0.0
 
 # Donation
 
-**HIVE Wallet:**
-
-```sh
-astrog
-```
-
-Donating to an open source project on GitHub is a great way to show appreciation for the hard work and effort put into the development of a tool. If you've benefited from using this free, open source bot, consider making a donation to its creator on GitHub. Your generosity will help support the continued development and maintenance of the project, enabling the creator to invest time and resources into making the bot even better. Your donation will not only help the project, but also contribute to the open source community as a whole. By giving back, you can help ensure that the bot remains available and accessible to everyone, now and in the future.
+1 `star` ⭐ == 1 `thank you` 🙏
 
 <!-- markdownlint-enable -->
