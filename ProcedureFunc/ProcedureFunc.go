@@ -227,8 +227,8 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 	if CurrentStamina > manaused && manaused >= 15 {
 		LogFunc.PrintResultBox(userName, printData, selectResult)
 		battletimestamp := time.Now().Unix()
-		if battletimestamp-starttimestamp < 30 {
-			time.Sleep(time.Duration(starttimestamp) + 30 - time.Duration(time.Now().Unix())*time.Second)
+		if battletimestamp - starttimestamp < 30 {
+			time.Sleep(time.Duration(starttimestamp + 30 - battletimestamp) *time.Second)
 		}
 		returnJsonResult := false
 		postJsonResult := !showForgeReward
@@ -274,6 +274,7 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 				continue
 			}
 		}
+		checkTime := 0 
 		if postJsonResult == false && showForgeReward == true {
 			err := DriverAction.DriverElementWaitAndClick(wd, "/html/body/app/div[1]/slcards/div[4]/div[2]/button[2]")
 			if err == nil {
@@ -292,8 +293,12 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 						electrum, _ := strconv.ParseFloat(electrumStr, 64)
 						ColorPrint.PrintCyan(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", resultdmg, resultpoints, forgium, electrum))
 						break
-					} else {
+					} else if checkTime > 5 {
+						ColorPrint.PrintRed(userName, "Encountering difficulty in reading the game results, but the battle has ended.")
+						break
+					} else{
 						time.Sleep(5 * time.Second)
+						checkTime ++
 						continue
 					}
 				}
