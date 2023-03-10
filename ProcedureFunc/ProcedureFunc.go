@@ -148,8 +148,8 @@ func AccountLogin(userName string, postingKey string, wd selenium.WebDriver) boo
 			ColorPrint.PrintRed(userName, "Login Error!")
 			return false
 		}
-		ellogin.Click()
 		CheckloginButton(wd)
+		ellogin.Click()
 		for {
 			handles, _ := wd.WindowHandles()
 			if len(handles) == 2 {
@@ -177,8 +177,8 @@ func CheckloginButton(wd selenium.WebDriver){
 	wd.SetImplicitWaitTimeout(1 * time.Second)
 	el, _ := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/login-modal/div/div/div/div[2]/div[3]/div/input")
 	el.Click()
-	ellogin, _ := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/login-modal/div/div/div/div[2]/div[3]/button")
-	ellogin.Click()
+	// ellogin, _ := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/login-modal/div/div/div/div[2]/div[3]/button")
+	// ellogin.Click()
 }
 
 func Checklogin(userName string, wd selenium.WebDriver) bool {
