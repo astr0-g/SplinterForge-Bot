@@ -100,7 +100,7 @@ func AccountLogin(userName string, postingKey string, wd selenium.WebDriver) boo
 		return false
 	}
 	time.Sleep(2 * time.Second)
-	err = el.SendKeys("\ue007")
+	err = el.SendKeys(selenium.ReturnKey)
 	if err != nil {
 		ColorPrint.PrintRed(userName, "Login Error!")
 		return false
