@@ -4,6 +4,7 @@ import (
 	_ "embed"
 	"fmt"
 	"os"
+	"runtime"
 	"splinterforge/ColorPrint"
 	"splinterforge/LogFunc"
 	"splinterforge/ProcedureFunc"
@@ -19,19 +20,46 @@ import (
 )
 
 var (
-	accountLists                                                                                                                                                                             = []SpStruct.UserData{}
-	r                                                                                                                                                                                        = &sync.WaitGroup{}
-	w                                                                                                                                                                                        = &sync.WaitGroup{}
-	s                                                                                                                                                                                        = &sync.WaitGroup{}
-	headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint = ReadFunc.GetConfig("config/config.txt")
+	accountLists = []SpStruct.UserData{}
+	r            = &sync.WaitGroup{}
+	w            = &sync.WaitGroup{}
+	s            = &sync.WaitGroup{}
+	//headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint = ReadFunc.GetConfig("./config/config.txt")
+	headless                 = false
+	threadingLimit           = 0
+	showForgeReward          = false
+	showAccountDetails       = false
+	autoSelectCard           = false
+	autoSelectHero           = false
+	autoSelectSleepTime      = false
+	splinterforgeAPIEndpoint = ""
+	splinterlandAPIEndpoint  = ""
+	publicAPIEndpoint        = ""
+
+	ConfigAccountsPath    = ""
+	ConfigCardSettingPath = ""
 )
 
+//检测操作系统，以区分读取文件路径
+func init() {
+	PcPlatForm := runtime.GOOS
+	if PcPlatForm == "windows" {
+		headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint = ReadFunc.GetConfig("config/config.txt")
+		ConfigAccountsPath = "config/accounts.txt"
+		ConfigCardSettingPath = "config/cardSettings.txt"
+	} else if PcPlatForm == "darwin" {
+		headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint = ReadFunc.GetConfig("./config/config.txt")
+		ConfigAccountsPath = "./config/accounts.txt"
+		ConfigCardSettingPath = "./config/cardSettings.txt"
+	}
+}
+
 func initializeAccount(accountNo int) (string, string, string, string, []SpStruct.CardSelection, int) {
-	userName, postingKey, err := ReadFunc.GetAccountData("config/accounts.txt", accountNo)
+	userName, postingKey, err := ReadFunc.GetAccountData(ConfigAccountsPath, accountNo)
 	if err != nil || userName == "" || postingKey == "" {
 		ColorPrint.PrintRed("ERROR", "Error in loading accounts.txt, please add username or posting key and try again.")
 	}
-	heroesType, bossId, playingSummoners, playingMonster, timeSleepInMinute, err := ReadFunc.GetCardSettingData("config/cardSettings.txt", accountNo)
+	heroesType, bossId, playingSummoners, playingMonster, timeSleepInMinute, err := ReadFunc.GetCardSettingData(ConfigCardSettingPath, accountNo)
 	if heroesType == "" || bossId == "" {
 		fmt.Println("")
 		ColorPrint.PrintRed("SF", fmt.Sprintf("Error loading cardSettings.txt file for account %s", strconv.Itoa(accountNo)))
@@ -102,7 +130,7 @@ func initializeUserData() {
 	spinner, _ = yacspin.New(cfg)
 	spinner.Start()
 	spinner.Message("reading accounts.txt...")
-	lineCount, errCountLines := ReadFunc.GetLines("config/accounts.txt")
+	lineCount, errCountLines := ReadFunc.GetLines(ConfigAccountsPath)
 	time.Sleep(500 * time.Millisecond)
 	if errCountLines == nil && lineCount > 1 {
 		spinner.Message("reading cardSettings.txt...")
@@ -123,7 +151,7 @@ func initializeUserData() {
 			}(i)
 		}
 		r.Wait()
-		spinner.Message("reading config.txt...")
+		spinner.Message("rea.ding config.txt..")
 		time.Sleep(500 * time.Millisecond)
 		spinner.Stop()
 		LogFunc.PrintConfigSettings(lineCount-1, headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime)

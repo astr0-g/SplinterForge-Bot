@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/levigross/grequests"
 	"os"
+	"runtime"
 	"splinterforge/ColorPrint"
 	"splinterforge/SpStruct"
 	"strconv"
@@ -13,8 +14,22 @@ import (
 	"time"
 )
 
+var (
+	PcPlatForm = runtime.GOOS
+
+	DataCardMappingPath = ""
+)
+
+func init() {
+	if PcPlatForm == "windows" {
+		DataCardMappingPath = "data/cardMapping.json"
+	} else if PcPlatForm == "darwin" {
+		DataCardMappingPath = "./data/cardMapping.json"
+	}
+}
+
 func GetCardName(cardId string) (string, error) {
-	file, err := os.Open("data/cardMapping.json")
+	file, err := os.Open(DataCardMappingPath)
 	if err != nil {
 		return "", fmt.Errorf("error opening JSON file: %w", err)
 	}
