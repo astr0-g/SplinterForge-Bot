@@ -165,7 +165,7 @@ func initializeUserData() {
 			}(i)
 		}
 		r.Wait()
-		spinner.Message("rea.ding config.txt..")
+		spinner.Message("reading config.txt..")
 		time.Sleep(500 * time.Millisecond)
 		spinner.Stop()
 		LogFunc.PrintConfigSettings(lineCount-1, headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime)
