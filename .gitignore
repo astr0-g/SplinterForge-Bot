@@ -16,3 +16,4 @@ splinterforge.exe
 rsrc_windows_amd64.syso
 rsrc -manifest manifest.xml -ico ICO/dual_gold_new.ico
 /Splinterforge -MAC Version
+/Splinterforge
