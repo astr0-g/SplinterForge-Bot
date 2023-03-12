@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"runtime"
 	"splinterforge/DriverAction"
 	"splinterforge/LogFunc"
 	"splinterforge/SpStruct"
@@ -24,6 +25,31 @@ import (
 	"splinterforge/ReadFunc"
 	"splinterforge/RequestFunc"
 )
+
+var (
+	PcPlatForm    = runtime.GOOS
+	ExtensionPath = ""
+	RealPath      = ""
+)
+
+func init() {
+	if PcPlatForm == "windows" {
+		ExtensionPath = "data/hivekeychain.crx"
+	} else if PcPlatForm == "darwin" {
+		//获取当前文件夹
+		path, err := os.Executable()
+		if err != nil {
+			panic(err)
+		}
+		if strings.Contains(path, "private") || strings.Contains(path, "___go_build") || strings.Contains(path, "folders/") {
+			RealPath, _ = os.Getwd()
+		} else {
+			RealPathLists := strings.Split(path, "/")
+			RealPath = strings.Join(RealPathLists[:len(RealPathLists)-1], "/")
+		}
+		ExtensionPath = RealPath + "/data/hivekeychain.crx"
+	}
+}
 
 func AccountLogin(userName string, postingKey string, wd selenium.WebDriver) bool {
 	err := wd.SetImplicitWaitTimeout(5 * time.Second)
@@ -169,7 +195,7 @@ func AccountLogin(userName string, postingKey string, wd selenium.WebDriver) boo
 	}
 }
 
-func CheckloginButton(wd selenium.WebDriver){
+func CheckloginButton(wd selenium.WebDriver) {
 	defer func() {
 		if r := recover(); r != nil {
 		}
@@ -240,8 +266,8 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 	if CurrentStamina > manaused && manaused >= 15 {
 		LogFunc.PrintResultBox(userName, printData, selectResult)
 		battletimestamp := time.Now().Unix()
-		if battletimestamp - starttimestamp < 30 {
-			time.Sleep(time.Duration(starttimestamp + 30 - battletimestamp) *time.Second)
+		if battletimestamp-starttimestamp < 30 {
+			time.Sleep(time.Duration(starttimestamp+30-battletimestamp) * time.Second)
 		}
 		returnJsonResult := false
 		postJsonResult := !showForgeReward
@@ -270,7 +296,7 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 					if err == nil && resString != "" {
 						json.Unmarshal([]byte(resString), &GetResponseBody)
 						json.Unmarshal([]byte(GetResponseBody.Value.Body), &GetRewardBody)
-						if GetRewardBody.TotalDmg >= 0 && GetRewardBody.Points >= 0  && GetRewardBody.Rewards[0].Qty >= 0 && GetRewardBody.Rewards[1].Qty >= 0 {
+						if GetRewardBody.TotalDmg >= 0 && GetRewardBody.Points >= 0 && GetRewardBody.Rewards[0].Qty >= 0 && GetRewardBody.Rewards[1].Qty >= 0 {
 							ColorPrint.PrintCyan(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", strconv.Itoa(GetRewardBody.TotalDmg), strconv.Itoa(GetRewardBody.Points), GetRewardBody.Rewards[0].Qty, GetRewardBody.Rewards[1].Qty))
 							postJsonResult = true
 						}
@@ -287,7 +313,7 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 				continue
 			}
 		}
-		checkTime := 0 
+		checkTime := 0
 		if postJsonResult == false && showForgeReward == true {
 			err := DriverAction.DriverElementWaitAndClick(wd, "/html/body/app/div[1]/slcards/div[4]/div[2]/button[2]")
 			if err == nil {
@@ -309,9 +335,9 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 					} else if checkTime > 5 {
 						ColorPrint.PrintRed(userName, "Encountering difficulty in reading the game results, but the battle has ended.")
 						break
-					} else{
+					} else {
 						time.Sleep(5 * time.Second)
-						checkTime ++
+						checkTime++
 						continue
 					}
 				}
@@ -328,7 +354,7 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 		enoughMana := true
 		go func() {
 			for {
-				if autoSelectSleepTime == true && enoughMana == true{
+				if autoSelectSleepTime == true && enoughMana == true {
 					ColorPrint.PrintWhite(userName, fmt.Sprintf("this account will enter a state of inactivity for %s minutes based on auto selected info.", mana))
 					time.Sleep(time.Duration(manaused) * time.Minute)
 				} else if autoSelectSleepTime == false && enoughMana == true {
@@ -406,7 +432,7 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 
 func InitializeDriver(wait bool, userData SpStruct.UserData, headless bool, showForgeReward bool, showAccountDetails bool, autoSelectCard bool, autoSelectHero bool, autoSelectSleepTime bool, splinterforgeAPIEndpoint string, splinterlandAPIEndpoint string, publicAPIEndpoint string, accountLists []SpStruct.UserData, s *sync.WaitGroup, w *sync.WaitGroup) {
 	ColorPrint.PrintWhite(userData.UserName, "Initializing...")
-	extensionData, err := ioutil.ReadFile("data/hivekeychain.crx")
+	extensionData, err := ioutil.ReadFile(ExtensionPath)
 	if err != nil {
 		println((1))
 	}
