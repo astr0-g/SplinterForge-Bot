@@ -18,13 +18,25 @@ var (
 	PcPlatForm = runtime.GOOS
 
 	DataCardMappingPath = ""
+	RealPath            = ""
 )
 
 func init() {
 	if PcPlatForm == "windows" {
 		DataCardMappingPath = "data/cardMapping.json"
 	} else if PcPlatForm == "darwin" {
-		DataCardMappingPath = "./data/cardMapping.json"
+		//获取当前文件夹
+		path, err := os.Executable()
+		if err != nil {
+			panic(err)
+		}
+		if strings.Contains(path, "private") || strings.Contains(path, "___go_build") || strings.Contains(path, "folders/") {
+			RealPath, _ = os.Getwd()
+		} else {
+			RealPathLists := strings.Split(path, "/")
+			RealPath = strings.Join(RealPathLists[:len(RealPathLists)-1], "/")
+		}
+		DataCardMappingPath = RealPath + "/data/cardMapping.json"
 	}
 }
 

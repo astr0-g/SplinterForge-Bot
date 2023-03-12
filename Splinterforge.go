@@ -11,6 +11,7 @@ import (
 	"splinterforge/ReadFunc"
 	"splinterforge/SpStruct"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -35,6 +36,7 @@ var (
 	splinterforgeAPIEndpoint = ""
 	splinterlandAPIEndpoint  = ""
 	publicAPIEndpoint        = ""
+	RealPath                 = ""
 
 	ConfigAccountsPath    = ""
 	ConfigCardSettingPath = ""
@@ -44,13 +46,25 @@ var (
 func init() {
 	PcPlatForm := runtime.GOOS
 	if PcPlatForm == "windows" {
-		headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint = ReadFunc.GetConfig("config/config.txt")
 		ConfigAccountsPath = "config/accounts.txt"
 		ConfigCardSettingPath = "config/cardSettings.txt"
+		headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint = ReadFunc.GetConfig("config/config.txt")
 	} else if PcPlatForm == "darwin" {
-		headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint = ReadFunc.GetConfig("./config/config.txt")
-		ConfigAccountsPath = "./config/accounts.txt"
-		ConfigCardSettingPath = "./config/cardSettings.txt"
+		//获取当前文件夹
+		path, err := os.Executable()
+		if err != nil {
+			panic(err)
+		}
+		if strings.Contains(path, "private") || strings.Contains(path, "___go_build") || strings.Contains(path, "folders/") {
+			RealPath, _ = os.Getwd()
+		} else {
+			RealPathLists := strings.Split(path, "/")
+			RealPath = strings.Join(RealPathLists[:len(RealPathLists)-1], "/")
+		}
+		ConfigAccountsPath = RealPath + "/config/accounts.txt"
+		ConfigCardSettingPath = RealPath + "/config/cardSettings.txt"
+		headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint = ReadFunc.GetConfig(RealPath + "/config/config.txt")
+
 	}
 }
 
@@ -177,4 +191,5 @@ func initializeUserData() {
 }
 func main() {
 	initializeUserData()
+
 }

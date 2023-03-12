@@ -1104,7 +1104,7 @@
   { "helios matriarch": "552" },
   { "552": "helios matriarch" },
   { "astral entity": "553" },
-  { "553": "astral entity" },
-  { "lily shieldpaw": "554" },
-  { "554": "lily shieldpaw" }
+  {
+    "553": "astral entity"
+  }
 ]
