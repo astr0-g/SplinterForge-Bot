@@ -328,15 +328,23 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 						parts := strings.Split(resultsstring, " ")
 						forgiumStr := parts[3]
 						electrumStr := parts[6]
-						forgium, _ := strconv.ParseFloat(forgiumStr, 64)
-						electrum, _ := strconv.ParseFloat(electrumStr, 64)
+						forgium, err := strconv.ParseFloat(forgiumStr, 64)
+						if err != nil {
+							ColorPrint.PrintRed(userName, "Encountering difficulty in reading the game results, but the battle has ended.")
+							break
+						}
+						electrum, err := strconv.ParseFloat(electrumStr, 64)
+						if err != nil {
+							ColorPrint.PrintRed(userName, "Encountering difficulty in reading the game results, but the battle has ended.")
+							break
+						}
 						ColorPrint.PrintCyan(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", resultdmg, resultpoints, forgium, electrum))
 						break
 					} else if checkTime > 5 {
 						ColorPrint.PrintRed(userName, "Encountering difficulty in reading the game results, but the battle has ended.")
 						break
 					} else {
-						time.Sleep(5 * time.Second)
+						time.Sleep(2 * time.Second)
 						checkTime++
 						continue
 					}
