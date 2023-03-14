@@ -40,6 +40,11 @@
 
 **SplinterForge Bot** is a free and open-source solution for playing SplinterForge on multiple accounts at once, utilizing Selenium technology. You can either clone the repository or download it from the releases page. Please note that this bot currently only supports the Windows operating system. For python verision of this bot, you can check out: https://github.com/Astr0-G/SplinterForge-Bot/tree/Python
 
+## Tutorials
+
+**Install and run SplinterForge Bot on Windows**    
+https://youtu.be/GwWSIbeLuoA
+
 ## Roadmap
 
 The goal of the SplinterForge Bot is to provide a lightweight and self-sufficient solution to aid players in their gameplay experience.
