@@ -168,14 +168,15 @@ func SelectBoss(userName string, bossIdToSelect string, wd selenium.WebDriver) (
 }
 
 func SelectSummoners(userName string, seletedNumOfSummoners int, cardDiv string, wd selenium.WebDriver) bool {
+	wd.SetImplicitWaitTimeout(200 * time.Millisecond)
 	scroolTime := 0
 	clickedTime := 0
 	result := false
 	time.Sleep(1 * time.Second)
-	for scroolTime < 5 && clickedTime < 5 {
+	for scroolTime < 10 && clickedTime < 5 {
 		el, err := wd.FindElement(selenium.ByXPATH, cardDiv)
 		if err != nil {
-			wd.ExecuteScript("window.scrollBy(0, 450)", nil)
+			wd.ExecuteScript("window.scrollBy(0, 100)", nil)
 			scroolTime++
 			continue
 		} else {
@@ -191,7 +192,7 @@ func SelectSummoners(userName string, seletedNumOfSummoners int, cardDiv string,
 					clickedTime++
 				}
 			} else {
-				wd.ExecuteScript("window.scrollBy(0, 450)", nil)
+				wd.ExecuteScript("window.scrollBy(0, 100)", nil)
 				scroolTime++
 				continue
 			}
@@ -211,14 +212,15 @@ func SelectSummoners(userName string, seletedNumOfSummoners int, cardDiv string,
 }
 
 func SelectMonsters(userName string, seletedNumOfMonsters int, cardDiv string, wd selenium.WebDriver) bool {
+	wd.SetImplicitWaitTimeout(200 * time.Millisecond)
 	scroolTime := 0
 	clickedTime := 0
 	result := false
 	time.Sleep(1 * time.Second)
-	for scroolTime < 10 && clickedTime < 5 {
+	for scroolTime < 20 && clickedTime < 5 {
 		el, err := wd.FindElement(selenium.ByXPATH, cardDiv)
 		if err != nil {
-			wd.ExecuteScript("window.scrollBy(0, 450)", nil)
+			wd.ExecuteScript("window.scrollBy(0, 100)", nil)
 			scroolTime++
 			continue
 		} else {
@@ -231,11 +233,11 @@ func SelectMonsters(userName string, seletedNumOfMonsters int, cardDiv string, w
 					break
 				} else {
 					clickedTime++
-					wd.ExecuteScript("window.scrollBy(0, 450)", nil)
+					wd.ExecuteScript("window.scrollBy(0, 100)", nil)
 					continue
 				}
 			} else {
-				wd.ExecuteScript("window.scrollBy(0, 450)", nil)
+				wd.ExecuteScript("window.scrollBy(0, 100)", nil)
 				scroolTime++
 				continue
 			}
