@@ -217,7 +217,7 @@ func SelectMonsters(userName string, seletedNumOfMonsters int, cardDiv string, w
 	clickedTime := 0
 	result := false
 	time.Sleep(1 * time.Second)
-	for scroolTime < 20 && clickedTime < 5 {
+	for scroolTime < 30 && clickedTime < 5 {
 		el, err := wd.FindElement(selenium.ByXPATH, cardDiv)
 		if err != nil {
 			wd.ExecuteScript("window.scrollBy(0, 100)", nil)
