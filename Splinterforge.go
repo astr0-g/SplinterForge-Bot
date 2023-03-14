@@ -42,7 +42,6 @@ var (
 	ConfigCardSettingPath = ""
 )
 
-//检测操作系统，以区分读取文件路径
 func init() {
 	PcPlatForm := runtime.GOOS
 	if PcPlatForm == "windows" {
