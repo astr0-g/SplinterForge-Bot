@@ -290,6 +290,11 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 					returnJsonResult = true
 				}
 				if showForgeReward == true && postJsonResult == false && strings.Contains(netLog.Message, fmt.Sprintf("%s/boss/fight_boss", splinterforgeAPIEndpoint)) && strings.Contains(netLog.Message, "\"method\":\"Network.responseReceived\"") {
+					defer func() {
+						if r := recover(); r != nil {
+							ColorPrint.PrintRed(userName, "Encountering difficulty in reading the game results, but the battle has ended.")
+						}
+					}()
 					var GetResponseBody = SpStruct.GetResponseBody{}
 					var GetRewardBody = SpStruct.CDPFitReturnData{}
 					resString, err := RequestFunc.GetReponseBody(wd.SessionID(), fitRes.Message.Params.RequestID, userName)
