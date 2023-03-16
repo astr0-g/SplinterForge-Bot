@@ -44,6 +44,9 @@
 
 **Install and run SplinterForge Bot on Windows**    
 https://youtu.be/GwWSIbeLuoA
+   
+**Install and run SplinterForge Bot on Mac Os**    
+https://youtu.be/7IcS_jCY9ZA
 
 ## Roadmap
 
