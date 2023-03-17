@@ -279,44 +279,44 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 			if err == nil {
 				el.Click()
 			} else {
-				continue
-			}
-			netLogs, _ := wd.Log("performance")
-			for _, netLog := range netLogs {
-				if returnJsonResult == false && strings.Contains(netLog.Message, fmt.Sprintf("%s/boss/fight_boss", splinterforgeAPIEndpoint)) && strings.Contains(netLog.Message, "\"method\":\"Network.requestWillBeSent\"") {
-					json.Unmarshal([]byte(netLog.Message), &fitRes)
-					json.Unmarshal([]byte(fitRes.Message.Params.Request.PostData), &fitPostData)
-					ColorPrint.PrintGreen(userName, "Battle was successful!")
-					returnJsonResult = true
-				}
-				if showForgeReward == true && postJsonResult == false && strings.Contains(netLog.Message, fmt.Sprintf("%s/boss/fight_boss", splinterforgeAPIEndpoint)) && strings.Contains(netLog.Message, "\"method\":\"Network.responseReceived\"") {
-					defer func() {
-						if r := recover(); r != nil {
-							ColorPrint.PrintRed(userName, "Encountering difficulty in reading the game results, but the battle has ended.")
-						}
-					}()
-					var GetResponseBody = SpStruct.GetResponseBody{}
-					var GetRewardBody = SpStruct.CDPFitReturnData{}
-					resString, err := RequestFunc.GetReponseBody(wd.SessionID(), fitRes.Message.Params.RequestID, userName)
-					if err == nil && resString != "" {
-						json.Unmarshal([]byte(resString), &GetResponseBody)
-						json.Unmarshal([]byte(GetResponseBody.Value.Body), &GetRewardBody)
-						if GetRewardBody.TotalDmg >= 0 && GetRewardBody.Points >= 0 && GetRewardBody.Rewards[0].Qty >= 0 && GetRewardBody.Rewards[1].Qty >= 0 {
-							ColorPrint.PrintCyan(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", strconv.Itoa(GetRewardBody.TotalDmg), strconv.Itoa(GetRewardBody.Points), GetRewardBody.Rewards[0].Qty, GetRewardBody.Rewards[1].Qty))
-							postJsonResult = true
+				netLogs, _ := wd.Log("performance")
+				for _, netLog := range netLogs {
+					if returnJsonResult == false && strings.Contains(netLog.Message, fmt.Sprintf("%s/boss/fight_boss", splinterforgeAPIEndpoint)) && strings.Contains(netLog.Message, "\"method\":\"Network.requestWillBeSent\"") {
+						json.Unmarshal([]byte(netLog.Message), &fitRes)
+						json.Unmarshal([]byte(fitRes.Message.Params.Request.PostData), &fitPostData)
+						ColorPrint.PrintGreen(userName, "Battle was successful!")
+						returnJsonResult = true
+					}
+					if showForgeReward == true && postJsonResult == false && strings.Contains(netLog.Message, fmt.Sprintf("%s/boss/fight_boss", splinterforgeAPIEndpoint)) && strings.Contains(netLog.Message, "\"method\":\"Network.responseReceived\"") {
+						defer func() {
+							if r := recover(); r != nil {
+								ColorPrint.PrintRed(userName, "Encountering difficulty in reading the game results, but the battle has ended.")
+							}
+						}()
+						var GetResponseBody = SpStruct.GetResponseBody{}
+						var GetRewardBody = SpStruct.CDPFitReturnData{}
+						resString, err := RequestFunc.GetReponseBody(wd.SessionID(), fitRes.Message.Params.RequestID, userName)
+						if err == nil && resString != "" {
+							json.Unmarshal([]byte(resString), &GetResponseBody)
+							json.Unmarshal([]byte(GetResponseBody.Value.Body), &GetRewardBody)
+							if GetRewardBody.TotalDmg >= 0 && GetRewardBody.Points >= 0 && GetRewardBody.Rewards[0].Qty >= 0 && GetRewardBody.Rewards[1].Qty >= 0 {
+								ColorPrint.PrintCyan(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", strconv.Itoa(GetRewardBody.TotalDmg), strconv.Itoa(GetRewardBody.Points), GetRewardBody.Rewards[0].Qty, GetRewardBody.Rewards[1].Qty))
+								postJsonResult = true
+							}
 						}
 					}
 				}
+				if returnJsonResult == true && postJsonResult == true {
+					break
+				} else if fetchTime >= 5 {
+					break
+				} else {
+					time.Sleep(1 * time.Second)
+					fetchTime++
+					continue
+				}
 			}
-			if returnJsonResult == true && postJsonResult == true {
-				break
-			} else if fetchTime >= 5 {
-				break
-			} else {
-				time.Sleep(1 * time.Second)
-				fetchTime++
-				continue
-			}
+			
 		}
 		checkTime := 0
 		if postJsonResult == false && showForgeReward == true {
