@@ -146,5 +146,7 @@ func initializeUserData() {
 	}
 }
 func main() {
+
 	initializeUserData()
+
 }
