@@ -212,12 +212,12 @@ func SelectSummoners(userName string, seletedNumOfSummoners int, cardDiv string,
 }
 
 func SelectMonsters(userName string, seletedNumOfMonsters int, cardDiv string, wd selenium.WebDriver) bool {
-	wd.SetImplicitWaitTimeout(200 * time.Millisecond)
+	wd.SetImplicitWaitTimeout(150 * time.Millisecond)
 	scroolTime := 0
 	clickedTime := 0
 	result := false
 	time.Sleep(1 * time.Second)
-	for scroolTime < 30 && clickedTime < 5 {
+	for scroolTime < 40 && clickedTime < 5 {
 		el, err := wd.FindElement(selenium.ByXPATH, cardDiv)
 		if err != nil {
 			wd.ExecuteScript("window.scrollBy(0, 100)", nil)
@@ -250,7 +250,7 @@ func SelectMonsters(userName string, seletedNumOfMonsters int, cardDiv string, w
 	if !result {
 		ColorPrint.PrintRed(userName, "Error in selecting Monsters, skipped...")
 	}
-	wd.ExecuteScript("window.scrollBy(0, -4000)", nil)
+	wd.ExecuteScript("window.scrollBy(0, -10000)", nil)
 	time.Sleep(1 * time.Second)
 	return result
 }
