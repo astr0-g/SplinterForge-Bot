@@ -3,8 +3,8 @@ package RequestFunc
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
-	"github.com/levigross/grequests"
 	"io/ioutil"
 	"log"
 	"mime/multipart"
@@ -12,20 +12,21 @@ import (
 	"splinterforge/SpStruct"
 	"strings"
 	"time"
+
+	"github.com/levigross/grequests"
 )
 
-func FetchselectHero(publicAPIEndpoint string, bossName string, splinterforgeAPIEndpoint string) (string, error) {
-	bossID := FetchBossID(bossName, splinterforgeAPIEndpoint)
-
+func FetchselectHero(randomAbilities []string, userName string,userKey string, publicAPIEndpoint string, bossName string, splinterforgeAPIEndpoint string) (string, error) {
+	bossID, _, abilities,_ := FetchBossID(bossName, splinterforgeAPIEndpoint)
+	fullAbilities := append(abilities, randomAbilities...)
 	requestBody := map[string]interface{}{
 		"bossId": bossID,
+		"myList": fullAbilities,
 	}
-
 	requestBodyBytes, err := json.Marshal(requestBody)
 	if err != nil {
 		return "", err
 	}
-
 	endpoint := fmt.Sprintf("%s/heroselection", publicAPIEndpoint)
 	req, err := http.NewRequest("POST", endpoint, bytes.NewReader(requestBodyBytes))
 	if err != nil {
@@ -41,17 +42,100 @@ func FetchselectHero(publicAPIEndpoint string, bossName string, splinterforgeAPI
 	defer resp.Body.Close()
 
 	var responseData map[string]interface{}
-	decoder := json.NewDecoder(resp.Body)
-	err = decoder.Decode(&responseData)
+    decoder := json.NewDecoder(resp.Body)
+    err = decoder.Decode(&responseData)
+    if err != nil {
+        return "", err
+    }
+
+    if heroType, ok := responseData["heroType"].(string); ok {
+        heroTypeToChoose := strings.Split(heroType, " ")[0]
+        return heroTypeToChoose, nil
+    }
+
+    return "", fmt.Errorf("heroType not found in response data")
+}
+
+func FetchBossAbilities(userName string, userKey string, bossName string, splinterforgeAPIEndpoint string)(bossLeague string, abilities []string, randomAbilities []string){
+	_, bossLeague, abilities,_ = FetchBossID(bossName, splinterforgeAPIEndpoint)
+	FetchRandomAbilites(userName, bossLeague, splinterforgeAPIEndpoint)
+	randomAbilities,_ = FetchRandomAbilitiesForUsername(userName,userKey,bossLeague,splinterforgeAPIEndpoint)
+	if bossLeague == "t1" {
+		bossLeague = "Bronze"
+	} else if bossLeague == "t2" {
+		bossLeague = "Silver"
+	} else if bossLeague == "t3" {
+		bossLeague = "Gold"
+	} else if bossLeague == "t4" {
+		bossLeague = "Diamond"
+	}
+	return bossLeague,abilities,randomAbilities
+}
+func FetchRandomAbilites(userName string, bossLeague string, splinterforgeAPIEndpoint string) (string, error) {
+	url := fmt.Sprintf("%s/users/getRules", splinterforgeAPIEndpoint)
+
+	payload := map[string]string{
+		"user": userName,
+		"type": bossLeague,
+	}
+	jsonData, err := json.Marshal(payload)
 	if err != nil {
 		return "", err
 	}
 
-	heroTypeToChoose := strings.Split(responseData["heroTypes"].(string), " ")[0]
-	return heroTypeToChoose, nil
+	resp, err := http.Post(url, "application/json", bytes.NewBuffer(jsonData))
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+
+	return string(body), nil
+}
+func FetchRandomAbilitiesForUsername(name string, key string,bossLeague string, splinterforgeAPIEndpoint string) ([]string, error) {
+	res, err := grequests.Post(fmt.Sprintf("%s/users/keyLogin", splinterforgeAPIEndpoint), &grequests.RequestOptions{
+		JSON: map[string]string{
+			"username": name,
+			"key":      key,
+		},
+		Headers: map[string]string{
+			"Content-Type": "application/json",
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	var powerRes = SpStruct.KeyLoginResData{}
+	err = json.Unmarshal(res.Bytes(), &powerRes)
+	if err != nil {
+		return nil, err
+	}
+	switch bossLeague {
+	case "t1":
+		rules := powerRes.UniqueRules.T1.Rules
+		return rules, nil
+	case "t2":
+		rules := powerRes.UniqueRules.T2.Rules
+		return rules, nil
+	case "t3":
+		rules := powerRes.UniqueRules.T3.Rules
+		return rules, nil
+	case "t4":
+		rules := powerRes.UniqueRules.T4.Rules
+		return rules, nil
+	default:
+		return nil, fmt.Errorf("bossLeague not found: %s", bossLeague)
+	}
+
+	
 }
 
-func FetchBossID(bossName string, splinterforgeAPIEndpoint string) string {
+func FetchBossID(bossName string, splinterforgeAPIEndpoint string) (string, string, []string, error) {
 	url := fmt.Sprintf("%s/boss/getBosses", splinterforgeAPIEndpoint)
 
 	resp, err := http.Get(url)
@@ -66,11 +150,15 @@ func FetchBossID(bossName string, splinterforgeAPIEndpoint string) string {
 
 	for _, bossData := range responseData {
 		if strings.EqualFold(bossData["name"].(string), bossName) {
-			return bossData["id"].(string)
+			abilities := []string{}
+			for _, ability := range bossData["ogStats"].(map[string]interface{})["abilities"].([]interface{}) {
+				abilities = append(abilities, ability.(string))
+			}
+			return bossData["id"].(string), bossData["type"].(string), abilities, nil
 		}
 	}
 
-	return ""
+	return "", "", nil, errors.New("boss not found")
 }
 
 func FetchPlayerCard(userName string, splinterlandAPIEndpoint string) ([]int, error) {
@@ -135,7 +223,7 @@ func FetchBattleCards(bossName string, userName string, splinterlandAPIEndpoint 
 		return "", err
 	}
 
-	bossId := FetchBossID(bossName, splinterlandAPIEndpoint)
+	bossId,_,_,_ := FetchBossID(bossName, splinterlandAPIEndpoint)
 
 	postData := SpStruct.BattleCardsRequestBody{
 		BossId:   bossId,

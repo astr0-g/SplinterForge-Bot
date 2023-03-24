@@ -237,13 +237,14 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 	ColorPrint.PrintWhite(userName, "Participating in battles...")
 	printData := [][]string{}
 	selectResult := true
-	GameFunc.SelectHero(heroesType, userName, wd, autoSelectHero, publicAPIEndpoint, bossName, splinterforgeAPIEndpoint)
+	bossLeague, bossAbilities, bossRandomAbilities := RequestFunc.FetchBossAbilities(userName, key.(string), bossName, splinterforgeAPIEndpoint)
+	heroTypechoosed := GameFunc.SelectHero(heroesType, name.(string),key.(string), bossRandomAbilities, wd, autoSelectHero, publicAPIEndpoint, bossName, splinterforgeAPIEndpoint)
 	for _, selection := range cardSelection {
 		for i, playingSummoner := range selection.PlayingSummoners {
 			result := GameFunc.SelectSummoners(userName, seletedNumOfSummoners, playingSummoner.PlayingSummonersDiv, wd)
 			if result {
 				seletedNumOfSummoners++
-				printData = append(printData, []string{fmt.Sprintf("Summoners #%d", i+1), playingSummoner.PlayingSummonersID, playingSummoner.PlayingSummonersName, "success"})
+				printData = append(printData, []string{fmt.Sprintf("Summoners #%d", i+1), playingSummoner.PlayingSummonersName, playingSummoner.PlayingSummonersID, "success"})
 			}
 		}
 		seletedNumOfMonsters := 1
@@ -251,9 +252,9 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 			result := GameFunc.SelectMonsters(userName, seletedNumOfMonsters, playingMonster.PlayingMontersDiv, wd)
 			if result {
 				seletedNumOfMonsters++
-				printData = append(printData, []string{fmt.Sprintf("Monsters #%d", j+1), playingMonster.PlayingMonstersID, playingMonster.PlayingMonstersName, "success"})
+				printData = append(printData, []string{fmt.Sprintf("Monsters #%d", j+1), playingMonster.PlayingMonstersName, playingMonster.PlayingMonstersID, "success"})
 			} else {
-				printData = append(printData, []string{fmt.Sprintf("Monsters #%d", j+1), playingMonster.PlayingMonstersID, playingMonster.PlayingMonstersName, "error"})
+				printData = append(printData, []string{fmt.Sprintf("Monsters #%d", j+1), playingMonster.PlayingMonstersName, playingMonster.PlayingMonstersID, "error"})
 				selectResult = false
 			}
 		}
@@ -264,7 +265,7 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 	manaused, _ := strconv.Atoi(mana)
 	CurrentStamina := ReadFunc.GetAccountDetails(name, key, splinterforgeAPIEndpoint)
 	if CurrentStamina > manaused && manaused >= 15 {
-		LogFunc.PrintResultBox(userName, printData, selectResult)
+		LogFunc.PrintResultBox(userName, printData, selectResult, bossName, bossLeague, heroTypechoosed, bossAbilities, bossRandomAbilities)
 		battletimestamp := time.Now().Unix()
 		if battletimestamp-starttimestamp < 30 {
 			time.Sleep(time.Duration(starttimestamp+30-battletimestamp) * time.Second)
@@ -383,7 +384,7 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 					},
 				})
 				if err == nil {
-					LogFunc.PrintResultBox(userName, printData, selectResult)
+					LogFunc.PrintResultBox(userName, printData, selectResult,bossName, bossLeague, heroTypechoosed, bossAbilities, bossRandomAbilities)
 					if strings.Contains(reFit.String(), "not enough mana!") {
 						ColorPrint.PrintYellow(userName, "Insufficient stamina, entering a rest state of inactivity for 1 hour...")
 						time.Sleep(1 * time.Hour)

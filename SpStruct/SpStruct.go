@@ -174,6 +174,16 @@ type KeyLoginResData struct {
 			BossID string   `json:"boss_id"`
 			Rules  []string `json:"rules"`
 		} `json:"t2"`
+		T3 struct {
+			Active bool     `json:"active"`
+			BossID string   `json:"boss_id"`
+			Rules  []string `json:"rules"`
+		} `json:"t3"`
+		T4 struct {
+			Active bool     `json:"active"`
+			BossID string   `json:"boss_id"`
+			Rules  []string `json:"rules"`
+		} `json:"t4"`
 	} `json:"uniqueRules"`
 	ID         string `json:"id"`
 	ServerTime int64  `json:"serverTime"`

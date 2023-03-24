@@ -3,14 +3,16 @@ package LogFunc
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/fatih/color"
-	"github.com/levigross/grequests"
-	"github.com/olekukonko/tablewriter"
 	"os"
 	"sort"
 	"splinterforge/ColorPrint"
 	"splinterforge/SpStruct"
 	"strconv"
+	"strings"
+
+	"github.com/fatih/color"
+	"github.com/levigross/grequests"
+	"github.com/olekukonko/tablewriter"
 )
 
 func PrintInfo() {
@@ -24,17 +26,20 @@ func PrintInfo() {
 	fmt.Println("+-------------------------------------------------+")
 }
 
-func PrintResultBox(userName string, data [][]string, selectResult bool) {
+func PrintResultBox(userName string, data [][]string, selectResult bool,bossName, bossLeague, heroType string, bossAbilities, bossRandomAbilities []string) {
 	sort.Slice(data, func(i, j int) bool {
 		return data[i][0] < data[j][0]
 	})
 
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Card", "ID", "Name", "Results"})
+	table.SetHeader([]string{"SUMMARY", "Name/Abilities", "ID/League", "Results"})
+	table.Append([]string{"Boss", bossName, bossLeague, ""})
+	table.Append([]string{"Abilities", strings.Join(bossAbilities, ", "), "", ""})
+	table.Append([]string{"Random Abilities", strings.Join(bossRandomAbilities, ", "),"",  ""})
+	table.Append([]string{"Hero Chosen", heroType, "",  ""})
 	for _, row := range data {
 		table.Append(row)
 	}
-
 	if selectResult {
 		ColorPrint.PrintGreen(userName, "Card selection results:")
 		table.Render()

@@ -96,10 +96,10 @@ func SelectCards(cardSelection []SpStruct.CardSelection, bossName string, userNa
 	}
 }
 
-func SelectHero(heroesType string, userName string, wd selenium.WebDriver, auto_select_hero bool, publicAPIEndpoint string, bossName string, splinterforgeAPIEndpoint string) {
+func SelectHero(heroesType string, userName string,userKey string, randomAbilities []string, wd selenium.WebDriver, auto_select_hero bool, publicAPIEndpoint string, bossName string, splinterforgeAPIEndpoint string)(string) {
 	heroTypes := [3]string{"Warrior", "Wizard", "Ranger"}
 	if auto_select_hero {
-		hero_type, err := RequestFunc.FetchselectHero(publicAPIEndpoint, bossName, splinterforgeAPIEndpoint)
+		hero_type, err := RequestFunc.FetchselectHero(randomAbilities,userName,userKey,publicAPIEndpoint,bossName,splinterforgeAPIEndpoint)
 		if err == nil {
 			ColorPrint.PrintWhite(userName, fmt.Sprintf("Auto selecting heroes type: %s for desired boss: %s", hero_type, bossName))
 			for i, val := range heroTypes {
@@ -127,7 +127,8 @@ func SelectHero(heroesType string, userName string, wd selenium.WebDriver, auto_
 	bossSelectXpath := fmt.Sprintf("%s/ul/li[%s]", bossXpath, heroesType)
 	el, _ = wd.FindElement(selenium.ByXPATH, bossSelectXpath)
 	el.Click()
-	ColorPrint.PrintWhite(userName, fmt.Sprintf("Selected hero type: %s", hero_type))
+	// ColorPrint.PrintWhite(userName, fmt.Sprintf("Selected hero type: %s", hero_type))
+	return hero_type
 }
 
 func SelectBoss(userName string, bossIdToSelect string, wd selenium.WebDriver) (string, string, error) {
