@@ -238,7 +238,7 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 	printData := [][]string{}
 	selectResult := true
 	bossLeague, bossAbilities, bossRandomAbilities := RequestFunc.FetchBossAbilities(userName, key.(string), bossName, splinterforgeAPIEndpoint)
-	heroTypechoosed := GameFunc.SelectHero(heroesType, name.(string),key.(string), bossRandomAbilities, wd, autoSelectHero, publicAPIEndpoint, bossName, splinterforgeAPIEndpoint)
+	heroTypechoosed := GameFunc.SelectHero(heroesType, name.(string), key.(string), bossRandomAbilities, wd, autoSelectHero, publicAPIEndpoint, bossName, splinterforgeAPIEndpoint)
 	for _, selection := range cardSelection {
 		for i, playingSummoner := range selection.PlayingSummoners {
 			result := GameFunc.SelectSummoners(userName, seletedNumOfSummoners, playingSummoner.PlayingSummonersDiv, wd)
@@ -317,7 +317,7 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 					continue
 				}
 			}
-			
+
 		}
 		checkTime := 0
 		if postJsonResult == false && showForgeReward == true {
@@ -375,6 +375,11 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 					ColorPrint.PrintWhite(userName, fmt.Sprintf("According to your configuration, this account will enter a state of inactivity for %s minutes.", strconv.Itoa(timeSleepInMinute)))
 					time.Sleep(time.Duration(timeSleepInMinute) * time.Minute)
 				}
+				BossLeague, BossAbilities, BossRandomAbilities := RequestFunc.FetchBossAbilities(name.(string), key.(string), bossName, splinterforgeAPIEndpoint)
+				resHeroName, FetchHeroErr := RequestFunc.FetchselectHero(BossRandomAbilities, name.(string), key.(string), publicAPIEndpoint, bossName, splinterforgeAPIEndpoint)
+				if FetchHeroErr == nil {
+					fitPostData.Team[len(fitPostData.Team)-1]["uid"] = resHeroName
+				}
 				ColorPrint.PrintWhite(userName, "Participating in battles with current setup...")
 				reFit, err := grequests.Post(fmt.Sprintf("%s/boss/fight_boss", splinterforgeAPIEndpoint), &grequests.RequestOptions{
 					JSON: fitPostData,
@@ -384,7 +389,7 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 					},
 				})
 				if err == nil {
-					LogFunc.PrintResultBox(userName, printData, selectResult,bossName, bossLeague, heroTypechoosed, bossAbilities, bossRandomAbilities)
+					LogFunc.PrintResultBox(userName, printData, selectResult, bossName, BossLeague, heroTypechoosed, BossAbilities, BossRandomAbilities)
 					if strings.Contains(reFit.String(), "not enough mana!") {
 						ColorPrint.PrintYellow(userName, "Insufficient stamina, entering a rest state of inactivity for 1 hour...")
 						time.Sleep(1 * time.Hour)
