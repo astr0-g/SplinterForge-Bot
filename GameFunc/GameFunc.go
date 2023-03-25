@@ -96,10 +96,10 @@ func SelectCards(cardSelection []SpStruct.CardSelection, bossName string, userNa
 	}
 }
 
-func SelectHero(heroesType string, userName string,userKey string, randomAbilities []string, wd selenium.WebDriver, auto_select_hero bool, publicAPIEndpoint string, bossName string, splinterforgeAPIEndpoint string)(string) {
+func SelectHero(heroesType string, userName string, userKey string, randomAbilities []string, wd selenium.WebDriver, auto_select_hero bool, publicAPIEndpoint string, bossName string, splinterforgeAPIEndpoint string) string {
 	heroTypes := [3]string{"Warrior", "Wizard", "Ranger"}
 	if auto_select_hero {
-		hero_type, err := RequestFunc.FetchselectHero(randomAbilities,userName,userKey,publicAPIEndpoint,bossName,splinterforgeAPIEndpoint)
+		hero_type, err := RequestFunc.FetchselectHero(randomAbilities, userName, userKey, publicAPIEndpoint, bossName, splinterforgeAPIEndpoint)
 		if err == nil {
 			ColorPrint.PrintWhite(userName, fmt.Sprintf("Auto selecting heroes type: %s for desired boss: %s", hero_type, bossName))
 			for i, val := range heroTypes {
@@ -109,7 +109,7 @@ func SelectHero(heroesType string, userName string,userKey string, randomAbiliti
 				}
 			}
 		} else {
-			ColorPrint.PrintRed(userName, "Auto selecting heroes type failed due to API error.")
+			ColorPrint.PrintRed(userName, "Auto selecting heroes type failed due to API.")
 		}
 	} else {
 		ColorPrint.PrintWhite(userName, "Selecting heroes type...")
@@ -197,7 +197,7 @@ func SelectSummoners(userName string, seletedNumOfSummoners int, cardDiv string,
 				scroolTime++
 				continue
 			}
-			
+
 		}
 
 	}
