@@ -6,11 +6,12 @@ HEADLESS=true
 ## Once a group finishes its assigned task, the next group will start working.
 THREADING=5
 
-###############Show Rewards Settings################
+###############Game Settings################
 ## Choose to show FORGE rewards and other battle results after each battle.
 ## Choose to show Account details such as forge balance and stamina after each battle.
 SHOW_FORGE_REWARD=true
 SHOW_ACCOUNT_DETAILS=true
+AUTO_WAIT_FOR_BOSS_RESPAWN=true
 
 ###################API Settings####################
 ## Making AUTO_SELECT_HERO is true will auto select the best hero type for the desire boss
