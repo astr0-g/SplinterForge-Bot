@@ -33,6 +33,7 @@ var (
 	autoSelectCard           = false
 	autoSelectHero           = false
 	autoSelectSleepTime      = false
+	waitForBossRespawn       = false
 	splinterforgeAPIEndpoint = ""
 	splinterlandAPIEndpoint  = ""
 	publicAPIEndpoint        = ""
@@ -47,7 +48,7 @@ func init() {
 	if PcPlatForm == "windows" {
 		ConfigAccountsPath = "config/accounts.txt"
 		ConfigCardSettingPath = "config/cardSettings.txt"
-		headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint = ReadFunc.GetConfig("config/config.txt")
+		headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint = ReadFunc.GetConfig("config/config.txt")
 	} else if PcPlatForm == "darwin" {
 		//获取当前文件夹
 		path, err := os.Executable()
@@ -62,7 +63,7 @@ func init() {
 		}
 		ConfigAccountsPath = RealPath + "/config/accounts.txt"
 		ConfigCardSettingPath = RealPath + "/config/cardSettings.txt"
-		headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint = ReadFunc.GetConfig(RealPath + "/config/config.txt")
+		headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint = ReadFunc.GetConfig(RealPath + "/config/config.txt")
 
 	}
 }
@@ -167,14 +168,14 @@ func initializeUserData() {
 		spinner.Message("reading config.txt..")
 		time.Sleep(500 * time.Millisecond)
 		spinner.Stop()
-		LogFunc.PrintConfigSettings(lineCount-1, headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime)
+		LogFunc.PrintConfigSettings(lineCount-1, headless, threadingLimit, showForgeReward, showAccountDetails, waitForBossRespawn, autoSelectCard, autoSelectHero, autoSelectSleepTime)
 		for i := 0; i < len(accountLists); i += threadingLimit {
 			if len(accountLists)-i < threadingLimit {
 				threadingLimit = len(accountLists) - i
 			}
 			for j := 0; j < threadingLimit; j++ {
 				w.Add(1)
-				go ProcedureFunc.InitializeDriver(true, accountLists[i+j], headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, accountLists, s, w)
+				go ProcedureFunc.InitializeDriver(true, accountLists[i+j], headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, accountLists, s, w)
 			}
 			w.Wait()
 			LogFunc.PrintInfo()

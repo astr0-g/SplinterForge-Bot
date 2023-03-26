@@ -131,7 +131,7 @@ func SelectHero(heroesType string, userName string, userKey string, randomAbilit
 	return hero_type
 }
 
-func SelectBoss(userName string, bossIdToSelect string, wd selenium.WebDriver) (string, string, error) {
+func SelectBoss(userName string, bossIdToSelect string, waitForBossRespawn bool, wd selenium.WebDriver) (string, string, error) {
 	wd.SetImplicitWaitTimeout(2 * time.Second)
 	for {
 		el, _ := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[1]/a[5]/div[1]")
@@ -151,6 +151,8 @@ func SelectBoss(userName string, bossIdToSelect string, wd selenium.WebDriver) (
 						bossName, _ := element.Text()
 						return bossName, bossIdToSelect, nil
 					}
+				} else if waitForBossRespawn{
+					return "", "", fmt.Errorf("boss is dead and wait...")
 				} else {
 					ColorPrint.PrintRed(userName, "The selected boss has been defeated, selecting another one automatically...")
 
