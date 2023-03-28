@@ -1,17 +1,20 @@
 accounts.txt
 cardSettings.txt
 config.txt
-main.exe
 pyinstaller.exe
 cleanup.spec
 splinterforge.spec
 dist
 build
 cleanup_icon.ico
-dual_gold.ico
 __pycache__
 test.py
 splinterforgetest.py
 splinterforgetest.spec
 screenshot.png
 splinterforge.exe
+rsrc_windows_amd64.syso
+rsrc -manifest manifest.xml -ico ICO/dual_gold_new.ico
+/Splinterforge -MAC Version
+/Splinterforge
+.DS_Store

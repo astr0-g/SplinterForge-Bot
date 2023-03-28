@@ -4,17 +4,45 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	"github.com/levigross/grequests"
 	"os"
+	"runtime"
 	"splinterforge/ColorPrint"
 	"splinterforge/SpStruct"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/levigross/grequests"
 )
 
+var (
+	PcPlatForm = runtime.GOOS
+
+	DataCardMappingPath = ""
+	RealPath            = ""
+)
+
+func init() {
+	if PcPlatForm == "windows" {
+		DataCardMappingPath = "data/cardMapping.json"
+	} else if PcPlatForm == "darwin" {
+		//获取当前文件夹
+		path, err := os.Executable()
+		if err != nil {
+			panic(err)
+		}
+		if strings.Contains(path, "private") || strings.Contains(path, "___go_build") || strings.Contains(path, "folders/") {
+			RealPath, _ = os.Getwd()
+		} else {
+			RealPathLists := strings.Split(path, "/")
+			RealPath = strings.Join(RealPathLists[:len(RealPathLists)-1], "/")
+		}
+		DataCardMappingPath = RealPath + "/data/cardMapping.json"
+	}
+}
+
 func GetCardName(cardId string) (string, error) {
-	file, err := os.Open("data/cardMapping.json")
+	file, err := os.Open(DataCardMappingPath)
 	if err != nil {
 		return "", fmt.Errorf("error opening JSON file: %w", err)
 	}
@@ -34,6 +62,7 @@ func GetCardName(cardId string) (string, error) {
 
 	return "", fmt.Errorf("card id %s not found", cardId)
 }
+
 func GetAccountData(filePath string, lineNumber int) (string, string, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
@@ -60,6 +89,7 @@ func GetAccountData(filePath string, lineNumber int) (string, string, error) {
 	}
 	return "", "", nil
 }
+
 func GetCardSettingData(filePath string, lineNumber int) (string, string, []string, []string, int, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
@@ -88,11 +118,12 @@ func GetCardSettingData(filePath string, lineNumber int) (string, string, []stri
 
 	return "", "", nil, nil, 0, nil
 }
-func GetConfig(filePath string) (bool, int, bool, bool, bool, bool, bool, string, string, string) {
+
+func GetConfig(filePath string) (bool, int, bool, bool, bool, bool, bool,bool, bool, string, string, string) {
 	file, err := os.Open(filePath)
 	if err != nil {
-		colorprint.PrintRed("SF", "Error Reading Config.txt file")
-		colorprint.PrintWhite("SF", "Terminating in 10 seconds...")
+		ColorPrint.PrintRed("SF", "Error Reading Config.txt file")
+		ColorPrint.PrintWhite("SF", "Terminating in 10 seconds...")
 		time.Sleep(10 * time.Second)
 		os.Exit(1)
 	}
@@ -108,6 +139,8 @@ func GetConfig(filePath string) (bool, int, bool, bool, bool, bool, bool, string
 		autoSelectCard           bool
 		autoSelectHero           bool
 		autoSelectSleepTime      bool
+		waitForBossRespawn		 bool
+		shareBattleLog           bool
 		splinterforgeAPIEndpoint string
 		splinterlandAPIEndpoint  string
 		publicAPIEndpoint        string
@@ -128,6 +161,10 @@ func GetConfig(filePath string) (bool, int, bool, bool, bool, bool, bool, string
 				showForgeReward = value == "true"
 			case "SHOW_ACCOUNT_DETAILS":
 				showAccountDetails = value == "true"
+			case "AUTO_WAIT_FOR_BOSS_RESPAWN":
+				waitForBossRespawn = value == "true"
+			case "SHARE_BATTLE_LOG":
+				shareBattleLog = value == "true"
 			case "AUTO_SELECT_CARD":
 				autoSelectCard = value == "true"
 			case "AUTO_SELECT_SLEEPTIME":
@@ -144,13 +181,14 @@ func GetConfig(filePath string) (bool, int, bool, bool, bool, bool, bool, string
 		}
 	}
 	if threadingLimit == 0 || splinterforgeAPIEndpoint == "" || splinterlandAPIEndpoint == "" || publicAPIEndpoint == "" {
-		colorprint.PrintRed("SF", "Error reading config.txt file.")
-		colorprint.PrintWhite("SF", "Terminating in 10 seconds...")
+		ColorPrint.PrintRed("SF", "Error reading config.txt file.")
+		ColorPrint.PrintWhite("SF", "Terminating in 10 seconds...")
 		time.Sleep(10 * time.Second)
 		os.Exit(1)
 	}
-	return headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint
+	return headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn,shareBattleLog, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint
 }
+
 func GetLines(filePath string) (int, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
@@ -167,6 +205,7 @@ func GetLines(filePath string) (int, error) {
 	}
 	return lineCount, nil
 }
+
 func GetAccountDetails(name interface{}, key interface{}, splinterforgeAPIEndpoint string) int {
 	res, _ := grequests.Post(fmt.Sprintf("%s/users/keyLogin", splinterforgeAPIEndpoint), &grequests.RequestOptions{
 		JSON: map[string]string{
@@ -186,6 +225,7 @@ func GetAccountDetails(name interface{}, key interface{}, splinterforgeAPIEndpoi
 	}
 	return CurrentStamina
 }
+
 func GetTimeDiff(oldTime string) (int, error) {
 	now := time.Now()
 	t, err := time.Parse(time.RFC3339, oldTime)

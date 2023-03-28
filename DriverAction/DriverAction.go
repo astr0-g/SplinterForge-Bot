@@ -1,8 +1,9 @@
 package DriverAction
 
 import (
-	"github.com/tebeka/selenium"
 	"time"
+
+	"github.com/tebeka/selenium"
 )
 
 func DriverGet(URL string, wd selenium.WebDriver) {

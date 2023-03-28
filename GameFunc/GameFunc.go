@@ -1,13 +1,14 @@
-package gamefunc
+package GameFunc
 
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/tebeka/selenium"
 	"splinterforge/ColorPrint"
 	"splinterforge/SpStruct"
 	"strconv"
 	"time"
+
+	"github.com/tebeka/selenium"
 
 	"splinterforge/DriverAction"
 	"splinterforge/ReadFunc"
@@ -33,11 +34,11 @@ func CheckPopUp(wd selenium.WebDriver, millisecond int) {
 
 func SelectCards(cardSelection []SpStruct.CardSelection, bossName string, userName string, splinterlandAPIEndpoint string, publicAPIEndpoint string, autoSelectCard bool) ([]SpStruct.CardSelection, bool, error) {
 	if autoSelectCard {
-		colorprint.PrintWhite(
+		ColorPrint.PrintWhite(
 			userName, fmt.Sprintf("Auto selecting playing cards for desire boss: %s", bossName))
 		playingDeck, err := RequestFunc.FetchBattleCards(bossName, userName, splinterlandAPIEndpoint, publicAPIEndpoint)
 		if err != nil {
-			colorprint.PrintPurple(userName, "API Error, Fetch Battle cards failed.")
+			ColorPrint.PrintPurple(userName, "API Error, Fetch Battle cards failed.")
 			return cardSelection, false, err
 		}
 		playingDeckBytes := []byte(playingDeck)
@@ -87,20 +88,20 @@ func SelectCards(cardSelection []SpStruct.CardSelection, bossName string, userNa
 			cardSelectionList = append(cardSelectionList, cardSelection)
 			return cardSelectionList, true, nil
 		} else {
-			colorprint.PrintPurple(userName, "Auto selecting playing cards deck failed, you might have too less cards in the account, will continue play with your card setting.")
+			ColorPrint.PrintPurple(userName, "Auto selecting playing cards deck failed, you might have too less cards in the account, will continue play with your card setting.")
 			return cardSelection, false, nil
 		}
 	} else {
 		return cardSelection, false, nil
 	}
 }
-func SelectHero(heroesType string, userName string, wd selenium.WebDriver, auto_select_hero bool, publicAPIEndpoint string, bossName string, splinterforgeAPIEndpoint string) {
-	CheckPopUp(wd, 1000)
+
+func SelectHero(heroesType string, userName string, userKey string, randomAbilities []string, wd selenium.WebDriver, auto_select_hero bool, publicAPIEndpoint string, bossName string, splinterforgeAPIEndpoint string) string {
 	heroTypes := [3]string{"Warrior", "Wizard", "Ranger"}
 	if auto_select_hero {
-		hero_type, err := RequestFunc.FetchselectHero(publicAPIEndpoint, bossName, splinterforgeAPIEndpoint)
+		hero_type, err := RequestFunc.FetchselectHero(randomAbilities, userName, userKey, publicAPIEndpoint, bossName, splinterforgeAPIEndpoint)
 		if err == nil {
-			colorprint.PrintWhite(userName, fmt.Sprintf("Auto selecting heroes type: %s for desired boss: %s", hero_type, bossName))
+			ColorPrint.PrintWhite(userName, fmt.Sprintf("Auto selecting heroes type: %s for desired boss: %s", hero_type, bossName))
 			for i, val := range heroTypes {
 				if val == hero_type {
 					heroesType = strconv.Itoa(i + 1)
@@ -108,29 +109,29 @@ func SelectHero(heroesType string, userName string, wd selenium.WebDriver, auto_
 				}
 			}
 		} else {
-			colorprint.PrintRed(userName, "Auto selecting heroes type failed due to API error.")
+			ColorPrint.PrintRed(userName, "Auto selecting heroes type failed due to API.")
 		}
 	} else {
-		colorprint.PrintWhite(userName, "Selecting heroes type...")
+		ColorPrint.PrintWhite(userName, "Selecting heroes type...")
 	}
 	defer func() {
 		if err := recover(); err != nil {
-			colorprint.PrintRed(userName, "Error in selecting hero type, continue...")
+			ColorPrint.PrintRed(userName, "Error in selecting hero type, continue...")
 		}
 	}()
 	heroIndex, _ := strconv.Atoi(heroesType)
 	hero_type := heroTypes[heroIndex-1]
-	el, _ := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[1]/a[4]")
-	el.Click()
-	bossXpath := "/html/body/app/div[1]/splinterforge-heros/div[3]/section/div/div/div[2]/div[1]"
-	el, _ = wd.FindElement(selenium.ByXPATH, bossXpath)
+	bossXpath := "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/section/div"
+	el, _ := wd.FindElement(selenium.ByXPATH, bossXpath)
 	el.Click()
 	bossSelectXpath := fmt.Sprintf("%s/ul/li[%s]", bossXpath, heroesType)
 	el, _ = wd.FindElement(selenium.ByXPATH, bossSelectXpath)
 	el.Click()
-	colorprint.PrintWhite(userName, fmt.Sprintf("Selected hero type: %s", hero_type))
+	// ColorPrint.PrintWhite(userName, fmt.Sprintf("Selected hero type: %s", hero_type))
+	return hero_type
 }
-func SelectBoss(userName string, bossIdToSelect string, wd selenium.WebDriver) (string, string, error) {
+
+func SelectBoss(userName string, bossIdToSelect string, waitForBossRespawn bool, wd selenium.WebDriver) (string, string, error) {
 	wd.SetImplicitWaitTimeout(2 * time.Second)
 	for {
 		el, _ := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[1]/a[5]/div[1]")
@@ -150,14 +151,13 @@ func SelectBoss(userName string, bossIdToSelect string, wd selenium.WebDriver) (
 						bossName, _ := element.Text()
 						return bossName, bossIdToSelect, nil
 					}
+				} else if waitForBossRespawn{
+					return "", "", fmt.Errorf("boss is dead and wait...")
 				} else {
-					colorprint.PrintRed(userName, "The selected boss has been defeated, selecting another one automatically...")
+					ColorPrint.PrintRed(userName, "The selected boss has been defeated, selecting another one automatically...")
 
 					if bossIdToSelect < "17" {
-						bossIdInt, err := strconv.Atoi(bossIdToSelect)
-						if err != nil {
-
-						}
+						bossIdInt, _ := strconv.Atoi(bossIdToSelect)
 						bossIdInt++
 						bossIdToSelect = strconv.Itoa(bossIdInt)
 					} else {
@@ -169,27 +169,37 @@ func SelectBoss(userName string, bossIdToSelect string, wd selenium.WebDriver) (
 
 	}
 }
+
 func SelectSummoners(userName string, seletedNumOfSummoners int, cardDiv string, wd selenium.WebDriver) bool {
+	wd.SetImplicitWaitTimeout(200 * time.Millisecond)
 	scroolTime := 0
 	clickedTime := 0
 	result := false
 	time.Sleep(1 * time.Second)
-	for scroolTime < 5 && clickedTime < 5 {
+	for scroolTime < 10 && clickedTime < 5 {
 		el, err := wd.FindElement(selenium.ByXPATH, cardDiv)
 		if err != nil {
+			wd.ExecuteScript("window.scrollBy(0, 100)", nil)
+			scroolTime++
 			continue
 		} else {
-			el.Click()
-			time.Sleep(1 * time.Second)
-			checkCardDiv := fmt.Sprintf("/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/div[1]/div[2]/div[%s]", strconv.Itoa(seletedNumOfSummoners))
-			success, _ := DriverAction.DriverwaitForElement(wd, checkCardDiv)
-			if success {
-				result = true
-				break
+			err = el.Click()
+			if err == nil {
+				time.Sleep(1 * time.Second)
+				checkCardDiv := fmt.Sprintf("/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/div[1]/div[2]/div[%s]", strconv.Itoa(seletedNumOfSummoners))
+				success, _ := DriverAction.DriverwaitForElement(wd, checkCardDiv)
+				if success {
+					result = true
+					break
+				} else {
+					clickedTime++
+				}
 			} else {
-				clickedTime++
+				wd.ExecuteScript("window.scrollBy(0, 100)", nil)
 				scroolTime++
+				continue
 			}
+
 		}
 
 	}
@@ -197,33 +207,41 @@ func SelectSummoners(userName string, seletedNumOfSummoners int, cardDiv string,
 		result = true
 	}
 	if !result {
-		colorprint.PrintRed(userName, "Error in selecting summoners, skipped...")
+		ColorPrint.PrintRed(userName, "Error in selecting summoners, skipped...")
 	}
 	wd.ExecuteScript("window.scrollBy(0, -4000)", nil)
 	time.Sleep(1 * time.Second)
 	return result
 }
+
 func SelectMonsters(userName string, seletedNumOfMonsters int, cardDiv string, wd selenium.WebDriver) bool {
+	wd.SetImplicitWaitTimeout(150 * time.Millisecond)
 	scroolTime := 0
 	clickedTime := 0
 	result := false
 	time.Sleep(1 * time.Second)
-	for scroolTime < 5 && clickedTime < 5 {
+	for scroolTime < 40 && clickedTime < 5 {
 		el, err := wd.FindElement(selenium.ByXPATH, cardDiv)
 		if err != nil {
-			wd.ExecuteScript("window.scrollBy(0, 450)", nil)
+			wd.ExecuteScript("window.scrollBy(0, 100)", nil)
 			scroolTime++
 			continue
 		} else {
-			el.Click()
-			checkCardDiv := fmt.Sprintf("/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/div[2]/div[2]/div[%s]", strconv.Itoa(seletedNumOfMonsters))
-			success, _ := DriverAction.DriverwaitForElement(wd, checkCardDiv)
-			if success {
-				result = true
-				break
+			err = el.Click()
+			if err == nil {
+				checkCardDiv := fmt.Sprintf("/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/div[2]/div[2]/div[%s]", strconv.Itoa(seletedNumOfMonsters))
+				success, _ := DriverAction.DriverwaitForElement(wd, checkCardDiv)
+				if success {
+					result = true
+					break
+				} else {
+					clickedTime++
+					wd.ExecuteScript("window.scrollBy(0, 100)", nil)
+					continue
+				}
 			} else {
-				clickedTime++
-				wd.ExecuteScript("window.scrollBy(0, 450)", nil)
+				wd.ExecuteScript("window.scrollBy(0, 100)", nil)
+				scroolTime++
 				continue
 			}
 		}
@@ -233,9 +251,9 @@ func SelectMonsters(userName string, seletedNumOfMonsters int, cardDiv string, w
 		result = true
 	}
 	if !result {
-		colorprint.PrintRed(userName, "Error in selecting Monsters, skipped...")
+		ColorPrint.PrintRed(userName, "Error in selecting Monsters, skipped...")
 	}
-	wd.ExecuteScript("window.scrollBy(0, -4000)", nil)
+	wd.ExecuteScript("window.scrollBy(0, -10000)", nil)
 	time.Sleep(1 * time.Second)
 	return result
 }

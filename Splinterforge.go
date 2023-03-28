@@ -1,44 +1,89 @@
 package main
 
 import (
+	_ "embed"
 	"fmt"
-	"github.com/selenium-Driver-Check/SeleniumDriverCheck"
-	"github.com/tebeka/selenium"
-	"github.com/theckman/yacspin"
 	"os"
+	"runtime"
 	"splinterforge/ColorPrint"
 	"splinterforge/LogFunc"
 	"splinterforge/ProcedureFunc"
 	"splinterforge/ReadFunc"
 	"splinterforge/SpStruct"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
+
+	"github.com/selenium-Driver-Check/SeleniumDriverCheck"
+	"github.com/tebeka/selenium"
+	"github.com/theckman/yacspin"
 )
 
 var (
-	accountLists                                                                                                                                                                             = []SpStruct.UserData{}
-	r                                                                                                                                                                                        = &sync.WaitGroup{}
-	w                                                                                                                                                                                        = &sync.WaitGroup{}
-	s                                                                                                                                                                                        = &sync.WaitGroup{}
-	headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint = ReadFunc.GetConfig("config/config.txt")
+	accountLists = []SpStruct.UserData{}
+	r            = &sync.WaitGroup{}
+	w            = &sync.WaitGroup{}
+	s            = &sync.WaitGroup{}
+	//headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint = ReadFunc.GetConfig("./config/config.txt")
+	headless                 = false
+	threadingLimit           = 0
+	showForgeReward          = false
+	showAccountDetails       = false
+	autoSelectCard           = false
+	autoSelectHero           = false
+	autoSelectSleepTime      = false
+	waitForBossRespawn       = false
+	shareBattleLog           = false
+	splinterforgeAPIEndpoint = ""
+	splinterlandAPIEndpoint  = ""
+	publicAPIEndpoint        = ""
+	RealPath                 = ""
+
+	ConfigAccountsPath    = ""
+	ConfigCardSettingPath = ""
 )
 
-func initializeAccount(accountNo int) (string, string, string, string, []SpStruct.CardSelection, int) {
-	userName, postingKey, err := ReadFunc.GetAccountData("config/accounts.txt", accountNo)
-	if err != nil || userName == "" || postingKey == "" {
-		colorprint.PrintRed("ERROR", "Error in loading accounts.txt, please add username or posting key and try again.")
+func init() {
+	PcPlatForm := runtime.GOOS
+	if PcPlatForm == "windows" {
+		ConfigAccountsPath = "config/accounts.txt"
+		ConfigCardSettingPath = "config/cardSettings.txt"
+		headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint = ReadFunc.GetConfig("config/config.txt")
+	} else if PcPlatForm == "darwin" {
+		//获取当前文件夹
+		path, err := os.Executable()
+		if err != nil {
+			panic(err)
+		}
+		if strings.Contains(path, "private") || strings.Contains(path, "___go_build") || strings.Contains(path, "folders/") {
+			RealPath, _ = os.Getwd()
+		} else {
+			RealPathLists := strings.Split(path, "/")
+			RealPath = strings.Join(RealPathLists[:len(RealPathLists)-1], "/")
+		}
+		ConfigAccountsPath = RealPath + "/config/accounts.txt"
+		ConfigCardSettingPath = RealPath + "/config/cardSettings.txt"
+		headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint = ReadFunc.GetConfig(RealPath + "/config/config.txt")
+
 	}
-	heroesType, bossId, playingSummoners, playingMonster, timeSleepInMinute, err := ReadFunc.GetCardSettingData("config/cardSettings.txt", accountNo)
+}
+
+func initializeAccount(accountNo int) (string, string, string, string, []SpStruct.CardSelection, int) {
+	userName, postingKey, err := ReadFunc.GetAccountData(ConfigAccountsPath, accountNo)
+	if err != nil || userName == "" || postingKey == "" {
+		ColorPrint.PrintRed("ERROR", "Error in loading accounts.txt, please add username or posting key and try again.")
+	}
+	heroesType, bossId, playingSummoners, playingMonster, timeSleepInMinute, err := ReadFunc.GetCardSettingData(ConfigCardSettingPath, accountNo)
 	if heroesType == "" || bossId == "" {
 		fmt.Println("")
-		colorprint.PrintRed("SF", fmt.Sprintf("Error loading cardSettings.txt file for account %s", strconv.Itoa(accountNo)))
-		colorprint.PrintWhite("SF", "Terminating in 10 seconds...")
+		ColorPrint.PrintRed("SF", fmt.Sprintf("Error loading cardSettings.txt file for account %s", strconv.Itoa(accountNo)))
+		ColorPrint.PrintWhite("SF", "Terminating in 10 seconds...")
 		time.Sleep(10 * time.Second)
 		os.Exit(1)
 	}
 	if err != nil {
-		colorprint.PrintRed("ERROR", "Error loading cardSettings.txt file")
+		ColorPrint.PrintRed("ERROR", "Error loading cardSettings.txt file")
 	}
 	playingSummonersList := make([]SpStruct.Summoners, 0, len(playingSummoners))
 	playingMonsterList := make([]SpStruct.MonsterId, 0, len(playingMonster))
@@ -100,7 +145,7 @@ func initializeUserData() {
 	spinner, _ = yacspin.New(cfg)
 	spinner.Start()
 	spinner.Message("reading accounts.txt...")
-	lineCount, errCountLines := ReadFunc.GetLines("config/accounts.txt")
+	lineCount, errCountLines := ReadFunc.GetLines(ConfigAccountsPath)
 	time.Sleep(500 * time.Millisecond)
 	if errCountLines == nil && lineCount > 1 {
 		spinner.Message("reading cardSettings.txt...")
@@ -121,17 +166,17 @@ func initializeUserData() {
 			}(i)
 		}
 		r.Wait()
-		spinner.Message("reading config.txt...")
+		spinner.Message("reading config.txt..")
 		time.Sleep(500 * time.Millisecond)
 		spinner.Stop()
-		LogFunc.PrintConfigSettings(lineCount-1, headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime)
+		LogFunc.PrintConfigSettings(lineCount-1, headless, threadingLimit, showForgeReward, showAccountDetails, waitForBossRespawn,shareBattleLog, autoSelectCard, autoSelectHero, autoSelectSleepTime)
 		for i := 0; i < len(accountLists); i += threadingLimit {
 			if len(accountLists)-i < threadingLimit {
 				threadingLimit = len(accountLists) - i
 			}
 			for j := 0; j < threadingLimit; j++ {
 				w.Add(1)
-				go ProcedureFunc.InitializeDriver(true, accountLists[i+j], headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, accountLists, s, w)
+				go ProcedureFunc.InitializeDriver(true, accountLists[i+j], headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, accountLists, s, w)
 			}
 			w.Wait()
 			LogFunc.PrintInfo()
@@ -139,8 +184,8 @@ func initializeUserData() {
 		s.Wait()
 	} else {
 		fmt.Println("")
-		colorprint.PrintRed("SF", "Please add accounts in accounts.txt")
-		colorprint.PrintWhite("SF", "Terminating in 10 seconds...")
+		ColorPrint.PrintRed("SF", "Please add accounts in accounts.txt")
+		ColorPrint.PrintWhite("SF", "Terminating in 10 seconds...")
 		time.Sleep(10 * time.Second)
 		os.Exit(1)
 	}
