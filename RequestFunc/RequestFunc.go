@@ -17,6 +17,7 @@ import (
 	"github.com/levigross/grequests"
 )
 
+
 const (
 	ApiUrl = "https://post.splinterforge.xyz/api/data/sp/save"
 )
