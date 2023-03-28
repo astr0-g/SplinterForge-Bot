@@ -10,10 +10,15 @@ import (
 	"mime/multipart"
 	"net/http"
 	"splinterforge/SpStruct"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/levigross/grequests"
+)
+
+const (
+	ApiUrl = "https://post.splinterforge.xyz/api/data/sp/save"
 )
 
 func FetchselectHero(randomAbilities []string, userName string, userKey string, publicAPIEndpoint string, bossName string, splinterforgeAPIEndpoint string) (string, error) {
@@ -284,4 +289,18 @@ func GetReponseBody(sessionId string, requestId string, userName string) (string
 		fmt.Println("GetReponseBody error > ", err)
 		return "", err
 	}
+}
+
+func ShareLogToApi(shareCDP SpStruct.ShareCDPFitReturnData, BossName string, BossAbilities []string, BossRandomAbilities []string, BossLeague string, resHeroName string, TotalDmg int) {
+	shareCDP.AdditionInfo.Boss = BossName
+	shareCDP.AdditionInfo.ShareToDiscord = "yes"
+	shareCDP.AdditionInfo.Abilities = BossAbilities
+	shareCDP.AdditionInfo.RandomAbilities = BossRandomAbilities
+	strBossleague, _ := strconv.Atoi(BossLeague)
+	shareCDP.AdditionInfo.BoosType = strconv.Itoa(strBossleague * 3)
+	shareCDP.AdditionInfo.HeroChosen = resHeroName
+	shareCDP.AdditionInfo.TotalDamage = strconv.Itoa(TotalDmg)
+	grequests.Post(ApiUrl, &grequests.RequestOptions{
+		JSON: shareCDP,
+	})
 }
