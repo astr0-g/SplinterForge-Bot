@@ -12,6 +12,7 @@ THREADING=5
 SHOW_FORGE_REWARD=true
 SHOW_ACCOUNT_DETAILS=true
 AUTO_WAIT_FOR_BOSS_RESPAWN=true
+SHARE_BATTLE_LOG=true
 
 ###################API Settings####################
 ## Making AUTO_SELECT_HERO is true will auto select the best hero type for the desire boss
