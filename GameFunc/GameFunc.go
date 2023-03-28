@@ -98,8 +98,10 @@ func SelectCards(cardSelection []SpStruct.CardSelection, bossName string, userNa
 
 func SelectHero(heroesType string, userName string, userKey string, randomAbilities []string, wd selenium.WebDriver, auto_select_hero bool, publicAPIEndpoint string, bossName string, splinterforgeAPIEndpoint string) string {
 	heroTypes := [3]string{"Warrior", "Wizard", "Ranger"}
+	index, _ := strconv.Atoi(heroesType)
+	heroTypePreferred := heroTypes[index-1]
 	if auto_select_hero {
-		hero_type, err := RequestFunc.FetchselectHero(randomAbilities, userName, userKey, publicAPIEndpoint, bossName, splinterforgeAPIEndpoint)
+		hero_type, err := RequestFunc.FetchselectHero(randomAbilities, userName, userKey, heroTypePreferred, publicAPIEndpoint, bossName, splinterforgeAPIEndpoint)
 		if err == nil {
 			ColorPrint.PrintWhite(userName, fmt.Sprintf("Auto selecting heroes type: %s for desired boss: %s", hero_type, bossName))
 			for i, val := range heroTypes {

@@ -21,12 +21,12 @@ const (
 	ApiUrl = "https://post.splinterforge.xyz/api/data/sp/save"
 )
 
-func FetchselectHero(randomAbilities []string, userName string, userKey string, publicAPIEndpoint string, bossName string, splinterforgeAPIEndpoint string) (string, error) {
-	bossID, _, abilities, _ := FetchBossID(bossName, splinterforgeAPIEndpoint)
+func FetchselectHero(randomAbilities []string, userName string, userKey string, heroTypePreferred string, publicAPIEndpoint string, bossName string, splinterforgeAPIEndpoint string) (string, error) {
+	_, _, abilities, _ := FetchBossID(bossName, splinterforgeAPIEndpoint)
 	fullAbilities := append(abilities, randomAbilities...)
 	requestBody := map[string]interface{}{
-		"bossId": bossID,
-		"myList": fullAbilities,
+		"heroTypePreferred": heroTypePreferred + " hero",
+		"abilitiesList": fullAbilities,
 	}
 	requestBodyBytes, err := json.Marshal(requestBody)
 	if err != nil {

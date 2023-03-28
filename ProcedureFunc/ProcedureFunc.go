@@ -14,6 +14,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+
 	"github.com/levigross/grequests"
 	"github.com/tebeka/selenium"
 	"github.com/tebeka/selenium/chrome"
@@ -386,10 +387,11 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 					BossLeague, BossAbilities, BossRandomAbilities := RequestFunc.FetchBossAbilities(name.(string), key.(string), bossName, splinterforgeAPIEndpoint)
 					heroTypes := [3]string{"Warrior", "Wizard", "Ranger"}
 					heroIndex, _ := strconv.Atoi(heroesType)
+					heroTypePreferred := heroTypes[heroIndex-1]
 					var resHeroName string
 					var FetchHeroErr error
 					if autoSelectHero {
-						resHeroName, FetchHeroErr = RequestFunc.FetchselectHero(BossRandomAbilities, name.(string), key.(string), publicAPIEndpoint, bossName, splinterforgeAPIEndpoint)
+						resHeroName, FetchHeroErr = RequestFunc.FetchselectHero(BossRandomAbilities, name.(string), key.(string), heroTypePreferred, publicAPIEndpoint, bossName, splinterforgeAPIEndpoint)
 						if FetchHeroErr == nil {
 							TeamIndex := len(fitPostData.Team) - 1
 							TeamHero := fitPostData.Team[TeamIndex]
