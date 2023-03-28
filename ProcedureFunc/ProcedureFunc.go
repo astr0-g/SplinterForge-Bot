@@ -32,6 +32,7 @@ var (
 	RealPath      = ""
 )
 
+
 func init() {
 	if PcPlatForm == "windows" {
 		ExtensionPath = "data/hivekeychain.crx"
