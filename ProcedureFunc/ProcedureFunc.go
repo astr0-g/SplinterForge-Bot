@@ -304,8 +304,12 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 								if GetRewardBody.TotalDmg >= 0 && GetRewardBody.Points >= 0 && GetRewardBody.Rewards[0].Qty >= 0 && GetRewardBody.Rewards[1].Qty >= 0 {
 									ColorPrint.PrintCyan(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", strconv.Itoa(GetRewardBody.TotalDmg), strconv.Itoa(GetRewardBody.Points), GetRewardBody.Rewards[0].Qty, GetRewardBody.Rewards[1].Qty))
 									postJsonResult = true
-									if shareBattleLog{
-										
+									if shareBattleLog {
+										go func() {
+											var ShareLog = SpStruct.ShareCDPFitReturnData{}
+											json.Unmarshal([]byte(GetResponseBody.Value.Body), &ShareLog)
+											RequestFunc.ShareLogToApi(ShareLog, bossName, bossAbilities, bossRandomAbilities, bossLeague, heroTypechoosed, GetRewardBody.TotalDmg)
+										}()
 									}
 								}
 							}
@@ -385,7 +389,7 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 					var resHeroName string
 					var FetchHeroErr error
 					if autoSelectHero {
-							resHeroName, FetchHeroErr = RequestFunc.FetchselectHero(BossRandomAbilities, name.(string), key.(string), publicAPIEndpoint, bossName, splinterforgeAPIEndpoint)
+						resHeroName, FetchHeroErr = RequestFunc.FetchselectHero(BossRandomAbilities, name.(string), key.(string), publicAPIEndpoint, bossName, splinterforgeAPIEndpoint)
 						if FetchHeroErr == nil {
 							TeamIndex := len(fitPostData.Team) - 1
 							TeamHero := fitPostData.Team[TeamIndex]
@@ -437,6 +441,13 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 							if showForgeReward {
 								ColorPrint.PrintCyan(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", strconv.Itoa(fitReturnData.TotalDmg), strconv.Itoa(fitReturnData.Points), fitReturnData.Rewards[0].Qty, fitReturnData.Rewards[1].Qty))
 							}
+							if shareBattleLog {
+								go func() {
+									var ShareLog = SpStruct.ShareCDPFitReturnData{}
+									json.Unmarshal(reFit.Bytes(), &ShareLog)
+									RequestFunc.ShareLogToApi(ShareLog, bossName, BossAbilities, BossRandomAbilities, BossLeague, resHeroName, fitReturnData.TotalDmg)
+								}()
+							}
 							time.Sleep(5 * time.Second)
 							if showAccountDetails {
 								LogFunc.PrintAccountDetails(userName, name, key, splinterforgeAPIEndpoint)
@@ -458,9 +469,9 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 					AccountRestartCoroutine(accountLists, false, userName, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, s, w)
 					s.Done()
 				}
-	
+
 			}()
-	
+
 			if wait == true {
 				w.Done()
 			}
@@ -488,7 +499,7 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 		time.Sleep(30 * time.Minute)
 		AccountRestartCoroutine(accountLists, false, userName, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, s, w)
 	}
-	
+
 }
 
 func InitializeDriver(wait bool, userData SpStruct.UserData, headless bool, showForgeReward bool, showAccountDetails bool, autoSelectCard bool, autoSelectHero bool, autoSelectSleepTime bool, waitForBossRespawn bool, shareBattleLog bool, splinterforgeAPIEndpoint string, splinterlandAPIEndpoint string, publicAPIEndpoint string, accountLists []SpStruct.UserData, s *sync.WaitGroup, w *sync.WaitGroup) {
@@ -555,7 +566,7 @@ func InitializeDriver(wait bool, userData SpStruct.UserData, headless bool, show
 	loginResult := AccountLogin(userData.UserName, userData.PostingKey, driver)
 	if loginResult {
 		GameFunc.CheckPopUp(driver, 1000)
-		AccountBattle(wait, driver, userData.UserName, userData.BossID, headless, userData.HeroesType, userData.TimeSleepInMinute, userData.CardSelection, autoSelectHero, autoSelectCard, autoSelectSleepTime, splinterlandAPIEndpoint, publicAPIEndpoint, splinterforgeAPIEndpoint, showForgeReward, showAccountDetails,waitForBossRespawn, shareBattleLog, s, w, accountLists)
+		AccountBattle(wait, driver, userData.UserName, userData.BossID, headless, userData.HeroesType, userData.TimeSleepInMinute, userData.CardSelection, autoSelectHero, autoSelectCard, autoSelectSleepTime, splinterlandAPIEndpoint, publicAPIEndpoint, splinterforgeAPIEndpoint, showForgeReward, showAccountDetails, waitForBossRespawn, shareBattleLog, s, w, accountLists)
 	} else {
 		driver.Close()
 		if wait == true {
