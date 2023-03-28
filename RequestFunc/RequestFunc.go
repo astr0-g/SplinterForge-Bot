@@ -292,15 +292,25 @@ func GetReponseBody(sessionId string, requestId string, userName string) (string
 }
 
 func ShareLogToApi(shareCDP SpStruct.ShareCDPFitReturnData, BossName string, BossAbilities []string, BossRandomAbilities []string, BossLeague string, resHeroName string, TotalDmg int) {
-	shareCDP.AdditionInfo.Boss = BossName
-	shareCDP.AdditionInfo.ShareToDiscord = "yes"
-	shareCDP.AdditionInfo.Abilities = BossAbilities
-	shareCDP.AdditionInfo.RandomAbilities = BossRandomAbilities
-	strBossleague, _ := strconv.Atoi(BossLeague)
-	shareCDP.AdditionInfo.BoosType = strconv.Itoa(strBossleague * 3)
-	shareCDP.AdditionInfo.HeroChosen = resHeroName
-	shareCDP.AdditionInfo.TotalDamage = strconv.Itoa(TotalDmg)
-	grequests.Post(ApiUrl, &grequests.RequestOptions{
-		JSON: shareCDP,
-	})
+	if TotalDmg >= 1 {
+		shareCDP.AdditionInfo.Boss = BossName
+		shareCDP.AdditionInfo.ShareToDiscord = "yes"
+		shareCDP.AdditionInfo.Abilities = BossAbilities
+		shareCDP.AdditionInfo.RandomAbilities = BossRandomAbilities
+		if BossLeague == "Bronze" {
+			BossLeague = "3"
+		} else if BossLeague == "Silver" {
+			BossLeague = "6"
+		} else if BossLeague == "Gold" {
+			BossLeague = "9"
+		} else if BossLeague == "Diamond" {
+			BossLeague = "12"
+		}
+		shareCDP.AdditionInfo.BoosType = BossLeague
+		shareCDP.AdditionInfo.HeroChosen = resHeroName
+		shareCDP.AdditionInfo.TotalDamage = strconv.Itoa(TotalDmg)
+		grequests.Post(ApiUrl, &grequests.RequestOptions{
+			JSON: shareCDP,
+		})
+	}
 }
