@@ -14,7 +14,6 @@ import (
 	"strings"
 	"sync"
 	"time"
-
 	"github.com/levigross/grequests"
 	"github.com/tebeka/selenium"
 	"github.com/tebeka/selenium/chrome"
