@@ -292,7 +292,7 @@ func GetReponseBody(sessionId string, requestId string, userName string) (string
 }
 
 func ShareLogToApi(shareCDP SpStruct.ShareCDPFitReturnData, BossName string, BossAbilities []string, BossRandomAbilities []string, BossLeague string, resHeroName string, TotalDmg int) {
-	if TotalDmg >= 1 {
+	if TotalDmg >= 200 {
 		shareCDP.AdditionInfo.Boss = BossName
 		shareCDP.AdditionInfo.ShareToDiscord = "yes"
 		shareCDP.AdditionInfo.Abilities = BossAbilities
