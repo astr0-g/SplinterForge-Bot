@@ -22,7 +22,6 @@ const (
 	ApiUrl = "https://post.splinterforge.xyz/api/data/sp/save"
 )
 
-
 func FetchselectHero(randomAbilities []string, userName string, userKey string, publicAPIEndpoint string, bossName string, splinterforgeAPIEndpoint string) (string, error) {
 	bossID, _, abilities, _ := FetchBossID(bossName, splinterforgeAPIEndpoint)
 	fullAbilities := append(abilities, randomAbilities...)
