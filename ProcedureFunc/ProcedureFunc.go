@@ -416,6 +416,7 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 								TeamHero["uid"] = resHeroName + " hero"
 							}
 						}
+						ColorPrint.PrintWhite(userName, fmt.Sprintf("Auto selecting heroes type: %s for desired boss: %s", resHeroName, bossName))
 					}
 					ColorPrint.PrintWhite(userName, "Participating in battles with current setup...")
 					reFit, err := grequests.Post(fmt.Sprintf("%s/boss/fight_boss", splinterforgeAPIEndpoint), &grequests.RequestOptions{
