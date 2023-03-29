@@ -45,6 +45,17 @@ var (
 )
 
 func init() {
+	for i := 0; i < 1; i++ {
+		w.Add(1)
+		go func() {
+			CaculateTime := 1
+			for {
+				time.Sleep(1 * time.Hour)
+				now := time.Now()
+				fmt.Println("["+now.Format("2006-01-02 15:04:05")+"]", fmt.Sprintf("Splinterforge bot has been running for %v hour", CaculateTime))
+			}
+		}()
+	}
 	PcPlatForm := runtime.GOOS
 	if PcPlatForm == "windows" {
 		ConfigAccountsPath = "config/accounts.txt"
@@ -169,7 +180,7 @@ func initializeUserData() {
 		spinner.Message("reading config.txt..")
 		time.Sleep(500 * time.Millisecond)
 		spinner.Stop()
-		LogFunc.PrintConfigSettings(lineCount-1, headless, threadingLimit, showForgeReward, showAccountDetails, waitForBossRespawn,shareBattleLog, autoSelectCard, autoSelectHero, autoSelectSleepTime)
+		LogFunc.PrintConfigSettings(lineCount-1, headless, threadingLimit, showForgeReward, showAccountDetails, waitForBossRespawn, shareBattleLog, autoSelectCard, autoSelectHero, autoSelectSleepTime)
 		for i := 0; i < len(accountLists); i += threadingLimit {
 			if len(accountLists)-i < threadingLimit {
 				threadingLimit = len(accountLists) - i
