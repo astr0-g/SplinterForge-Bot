@@ -46,7 +46,7 @@ var (
 
 func init() {
 	for i := 0; i < 1; i++ {
-		w.Add(1)
+		s.Add(1)
 		go func() {
 			CaculateTime := 1
 			for {
