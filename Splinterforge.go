@@ -53,6 +53,7 @@ func init() {
 				time.Sleep(1 * time.Hour)
 				now := time.Now()
 				fmt.Println("["+now.Format("2006-01-02 15:04:05")+"]", fmt.Sprintf("Splinterforge bot has been running for %v hour", CaculateTime))
+				CaculateTime ++
 			}
 		}()
 	}
