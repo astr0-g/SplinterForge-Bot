@@ -52,10 +52,11 @@ func FetchselectHero(randomAbilities []string, userName string, userKey string, 
 	if err != nil {
 		return "", err
 	}
+	fmt.Println(responseData)
 	if heroType, ok := responseData["heroType"].(string); ok {
-		if responseData["RecommendHero"].(bool) == false {
-			return "", errors.New("RecommendHero is false")
-		}
+		// if responseData["RecommendHero"].(bool) == false {
+		// 	return "", errors.New("RecommendHero is false")
+		// }
 		heroTypeToChoose := strings.Split(heroType, " ")[0]
 		return heroTypeToChoose, nil
 	}
