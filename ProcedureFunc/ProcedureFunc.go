@@ -151,22 +151,17 @@ func AccountLogin(userName string, postingKey string, wd selenium.WebDriver) boo
 			println("can not change size")
 		}
 		DriverAction.DriverGet("https://splinterforge.io/#/", wd)
-		GameFunc.CheckPopUp(wd, 1000)
-		el, err = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/success-modal/section/div[1]/div[4]/div/button")
-		if err != nil {
-			ColorPrint.PrintRed(userName, "Login Error!")
-			return false
-		}
+		GameFunc.CheckPopUp(wd, 800)
 		el.Click()
 		el, err = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div/div/a/div[1]")
 		if err != nil {
-			ColorPrint.PrintRed(userName, "Login Error!")
+			ColorPrint.PrintRed(userName, "2Login Error!")
 			return false
 		}
 		el.Click()
 		el, err = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/login-modal/div/div/div/div[2]/div[2]/input")
 		if err != nil {
-			ColorPrint.PrintRed(userName, "Login Error!")
+			ColorPrint.PrintRed(userName, "3Login Error!")
 			return false
 		}
 		el.SendKeys(userName)

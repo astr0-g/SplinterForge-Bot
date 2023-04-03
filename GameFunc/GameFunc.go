@@ -18,6 +18,17 @@ import (
 func CheckPopUp(wd selenium.WebDriver, millisecond int) {
 	defer func() {
 	}()
+	wd.SetImplicitWaitTimeout(time.Duration(millisecond) * time.Millisecond)
+	if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/success-modal/section/div[1]/div[4]/div/button"); err == nil {
+		if err = element.Click(); err != nil {
+
+		}
+	}
+	if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/introduction/section/div[1]/div[2]"); err == nil {
+		if err = element.Click(); err != nil {
+
+		}
+	}
 	if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/success-modal/section/div[1]/div[4]/div/button"); err == nil {
 		if err = element.Click(); err != nil {
 
@@ -28,8 +39,6 @@ func CheckPopUp(wd selenium.WebDriver, millisecond int) {
 
 		}
 	}
-	duration := time.Duration(millisecond) * time.Millisecond
-	time.Sleep(duration)
 }
 
 func SelectCards(cardSelection []SpStruct.CardSelection, bossName string, userName string, splinterlandAPIEndpoint string, publicAPIEndpoint string, autoSelectCard bool) ([]SpStruct.CardSelection, bool, error) {
