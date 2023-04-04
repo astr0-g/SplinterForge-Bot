@@ -6,33 +6,36 @@ import (
 	"github.com/tebeka/selenium"
 )
 
-func DriverGet(URL string, wd selenium.WebDriver) {
+func DriverGet(URL string, wd selenium.WebDriver, headless bool) {
 	err := wd.Get(URL)
 	if err != nil {
 		panic(err)
 	}
-	script := `
-	    var imgs = document.getElementsByTagName('img');
-	    for (var i = 0; i < imgs.length; i++) {
-	        imgs[i].parentNode.removeChild(imgs[i]);
-	    }
-	    var style = document.createElement('style');
-	    style.innerHTML = 'img { opacity: 0 }';
-	    document.head.appendChild(style);
-	    var style = document.createElement('style');
-	    style.innerHTML = '* { background-image: none !important; }';
-	    document.head.appendChild(style);
-	    var style = document.createElement('style');
-	    style.innerHTML = '* { color: transparent !important; }';
-	    document.head.appendChild(style);
-	    var style = document.createElement('style');
-	    style.innerHTML = 'img.fade_image { display: none !important; }';
-	    document.head.appendChild(style);
-	    var style = document.createElement('style');
-	    style.innerHTML = '* { transition: paused !important; }';
-	    document.head.appendChild(style);
-	`
-	wd.ExecuteScript(script, nil)
+	if headless {
+		script := `
+			var imgs = document.getElementsByTagName('img');
+			for (var i = 0; i < imgs.length; i++) {
+				imgs[i].parentNode.removeChild(imgs[i]);
+			}
+			var style = document.createElement('style');
+			style.innerHTML = 'img { opacity: 0 }';
+			document.head.appendChild(style);
+			var style = document.createElement('style');
+			style.innerHTML = '* { background-image: none !important; }';
+			document.head.appendChild(style);
+			var style = document.createElement('style');
+			style.innerHTML = '* { color: transparent !important; }';
+			document.head.appendChild(style);
+			var style = document.createElement('style');
+			style.innerHTML = 'img.fade_image { display: none !important; }';
+			document.head.appendChild(style);
+			var style = document.createElement('style');
+			style.innerHTML = '* { transition: paused !important; }';
+			document.head.appendChild(style);
+		`
+		wd.ExecuteScript(script, nil)
+	}
+	
 }
 
 func DriverElementWaitAndClick(wd selenium.WebDriver, xpath string) error {

@@ -52,12 +52,12 @@ func init() {
 	}
 }
 
-func AccountLogin(userName string, postingKey string, wd selenium.WebDriver) bool {
+func AccountLogin(userName string, postingKey string, wd selenium.WebDriver, headless bool) bool {
 	err := wd.SetImplicitWaitTimeout(5 * time.Second)
 	if err != nil {
 		panic(err)
 	}
-	DriverAction.DriverGet("chrome-extension://jcacnejopjdphbnjgfaaobbfafkihpep/popup.html", wd)
+	DriverAction.DriverGet("chrome-extension://jcacnejopjdphbnjgfaaobbfafkihpep/popup.html", wd,headless)
 
 	DriverAction.DriverElementWaitAndClick(wd, "/html/body/div/div/div[4]/div[2]/div[5]/button")
 
@@ -150,12 +150,13 @@ func AccountLogin(userName string, postingKey string, wd selenium.WebDriver) boo
 		if err != nil {
 			println("can not change size")
 		}
-		DriverAction.DriverGet("https://splinterforge.io/#/", wd)
-		GameFunc.CheckPopUp(wd, 800)
+		DriverAction.DriverGet("https://splinterforge.io/#/", wd, headless)
+		GameFunc.CheckPopUp(wd, 1000)
+		wd.ExecuteScript("window.scrollBy(0, -600)", nil)
 		el.Click()
 		el, err = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div/div/a/div[1]")
 		if err != nil {
-			ColorPrint.PrintRed(userName, "2Login Error!")
+			ColorPrint.PrintRed(userName, "Login Error!")
 			return false
 		}
 		el.Click()
@@ -561,9 +562,10 @@ func InitializeDriver(wait bool, userData SpStruct.UserData, headless bool, show
 		os.Exit(1)
 	}
 	defer driver.Quit()
-	loginResult := AccountLogin(userData.UserName, userData.PostingKey, driver)
+	loginResult := AccountLogin(userData.UserName, userData.PostingKey, driver, headless)
 	if loginResult {
 		GameFunc.CheckPopUp(driver, 1000)
+		driver.ExecuteScript("window.scrollBy(0, -600)", nil)
 		AccountBattle(wait, driver, userData.UserName, userData.BossID, headless, userData.HeroesType, userData.TimeSleepInMinute, userData.CardSelection, autoSelectHero, autoSelectCard, autoSelectSleepTime, splinterlandAPIEndpoint, publicAPIEndpoint, splinterforgeAPIEndpoint, showForgeReward, showAccountDetails, waitForBossRespawn, shareBattleLog, s, w, accountLists)
 	} else {
 		driver.Close()
