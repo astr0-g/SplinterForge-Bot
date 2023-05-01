@@ -3,7 +3,7 @@
   <br /><br /><strong>SplinterForge Bot</strong>
 </h1>
 
-[![Latest release](https://img.shields.io/github/v/release/Astr0-G/SplinterForge-Bot?label=Latest%20release&style=social)](https://github.com/Astr0-G/SplinterForge-Bot/releases/tag/v1.0.2)
+[![Latest release](https://img.shields.io/github/v/release/Astr0-G/SplinterForge-Bot?label=Latest%20release&style=social)](https://github.com/Astr0-G/SplinterForge-Bot/releases/tag/v1.0.3)
 [![Stars](https://img.shields.io/github/stars/Astr0-G/SplinterForge-Bot?style=social)](https://github.com/Astr0-G/SplinterForge-Bot/stargazers)
 [![Fork](https://img.shields.io/github/forks/Astr0-G/SplinterForge-Bot?style=social)](https://github.com/Astr0-G/SplinterForge-Bot/network/members)
 [![Watchers](https://img.shields.io/github/watchers/Astr0-G/SplinterForge-Bot?style=social)](https://github.com/Astr0-G/SplinterForge-Bot/watchers)
@@ -28,7 +28,8 @@
     <td><img src="https://img.shields.io/badge/mac-support-blue.svg?style=flat&&labelColor=363D44" alt="Operating systems"/></td>
     <td><img src="https://img.shields.io/badge/multiple%20accounts-working-green.svg?style=flat&&labelColor=363D44" alt="Multiple Accounts"/></td>
     <td><img src="https://img.shields.io/badge/headless-working-green.svg?style=flat&&labelColor=363D44" alt="Headless"/></td>
-    <td><img src="https://img.shields.io/badge/auto%20battle-working-green.svg?style=flat&&labelColor=363D44" alt="Auto"/></td>
+    <td><img src="https://img.shields.io/badge/auto%20battle-working-green.svg?style=flat&&labelColor=363D44" alt="battle"/></td>
+    <td><img src="https://img.shields.io/badge/auto%20reroll-working-green.svg?style=flat&&labelColor=363D44" alt="reroll"/></td>
     <td><img src="https://img.shields.io/badge/free-using-green.svg?style=flat&&labelColor=363D44" alt="Free"/></td>
     
   </tr>
@@ -42,10 +43,10 @@
 
 ## Tutorials
 
-**Install and run SplinterForge Bot on Windows**    
+**Install and run SplinterForge Bot on Windows**  
 https://youtu.be/GwWSIbeLuoA
-   
-**Install and run SplinterForge Bot on Mac Os**    
+
+**Install and run SplinterForge Bot on Mac Os**  
 https://youtu.be/7IcS_jCY9ZA
 
 ## Roadmap
@@ -74,7 +75,7 @@ The goal of the SplinterForge Bot is to provide a lightweight and self-sufficien
 
 # Newest Release Download link
 
-https://github.com/Astr0-G/SplinterForge-Bot/releases/tag/v1.0.2
+https://github.com/Astr0-G/SplinterForge-Bot/releases/tag/v1.0.3
 
 ---
 
