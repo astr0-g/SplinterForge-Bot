@@ -18,9 +18,14 @@ import (
 func CheckPopUp(wd selenium.WebDriver, millisecond int) {
 	defer func() {
 	}()
-	wd.ExecuteScript("window.scrollBy(0, 600)", nil)
+	x := 100
+    y := 200
+    script := fmt.Sprintf("var el = document.elementFromPoint(%d, %d); el.dispatchEvent(new MouseEvent('click'));", x, y)
+    if _, err := wd.ExecuteScript(script, nil); err != nil {
+    }
 	wd.SetImplicitWaitTimeout(time.Duration(millisecond) * time.Millisecond)
-	if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/success-modal/section/div[1]/div[4]/div/button"); err == nil {
+
+	if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[4]/h1"); err == nil {
 		if err = element.Click(); err != nil {
 
 		}

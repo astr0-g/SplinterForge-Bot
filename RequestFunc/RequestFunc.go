@@ -9,6 +9,7 @@ import (
 	"log"
 	"mime/multipart"
 	"net/http"
+	"splinterforge/ColorPrint"
 	"splinterforge/SpStruct"
 	"strconv"
 	"strings"
@@ -63,10 +64,31 @@ func FetchselectHero(randomAbilities []string, userName string, userKey string, 
 	return "", fmt.Errorf("heroType not found in response data")
 }
 
-func FetchBossAbilities(userName string, userKey string, bossName string, splinterforgeAPIEndpoint string) (bossLeague string, abilities []string, randomAbilities []string) {
+func FetchBossAbilities(userName string, userKey string, bossName string, splinterforgeAPIEndpoint string, unwantedAbilities []string) (bossLeague string, abilities []string, randomAbilities []string) {
 	_, bossLeague, abilities, _ = FetchBossID(bossName, splinterforgeAPIEndpoint)
 	FetchRandomAbilites(userName, bossLeague, splinterforgeAPIEndpoint)
 	randomAbilities, _ = FetchRandomAbilitiesForUsername(userName, userKey, bossLeague, splinterforgeAPIEndpoint)
+	for {
+		foundUnwantedAbility := false
+		for _, ability := range randomAbilities {
+			for _, unwanted := range unwantedAbilities {
+				if strings.Contains(ability, unwanted) {
+					ColorPrint.PrintWhite(userName, fmt.Sprintf("Boss Random abilities %s contains unwanted abilities, rerolling random abilities...", randomAbilities))
+					randomAbilities, _ = FetchReRoll(bossLeague, userName, userKey, splinterforgeAPIEndpoint)
+					ColorPrint.PrintWhite(userName, fmt.Sprintf("Boss Random abilities reroll result: %s", randomAbilities))
+					foundUnwantedAbility = true
+					break
+				}
+			}
+			if foundUnwantedAbility {
+				break
+			}
+		}
+		if !foundUnwantedAbility {
+			break
+		}
+	}
+
 	if bossLeague == "t1" {
 		bossLeague = "Bronze"
 	} else if bossLeague == "t2" {
@@ -167,6 +189,46 @@ func FetchBossID(bossName string, splinterforgeAPIEndpoint string) (string, stri
 	}
 
 	return "", "", nil, errors.New("boss not found")
+}
+
+func FetchReRoll(bossLeague string, userName string, userKey string, splinterforgeAPIEndpoint string) ([]string, error) {
+	url := fmt.Sprintf("%s/users/rerollRules", splinterforgeAPIEndpoint)
+
+	postData := SpStruct.RerollPostData{
+		Token: userKey,
+		Type:  bossLeague,
+		User:  userName,
+	}
+
+	jsonData, err := json.Marshal(postData)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	var rerollData SpStruct.RerollResponse
+	err = json.Unmarshal(body, &rerollData)
+	if err != nil {
+		return nil, err
+	}
+	return rerollData.Rules.Rules, nil
 }
 
 func FetchPlayerCard(userName string, splinterlandAPIEndpoint string) ([]int, error) {

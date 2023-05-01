@@ -1,6 +1,6 @@
 ##################General Settings##################
 ## When the HEADLESS option is set to true, the browser will be hidden.
-HEADLESS=true
+HEADLESS=false
 
 ## The bot will initiate a group of THREADING number of threads to work together. 
 ## Once a group finishes its assigned task, the next group will start working.
@@ -13,6 +13,7 @@ SHOW_FORGE_REWARD=true
 SHOW_ACCOUNT_DETAILS=true
 AUTO_WAIT_FOR_BOSS_RESPAWN=true
 SHARE_BATTLE_LOG=true
+UNWANTED_ABILITIES= Against all Odds,Even Odds,Fallen Legendaries,Peasant Infantry,Training Crew 
 
 ###################API Settings####################
 ## Making AUTO_SELECT_HERO is true will auto select the best hero type for the desire boss

@@ -119,7 +119,7 @@ func GetCardSettingData(filePath string, lineNumber int) (string, string, []stri
 	return "", "", nil, nil, 0, nil
 }
 
-func GetConfig(filePath string) (bool, int, bool, bool, bool, bool, bool,bool, bool, string, string, string) {
+func GetConfig(filePath string) (bool, int, bool, bool, bool, bool, bool, bool, bool, []string, string, string, string) {
 	file, err := os.Open(filePath)
 	if err != nil {
 		ColorPrint.PrintRed("SF", "Error Reading Config.txt file")
@@ -141,6 +141,7 @@ func GetConfig(filePath string) (bool, int, bool, bool, bool, bool, bool,bool, b
 		autoSelectSleepTime      bool
 		waitForBossRespawn		 bool
 		shareBattleLog           bool
+		unwantedAbilities        []string
 		splinterforgeAPIEndpoint string
 		splinterlandAPIEndpoint  string
 		publicAPIEndpoint        string
@@ -165,6 +166,8 @@ func GetConfig(filePath string) (bool, int, bool, bool, bool, bool, bool,bool, b
 				waitForBossRespawn = value == "true"
 			case "SHARE_BATTLE_LOG":
 				shareBattleLog = value == "true"
+			case "UNWANTED_ABILITIES":
+				unwantedAbilities = strings.Split(value, ",")
 			case "AUTO_SELECT_CARD":
 				autoSelectCard = value == "true"
 			case "AUTO_SELECT_SLEEPTIME":
@@ -186,7 +189,7 @@ func GetConfig(filePath string) (bool, int, bool, bool, bool, bool, bool,bool, b
 		time.Sleep(10 * time.Second)
 		os.Exit(1)
 	}
-	return headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn,shareBattleLog, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint
+	return headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint
 }
 
 func GetLines(filePath string) (int, error) {

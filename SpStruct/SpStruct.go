@@ -406,7 +406,6 @@ type CDPFitReturnData struct {
 		} `json:"rules"`
 	} `json:"newRules"`
 }
-
 type ShareCDPFitReturnData struct {
 	Date    int64                    `json:"date"`
 	Player  string                   `json:"player"`
@@ -452,4 +451,18 @@ type ShareCDPFitReturnData struct {
 		ShareToDiscord  string   `json:"ShareToDiscord"`
 		BoosType        string   `json:"BoosType"`
 	} `json:"AdditionInfo"`
+}
+type RerollPostData struct {
+	Token string `json:"token"`
+	Type  string `json:"type"`
+	User  string `json:"user"`
+}
+type RerollResponse struct {
+    Message string `json:"message"`
+    Rules   struct {
+        Active   bool     `json:"active"`
+        BossID   string   `json:"boss_id"`
+        Rules    []string `json:"rules"`
+        Rerolls  int      `json:"rerolls"`
+    } `json:"rules"`
 }
