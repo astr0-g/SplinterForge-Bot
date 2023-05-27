@@ -370,6 +370,9 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 				// wd.Close()
 				// s.Add(1)
 				enoughMana := true
+				if wait == true {
+					w.Done()
+				}
 				if autoSelectSleepTime == true && enoughMana == true {
 					ColorPrint.PrintWhite(userName, fmt.Sprintf("this account will enter a state of inactivity for %s minutes based on auto selected info.", mana))
 					time.Sleep(time.Duration(manaused) * time.Minute)
@@ -478,9 +481,7 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 
 				// }()
 
-				if wait == true {
-					w.Done()
-				}
+				
 				wait = false
 			} else {
 				if wait == true {
