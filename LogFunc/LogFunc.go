@@ -66,11 +66,13 @@ func PrintAccountDetails(userName string, name interface{}, key interface{}, spl
 	ColorPrint.PrintWhite(userName, fmt.Sprintf("Account balance %s Forge, current stamina %s / %s.", strconv.FormatFloat(powerRes.Sc.Balance, 'f', 2, 64), strconv.Itoa(powerRes.Stamina.Current), strconv.Itoa(powerRes.Stamina.Max)))
 }
 
-func PrintConfigSettings(totalAccounts int, headless bool, threadingLimit int, showForgeReward bool, showAccountDetails bool, waitForBossRespawn bool, shareBattleLog bool, autoSelectCard bool, autoSelectHero bool, autoSelectSleepTime bool, unwantedAbilities []string) {
+func PrintConfigSettings(totalAccounts int, headless bool, threadingLimit int, showForgeReward bool, showAccountDetails bool, waitForBossRespawn bool, shareBattleLog bool, closeDriverDuringSleep bool, battlex2 bool, autoSelectCard bool, autoSelectHero bool, autoSelectSleepTime bool, unwantedAbilities []string) {
 	data := [][]string{
 		{"TOTAL_ACCOUNTS_LOADED", fmt.Sprint(totalAccounts)},
 		{"HEADLESS", fmt.Sprint(headless)},
 		{"THREADING", fmt.Sprint(threadingLimit)},
+		{"BATTLEX2",fmt.Sprint(battlex2)},
+		{"CLOSE_DRIVER_DURING_SLEEP", fmt.Sprint(closeDriverDuringSleep)},
 		{"SHOW_FORGE_REWARD", fmt.Sprint(showForgeReward)},
 		{"SHOW_ACCOUNT_DETAILS", fmt.Sprint(showAccountDetails)},
 		{"SHARE_BATTLE_LOG", fmt.Sprint(shareBattleLog)},

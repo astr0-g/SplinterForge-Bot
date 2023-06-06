@@ -218,7 +218,7 @@ func Checklogin(userName string, wd selenium.WebDriver) bool {
 	return false
 }
 
-func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId string, headless bool, heroesType string, timeSleepInMinute int, cardSelection []SpStruct.CardSelection, autoSelectHero bool, autoSelectCard bool, autoSelectSleepTime bool, splinterlandAPIEndpoint string, publicAPIEndpoint string, splinterforgeAPIEndpoint string, showForgeReward bool, showAccountDetails bool, waitForBossRespawn bool, shareBattleLog bool, unwantedAbilities []string, s *sync.WaitGroup, w *sync.WaitGroup, accountLists []SpStruct.UserData) {
+func AccountBattle(wait bool, wd selenium.WebDriver, closeDriverDuringSleep bool, userName string, bossId string, headless bool, heroesType string, timeSleepInMinute int, cardSelection []SpStruct.CardSelection, autoSelectHero bool, autoSelectCard bool, autoSelectSleepTime bool, splinterlandAPIEndpoint string, publicAPIEndpoint string, splinterforgeAPIEndpoint string, showForgeReward bool, showAccountDetails bool, waitForBossRespawn bool, shareBattleLog bool, unwantedAbilities []string, battlex2 bool, s *sync.WaitGroup, w *sync.WaitGroup, accountLists []SpStruct.UserData) {
 	for {
 		starttimestamp := time.Now().Unix()
 		// CookiesStatus := true
@@ -273,7 +273,13 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 				fitPostData := SpStruct.FitBossPostData{}
 				fitRes := SpStruct.FitBossRequestsData{}
 				for {
-					el, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/button[1]/div[2]/span")
+					battleDiv := ""
+					if battlex2 {
+						battleDiv = "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[1]/div[2]/button[2]"
+					} else {
+						battleDiv = "/html/body/app/div[1]/slcards/div[5]/button[1]/div[2]/span"
+					}
+					el, err := wd.FindElement(selenium.ByXPATH, battleDiv)
 					if err == nil {
 						el.Click()
 					} else {
@@ -367,7 +373,10 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 					LogFunc.PrintAccountDetails(userName, name, key, splinterforgeAPIEndpoint)
 				}
 				// ColorPrint.PrintGold(userName, "Successful generated Cookies, the account will continue play with this setup.")
-				// wd.Close()
+				if closeDriverDuringSleep{
+					wd.Close()
+				}
+				
 				// s.Add(1)
 				enoughMana := true
 				if wait == true {
@@ -480,8 +489,10 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 					// }
 
 				// }()
-
-				
+				if closeDriverDuringSleep{
+					go	AccountRestartCoroutine(accountLists, false, userName, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, closeDriverDuringSleep, battlex2, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, s, w)
+					return
+				}
 				wait = false
 			} else {
 				if wait == true {
@@ -491,11 +502,13 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 					wd.Close()
 					ColorPrint.PrintYellow(userName, "Insufficient stamina, entering a rest state of inactivity for 1 hour...")
 					time.Sleep(1 * time.Hour)
-					AccountRestartCoroutine(accountLists, false, userName, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, s, w)
+					go	AccountRestartCoroutine(accountLists, false, userName, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, closeDriverDuringSleep, battlex2, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, s, w)
+					return
 				} else if manaused < 30 {
 					wd.Close()
 					ColorPrint.PrintYellow(userName, "Card Selected not meet 30 mana requirements, restarting...")
-					AccountRestartCoroutine(accountLists, false, userName, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, s, w)
+					go	AccountRestartCoroutine(accountLists, false, userName, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, closeDriverDuringSleep, battlex2, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, s, w)
+					return				
 				}
 			}
 		} else {
@@ -505,12 +518,13 @@ func AccountBattle(wait bool, wd selenium.WebDriver, userName string, bossId str
 			wd.Close()
 			ColorPrint.PrintYellow(userName, "Boss is dead, trying in 30 minutes...")
 			time.Sleep(30 * time.Minute)
-			AccountRestartCoroutine(accountLists, false, userName, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, s, w)
+			go	AccountRestartCoroutine(accountLists, false, userName, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, closeDriverDuringSleep, battlex2, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, s, w)
+			return
 		}
 	}
 }
 
-func InitializeDriver(wait bool, userData SpStruct.UserData, headless bool, showForgeReward bool, showAccountDetails bool, autoSelectCard bool, autoSelectHero bool, autoSelectSleepTime bool, waitForBossRespawn bool, shareBattleLog bool, unwantedAbilities []string, splinterforgeAPIEndpoint string, splinterlandAPIEndpoint string, publicAPIEndpoint string, accountLists []SpStruct.UserData, s *sync.WaitGroup, w *sync.WaitGroup) {
+func InitializeDriver(wait bool, userData SpStruct.UserData, headless bool, showForgeReward bool, showAccountDetails bool, autoSelectCard bool, autoSelectHero bool, autoSelectSleepTime bool, waitForBossRespawn bool, shareBattleLog bool, unwantedAbilities []string, closeDriverDuringSleep bool, battlex2 bool, splinterforgeAPIEndpoint string, splinterlandAPIEndpoint string, publicAPIEndpoint string, accountLists []SpStruct.UserData, s *sync.WaitGroup, w *sync.WaitGroup) {
 	ColorPrint.PrintWhite(userData.UserName, "Initializing...")
 	extensionData, err := ioutil.ReadFile(ExtensionPath)
 	if err != nil {
@@ -574,7 +588,7 @@ func InitializeDriver(wait bool, userData SpStruct.UserData, headless bool, show
 	loginResult := AccountLogin(userData.UserName, userData.PostingKey, driver, headless)
 	if loginResult {
 		GameFunc.CheckPopUp(driver, 600)
-		AccountBattle(wait, driver, userData.UserName, userData.BossID, headless, userData.HeroesType, userData.TimeSleepInMinute, userData.CardSelection, autoSelectHero, autoSelectCard, autoSelectSleepTime, splinterlandAPIEndpoint, publicAPIEndpoint, splinterforgeAPIEndpoint, showForgeReward, showAccountDetails, waitForBossRespawn, shareBattleLog, unwantedAbilities, s, w, accountLists)
+		AccountBattle(wait, driver, closeDriverDuringSleep,  userData.UserName, userData.BossID, headless, userData.HeroesType, userData.TimeSleepInMinute, userData.CardSelection, autoSelectHero, autoSelectCard, autoSelectSleepTime, splinterlandAPIEndpoint, publicAPIEndpoint, splinterforgeAPIEndpoint, showForgeReward, showAccountDetails, waitForBossRespawn, shareBattleLog, unwantedAbilities, battlex2, s, w, accountLists)
 	} else {
 		driver.Close()
 		if wait == true {
@@ -582,14 +596,14 @@ func InitializeDriver(wait bool, userData SpStruct.UserData, headless bool, show
 		}
 		ColorPrint.PrintYellow(userData.UserName, "Retrying in 30 seconds...")
 		time.Sleep(30 * time.Second)
-		AccountRestartCoroutine(accountLists, false, userData.UserName, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, s, w)
+		AccountRestartCoroutine(accountLists, false, userData.UserName, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, closeDriverDuringSleep, battlex2, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, s, w)
 	}
 }
 
-func AccountRestartCoroutine(accountLists []SpStruct.UserData, wait bool, userName string, headless bool, showForgeReward bool, showAccountDetails bool, autoSelectCard bool, autoSelectHero bool, autoSelectSleepTime bool, waitForBossRespawn bool, shareBattleLog bool, unwantedAbilities []string, splinterforgeAPIEndpoint string, splinterlandAPIEndpoint string, publicAPIEndpoint string, s *sync.WaitGroup, w *sync.WaitGroup) {
+func AccountRestartCoroutine(accountLists []SpStruct.UserData, wait bool, userName string, headless bool, showForgeReward bool, showAccountDetails bool, autoSelectCard bool, autoSelectHero bool, autoSelectSleepTime bool, waitForBossRespawn bool, shareBattleLog bool, unwantedAbilities []string, closeDriverDuringSleep bool, battlex2 bool, splinterforgeAPIEndpoint string, splinterlandAPIEndpoint string, publicAPIEndpoint string, s *sync.WaitGroup, w *sync.WaitGroup) {
 	for _, v := range accountLists {
 		if v.UserName == userName {
-			InitializeDriver(wait, v, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, accountLists, s, w)
+			InitializeDriver(wait, v, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, closeDriverDuringSleep, battlex2, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, accountLists, s, w)
 		}
 	}
 }

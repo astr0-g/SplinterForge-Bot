@@ -5,10 +5,12 @@ HEADLESS=false
 ## The bot will initiate a group of THREADING number of threads to work together. 
 ## Once a group finishes its assigned task, the next group will start working.
 THREADING=5
+CLOSE_DRIVER_DURING_SLEEP=false
 
 ###############Game Settings################
 ## Choose to show FORGE rewards and other battle results after each battle.
 ## Choose to show Account details such as forge balance and stamina after each battle.
+BATTLEx2=false
 SHOW_FORGE_REWARD=true
 SHOW_ACCOUNT_DETAILS=true
 AUTO_WAIT_FOR_BOSS_RESPAWN=true

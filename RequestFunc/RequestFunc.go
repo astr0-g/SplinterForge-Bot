@@ -69,10 +69,13 @@ func FetchBossAbilities(userName string, userKey string, bossName string, splint
 	FetchRandomAbilites(userName, bossLeague, splinterforgeAPIEndpoint)
 	randomAbilities, _ = FetchRandomAbilitiesForUsername(userName, userKey, bossLeague, splinterforgeAPIEndpoint)
 	for {
+		if (len(unwantedAbilities) == 1 && unwantedAbilities[0] == "") {
+			break
+		}
 		foundUnwantedAbility := false
 		for _, ability := range randomAbilities {
 			for _, unwanted := range unwantedAbilities {
-				if strings.Contains(ability, unwanted) {
+				if strings.Contains(strings.ToLower(ability), strings.ToLower(unwanted)) {
 					ColorPrint.PrintWhite(userName, fmt.Sprintf("Boss Random abilities %s contains unwanted abilities, rerolling random abilities...", randomAbilities))
 					randomAbilities, _ = FetchReRoll(bossLeague, userName, userKey, splinterforgeAPIEndpoint)
 					ColorPrint.PrintWhite(userName, fmt.Sprintf("Boss Random abilities reroll result: %s", randomAbilities))
