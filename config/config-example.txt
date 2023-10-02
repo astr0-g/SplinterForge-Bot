@@ -16,6 +16,7 @@ SHOW_ACCOUNT_DETAILS=true
 AUTO_WAIT_FOR_BOSS_RESPAWN=true
 SHARE_BATTLE_LOG=true
 UNWANTED_ABILITIES= Against all Odds,Even Odds,Fallen Legendaries,Peasant Infantry,Training Crew 
+RANDOM_BOSSES=false
 
 ###################API Settings####################
 ## Making AUTO_SELECT_HERO is true will auto select the best hero type for the desire boss

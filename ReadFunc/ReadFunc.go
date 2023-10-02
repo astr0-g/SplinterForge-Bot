@@ -119,7 +119,7 @@ func GetCardSettingData(filePath string, lineNumber int) (string, string, []stri
 	return "", "", nil, nil, 0, nil
 }
 
-func GetConfig(filePath string) (bool, int, bool, bool, bool, bool, bool, bool, bool, []string, bool, bool, string, string, string) {
+func GetConfig(filePath string) (bool, int, bool, bool, bool, bool, bool, bool, bool, []string, bool, bool, string, string, string, bool) {
 	file, err := os.Open(filePath)
 	if err != nil {
 		ColorPrint.PrintRed("SF", "Error Reading Config.txt file")
@@ -147,6 +147,7 @@ func GetConfig(filePath string) (bool, int, bool, bool, bool, bool, bool, bool, 
 		splinterforgeAPIEndpoint string
 		splinterlandAPIEndpoint  string
 		publicAPIEndpoint        string
+		randomBosses			 bool
 	)
 
 	for scanner.Scan() {
@@ -186,6 +187,8 @@ func GetConfig(filePath string) (bool, int, bool, bool, bool, bool, bool, bool, 
 				splinterlandAPIEndpoint = value
 			case "PUBLIC_API_ENDPOINT":
 				publicAPIEndpoint = value
+			case "RANDOM_BOSSES":
+				randomBosses = value == "true"
 			}
 		}
 	}
@@ -195,7 +198,7 @@ func GetConfig(filePath string) (bool, int, bool, bool, bool, bool, bool, bool, 
 		time.Sleep(10 * time.Second)
 		os.Exit(1)
 	}
-	return headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, closeDriverDuringSleep, battlex2, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint
+	return headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, closeDriverDuringSleep, battlex2, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, randomBosses
 }
 
 func GetLines(filePath string) (int, error) {

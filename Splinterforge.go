@@ -37,6 +37,7 @@ var (
 	shareBattleLog           = false
 	closeDriverDuringSleep   = false
 	battlex2                 = false
+	randomBosses             = false
 	unwantedAbilities        []string
 	splinterforgeAPIEndpoint = ""
 	splinterlandAPIEndpoint  = ""
@@ -64,7 +65,7 @@ func init() {
 	if PcPlatForm == "windows" {
 		ConfigAccountsPath = "config/accounts.txt"
 		ConfigCardSettingPath = "config/cardSettings.txt"
-		headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, closeDriverDuringSleep, battlex2, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint = ReadFunc.GetConfig("config/config.txt")
+		headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, closeDriverDuringSleep, battlex2, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, randomBosses = ReadFunc.GetConfig("config/config.txt")
 	} else if PcPlatForm == "darwin" {
 		path, err := os.Executable()
 		if err != nil {
@@ -78,7 +79,7 @@ func init() {
 		}
 		ConfigAccountsPath = RealPath + "/config/accounts.txt"
 		ConfigCardSettingPath = RealPath + "/config/cardSettings.txt"
-		headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, closeDriverDuringSleep, battlex2, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint = ReadFunc.GetConfig(RealPath + "/config/config.txt")
+		headless, threadingLimit, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, closeDriverDuringSleep, battlex2, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint , randomBosses = ReadFunc.GetConfig(RealPath + "/config/config.txt")
 
 	}
 }
@@ -183,14 +184,14 @@ func initializeUserData() {
 		spinner.Message("reading config.txt..")
 		time.Sleep(500 * time.Millisecond)
 		spinner.Stop()
-		LogFunc.PrintConfigSettings(lineCount-1, headless, threadingLimit, showForgeReward, showAccountDetails, waitForBossRespawn, shareBattleLog, closeDriverDuringSleep, battlex2, autoSelectCard, autoSelectHero, autoSelectSleepTime, unwantedAbilities)
+		LogFunc.PrintConfigSettings(lineCount-1, headless, threadingLimit, showForgeReward, showAccountDetails, waitForBossRespawn, shareBattleLog, closeDriverDuringSleep, battlex2, autoSelectCard, autoSelectHero, autoSelectSleepTime, unwantedAbilities, randomBosses)
 		for i := 0; i < len(accountLists); i += threadingLimit {
 			if len(accountLists)-i < threadingLimit {
 				threadingLimit = len(accountLists) - i
 			}
 			for j := 0; j < threadingLimit; j++ {
 				w.Add(1)
-				go ProcedureFunc.InitializeDriver(true, accountLists[i+j], headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, closeDriverDuringSleep, battlex2, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, accountLists, s, w)
+				go ProcedureFunc.InitializeDriver(true, accountLists[i+j], headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, closeDriverDuringSleep, battlex2, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, accountLists, randomBosses,  s, w)
 			}
 			w.Wait()
 			LogFunc.PrintInfo()
