@@ -151,7 +151,7 @@ func AccountLogin(userName string, postingKey string, wd selenium.WebDriver, hea
 			println("can not change size")
 		}
 		DriverAction.DriverGet("https://splinterforge.io/#/", wd, headless)
-		GameFunc.CheckPopUp(wd, 500)
+		GameFunc.CheckPopUp(wd, 500, false, "")
 		el.Click()
 		el, err = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div/div/a/div[1]")
 		if err != nil {
@@ -241,7 +241,8 @@ func AccountBattle(wait bool, wd selenium.WebDriver, closeDriverDuringSleep bool
 			printData := [][]string{}
 			selectResult := true
 			bossLeague, bossAbilities, bossRandomAbilities := RequestFunc.FetchBossAbilities(userName, key.(string), bossName, splinterforgeAPIEndpoint, unwantedAbilities)
-			heroTypechoosed := GameFunc.SelectHero(heroesType, name.(string), key.(string), bossRandomAbilities, wd, autoSelectHero, publicAPIEndpoint, bossName, splinterforgeAPIEndpoint)
+            time.Sleep(5 * time.Second)
+            heroTypechoosed := GameFunc.SelectHero(heroesType, name.(string), key.(string), bossRandomAbilities, wd, autoSelectHero, publicAPIEndpoint, bossName, splinterforgeAPIEndpoint)
 			for _, selection := range cardSelection {
 				for i, playingSummoner := range selection.PlayingSummoners {
 					result := GameFunc.SelectSummoners(userName, seletedNumOfSummoners, playingSummoner.PlayingSummonersDiv, wd)
@@ -553,6 +554,7 @@ func InitializeDriver(wait bool, userData SpStruct.UserData, headless bool, show
 			"--disable-translate",
 			"--disable-popup-blocking",
 			"--disable-infobars",
+			"--ignore-certificate-errors",
 			// "--disable-gpu",
 			"--disable-blink-features=AutomationControlled",
 			"--mute-audio",
@@ -591,10 +593,25 @@ func InitializeDriver(wait bool, userData SpStruct.UserData, headless bool, show
 		os.Exit(1)
 	}
 	defer driver.Quit()
+	script := `
+		const clearCache = async () => {
+			const {Network} = require('chrome-remote-interface/lib/devtools');
+			const client = await Network();
+			await client.Network.clearBrowserCache();
+			client.close();
+		};
+		clearCache();
+	`
+
+	// Execute the script
+	if _, err := driver.ExecuteScript(script, nil); err != nil {
+		ColorPrint.PrintYellow(userData.UserName, "Failed to clean cache...")
+	}
 	loginResult := AccountLogin(userData.UserName, userData.PostingKey, driver, headless)
 	if loginResult {
-		GameFunc.CheckPopUp(driver, 600)
-		AccountBattle(wait, driver, closeDriverDuringSleep,  userData.UserName, userData.BossID, headless, userData.HeroesType, userData.TimeSleepInMinute, userData.CardSelection, autoSelectHero, autoSelectCard, autoSelectSleepTime, splinterlandAPIEndpoint, publicAPIEndpoint, splinterforgeAPIEndpoint, showForgeReward, showAccountDetails, waitForBossRespawn, shareBattleLog, unwantedAbilities, battlex2, randomBosses, s, w, accountLists)
+        // time.Sleep(1 * time.Second)
+        GameFunc.CheckPopUp(driver, 600, true, userData.UserName)
+        AccountBattle(wait, driver, closeDriverDuringSleep, userData.UserName, userData.BossID, headless, userData.HeroesType, userData.TimeSleepInMinute, userData.CardSelection, autoSelectHero, autoSelectCard, autoSelectSleepTime, splinterlandAPIEndpoint, publicAPIEndpoint, splinterforgeAPIEndpoint, showForgeReward, showAccountDetails, waitForBossRespawn, shareBattleLog, unwantedAbilities, battlex2, randomBosses, s, w, accountLists)
 	} else {
 		driver.Close()
 		if wait == true {

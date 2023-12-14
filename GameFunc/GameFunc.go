@@ -15,7 +15,7 @@ import (
 	"splinterforge/RequestFunc"
 )
 
-func CheckPopUp(wd selenium.WebDriver, millisecond int) {
+func CheckPopUp(wd selenium.WebDriver, millisecond int, claim bool, username string) {
 	defer func() {
 	}()
 	x := 100
@@ -24,6 +24,25 @@ func CheckPopUp(wd selenium.WebDriver, millisecond int) {
     if _, err := wd.ExecuteScript(script, nil); err != nil {
     }
 	wd.SetImplicitWaitTimeout(time.Duration(millisecond) * time.Millisecond)
+
+	if claim {
+		startTime := time.Now()
+		ColorPrint.PrintWhite(
+			username, fmt.Sprintf("checking daily reward up to 10 seconds..."))
+        for {
+            if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/daily-modal/section/div[1]/h1/span/button"); err == nil {
+                if err = element.Click(); err == nil {
+                    ClaimDaily(wd, millisecond, username)
+                    break
+                }
+
+            }
+            time.Sleep(500 * time.Millisecond)
+            if time.Since(startTime) > 10*time.Second {
+                break
+            }
+        }
+    }
 
 	if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[4]/h1"); err == nil {
 		if err = element.Click(); err != nil {
@@ -273,4 +292,21 @@ func SelectMonsters(userName string, seletedNumOfMonsters int, cardDiv string, w
 	wd.ExecuteScript("window.scrollBy(0, -10000)", nil)
 	time.Sleep(1 * time.Second)
 	return result
+}
+
+func ClaimDaily(wd selenium.WebDriver, millisecond int, username string) {
+    if element, err := wd.FindElement(selenium.ByXPATH, "//div/div/div/button[contains(., 'Claim')]"); err == nil {
+        if err = element.Click(); err == nil {
+            //fmt.Println("Claimed daily")
+            ColorPrint.PrintGreen(username, "Claimed daily")
+        }
+    } else {
+        //fmt.Println("No daily to claim")
+        ColorPrint.PrintGold(username, "No daily to claim")
+    }
+    if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/daily-modal/section/div[1]/div[2]"); err == nil {
+        if err = element.Click(); err != nil {
+
+        }
+    }
 }
