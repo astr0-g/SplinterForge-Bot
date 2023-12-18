@@ -32,7 +32,6 @@ var (
 	RealPath      = ""
 )
 
-
 func init() {
 	if PcPlatForm == "windows" {
 		ExtensionPath = "data/hivekeychain.crx"
@@ -57,7 +56,7 @@ func AccountLogin(userName string, postingKey string, wd selenium.WebDriver, hea
 	if err != nil {
 		panic(err)
 	}
-	DriverAction.DriverGet("chrome-extension://jcacnejopjdphbnjgfaaobbfafkihpep/popup.html", wd,headless)
+	DriverAction.DriverGet("chrome-extension://jcacnejopjdphbnjgfaaobbfafkihpep/popup.html", wd, headless)
 
 	DriverAction.DriverElementWaitAndClick(wd, "/html/body/div/div/div[4]/div[2]/div[5]/button")
 
@@ -241,8 +240,8 @@ func AccountBattle(wait bool, wd selenium.WebDriver, closeDriverDuringSleep bool
 			printData := [][]string{}
 			selectResult := true
 			bossLeague, bossAbilities, bossRandomAbilities := RequestFunc.FetchBossAbilities(userName, key.(string), bossName, splinterforgeAPIEndpoint, unwantedAbilities)
-            time.Sleep(5 * time.Second)
-            heroTypechoosed := GameFunc.SelectHero(heroesType, name.(string), key.(string), bossRandomAbilities, wd, autoSelectHero, publicAPIEndpoint, bossName, splinterforgeAPIEndpoint)
+			time.Sleep(5 * time.Second)
+			heroTypechoosed := GameFunc.SelectHero(heroesType, name.(string), key.(string), bossRandomAbilities, wd, autoSelectHero, publicAPIEndpoint, bossName, splinterforgeAPIEndpoint)
 			for _, selection := range cardSelection {
 				for i, playingSummoner := range selection.PlayingSummoners {
 					result := GameFunc.SelectSummoners(userName, seletedNumOfSummoners, playingSummoner.PlayingSummonersDiv, wd)
@@ -284,7 +283,8 @@ func AccountBattle(wait bool, wd selenium.WebDriver, closeDriverDuringSleep bool
 					if battlex2 {
 						battleDiv = "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[1]/div[2]/button[2]"
 					} else {
-						battleDiv = "/html/body/app/div[1]/slcards/div[5]/button[1]/div[2]/span"
+						battleDiv = "/html/body/app/div[1]/slcards/div[5]/button[1]/div[1]/span"
+
 					}
 					el, err := wd.FindElement(selenium.ByXPATH, battleDiv)
 					if err == nil {
@@ -380,10 +380,10 @@ func AccountBattle(wait bool, wd selenium.WebDriver, closeDriverDuringSleep bool
 					LogFunc.PrintAccountDetails(userName, name, key, splinterforgeAPIEndpoint)
 				}
 				// ColorPrint.PrintGold(userName, "Successful generated Cookies, the account will continue play with this setup.")
-				if closeDriverDuringSleep{
+				if closeDriverDuringSleep {
 					wd.Close()
 				}
-				
+
 				// s.Add(1)
 				enoughMana := true
 				if wait == true {
@@ -397,107 +397,107 @@ func AccountBattle(wait bool, wd selenium.WebDriver, closeDriverDuringSleep bool
 					time.Sleep(time.Duration(timeSleepInMinute) * time.Minute)
 				}
 				// go func() {
-					// for {
-						// if autoSelectSleepTime == true && enoughMana == true {
-						// 	ColorPrint.PrintWhite(userName, fmt.Sprintf("this account will enter a state of inactivity for %s minutes based on auto selected info.", mana))
-						// 	time.Sleep(time.Duration(manaused) * time.Minute)
-						// } else if autoSelectSleepTime == false && enoughMana == true {
-						// 	ColorPrint.PrintWhite(userName, fmt.Sprintf("According to your configuration, this account will enter a state of inactivity for %s minutes.", strconv.Itoa(timeSleepInMinute)))
-						// 	time.Sleep(time.Duration(timeSleepInMinute) * time.Minute)
-						// }
-						// BossLeague, BossAbilities, BossRandomAbilities := RequestFunc.FetchBossAbilities(name.(string), key.(string), bossName, splinterforgeAPIEndpoint, unwantedAbilities)
-						// heroTypes := [3]string{"Warrior", "Wizard", "Ranger"}
-						// heroIndex, _ := strconv.Atoi(heroesType)
-						// heroTypePreferred := heroTypes[heroIndex-1]
-						// var resHeroName string
-						// var FetchHeroErr error
-						// if autoSelectHero {
-						// 	resHeroName, FetchHeroErr = RequestFunc.FetchselectHero(BossRandomAbilities, name.(string), key.(string), heroTypePreferred, publicAPIEndpoint, bossName, splinterforgeAPIEndpoint)
-						// 	if FetchHeroErr == nil {
-						// 		TeamIndex := len(fitPostData.Team) - 1
-						// 		TeamHero := fitPostData.Team[TeamIndex]
-						// 		stats, ok := TeamHero["stats"].(map[string]interface{})
-						// 		if ok {
-						// 			stats["attack"] = [4]int{0, 0, 0, 0}
-						// 			stats["ranged"] = [4]int{0, 0, 0, 0}
-						// 			stats["magic"] = [4]int{0, 0, 0, 0}
-						// 			TeamHero["stats"] = stats
-						// 			TeamHero["uid"] = resHeroName + " hero"
-						// 		}
-						// 	} else {
-						// 		resHeroName := heroTypes[heroIndex-1]
-						// 		TeamIndex := len(fitPostData.Team) - 1
-						// 		TeamHero := fitPostData.Team[TeamIndex]
-						// 		stats, ok := TeamHero["stats"].(map[string]interface{})
-						// 		if ok {
-						// 			stats["attack"] = [4]int{0, 0, 0, 0}
-						// 			stats["ranged"] = [4]int{0, 0, 0, 0}
-						// 			stats["magic"] = [4]int{0, 0, 0, 0}
-						// 			TeamHero["stats"] = stats
-						// 			TeamHero["uid"] = resHeroName + " hero"
-						// 		}
-						// 	}
-						// 	ColorPrint.PrintWhite(userName, fmt.Sprintf("Auto selecting heroes type: %s for desired boss: %s", resHeroName, bossName))
-						// }
-						// ColorPrint.PrintWhite(userName, "Participating in battles with current setup...")
-						// reFit, err := grequests.Post(fmt.Sprintf("%s/boss/fight_boss", splinterforgeAPIEndpoint), &grequests.RequestOptions{
-						// 	JSON: fitPostData,
-						// 	Headers: map[string]string{
-						// 		"Content-Type": fitRes.Message.Params.Request.Headers.ContentType,
-						// 		"User-Agent":   fitRes.Message.Params.Request.Headers.UserAgent,
-						// 	},
-						// })
-						// if err == nil {
-						// 	LogFunc.PrintResultBox(userName, printData, selectResult, bossName, BossLeague, resHeroName, BossAbilities, BossRandomAbilities)
-						// 	if strings.Contains(reFit.String(), "not enough mana!") {
-						// 		ColorPrint.PrintYellow(userName, "Insufficient stamina, entering a rest state of inactivity for 1 hour...")
-						// 		time.Sleep(1 * time.Hour)
-						// 		enoughMana = false
-						// 		continue
-						// 	} else if strings.Contains(reFit.String(), "decoded message was invalid") {
-						// 		CookiesStatus = false
-						// 		ColorPrint.PrintRed(userName, "Cookies Error, Restarting...")
-						// 		break
-						// 	} else if strings.Contains(reFit.String(), "totalDmg") && strings.Contains(reFit.String(), "points") {
-						// 		ColorPrint.PrintGreen(userName, "Battle was successful!")
-						// 		var fitReturnData = SpStruct.FitReturnData{}
-						// 		json.Unmarshal(reFit.Bytes(), &fitReturnData)
-						// 		if showForgeReward {
-						// 			ColorPrint.PrintCyan(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", strconv.Itoa(fitReturnData.TotalDmg), strconv.Itoa(fitReturnData.Points), fitReturnData.Rewards[0].Qty, fitReturnData.Rewards[1].Qty))
-						// 		}
-						// 		if shareBattleLog {
-						// 			go func() {
-						// 				var ShareLog = SpStruct.ShareCDPFitReturnData{}
-						// 				json.Unmarshal(reFit.Bytes(), &ShareLog)
-						// 				RequestFunc.ShareLogToApi(ShareLog, bossName, BossAbilities, BossRandomAbilities, BossLeague, resHeroName, fitReturnData.TotalDmg)
-						// 			}()
-						// 		}
-						// 		time.Sleep(5 * time.Second)
-						// 		if showAccountDetails {
-						// 			LogFunc.PrintAccountDetails(userName, name, key, splinterforgeAPIEndpoint)
-						// 		}
-						// 		enoughMana = true
-						// 		continue
-						// 	} else {
-						// 		fmt.Println(reFit.String())
-						// 		Unexpected = true
-						// 		ColorPrint.PrintRed(userName, "Unexpected Error, Restarting...")
-						// 		break
-						// 	}
-						// } else {
-						// 	ColorPrint.PrintRed(userName, "Game server API error, Restarting...")
-						// 	Unexpected = true
-						// 	break
-						// }
-					// }
-					// if !CookiesStatus || Unexpected {
-					// 	AccountRestartCoroutine(accountLists, false, userName, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, s, w)
-					// 	s.Done()
-					// }
+				// for {
+				// if autoSelectSleepTime == true && enoughMana == true {
+				// 	ColorPrint.PrintWhite(userName, fmt.Sprintf("this account will enter a state of inactivity for %s minutes based on auto selected info.", mana))
+				// 	time.Sleep(time.Duration(manaused) * time.Minute)
+				// } else if autoSelectSleepTime == false && enoughMana == true {
+				// 	ColorPrint.PrintWhite(userName, fmt.Sprintf("According to your configuration, this account will enter a state of inactivity for %s minutes.", strconv.Itoa(timeSleepInMinute)))
+				// 	time.Sleep(time.Duration(timeSleepInMinute) * time.Minute)
+				// }
+				// BossLeague, BossAbilities, BossRandomAbilities := RequestFunc.FetchBossAbilities(name.(string), key.(string), bossName, splinterforgeAPIEndpoint, unwantedAbilities)
+				// heroTypes := [3]string{"Warrior", "Wizard", "Ranger"}
+				// heroIndex, _ := strconv.Atoi(heroesType)
+				// heroTypePreferred := heroTypes[heroIndex-1]
+				// var resHeroName string
+				// var FetchHeroErr error
+				// if autoSelectHero {
+				// 	resHeroName, FetchHeroErr = RequestFunc.FetchselectHero(BossRandomAbilities, name.(string), key.(string), heroTypePreferred, publicAPIEndpoint, bossName, splinterforgeAPIEndpoint)
+				// 	if FetchHeroErr == nil {
+				// 		TeamIndex := len(fitPostData.Team) - 1
+				// 		TeamHero := fitPostData.Team[TeamIndex]
+				// 		stats, ok := TeamHero["stats"].(map[string]interface{})
+				// 		if ok {
+				// 			stats["attack"] = [4]int{0, 0, 0, 0}
+				// 			stats["ranged"] = [4]int{0, 0, 0, 0}
+				// 			stats["magic"] = [4]int{0, 0, 0, 0}
+				// 			TeamHero["stats"] = stats
+				// 			TeamHero["uid"] = resHeroName + " hero"
+				// 		}
+				// 	} else {
+				// 		resHeroName := heroTypes[heroIndex-1]
+				// 		TeamIndex := len(fitPostData.Team) - 1
+				// 		TeamHero := fitPostData.Team[TeamIndex]
+				// 		stats, ok := TeamHero["stats"].(map[string]interface{})
+				// 		if ok {
+				// 			stats["attack"] = [4]int{0, 0, 0, 0}
+				// 			stats["ranged"] = [4]int{0, 0, 0, 0}
+				// 			stats["magic"] = [4]int{0, 0, 0, 0}
+				// 			TeamHero["stats"] = stats
+				// 			TeamHero["uid"] = resHeroName + " hero"
+				// 		}
+				// 	}
+				// 	ColorPrint.PrintWhite(userName, fmt.Sprintf("Auto selecting heroes type: %s for desired boss: %s", resHeroName, bossName))
+				// }
+				// ColorPrint.PrintWhite(userName, "Participating in battles with current setup...")
+				// reFit, err := grequests.Post(fmt.Sprintf("%s/boss/fight_boss", splinterforgeAPIEndpoint), &grequests.RequestOptions{
+				// 	JSON: fitPostData,
+				// 	Headers: map[string]string{
+				// 		"Content-Type": fitRes.Message.Params.Request.Headers.ContentType,
+				// 		"User-Agent":   fitRes.Message.Params.Request.Headers.UserAgent,
+				// 	},
+				// })
+				// if err == nil {
+				// 	LogFunc.PrintResultBox(userName, printData, selectResult, bossName, BossLeague, resHeroName, BossAbilities, BossRandomAbilities)
+				// 	if strings.Contains(reFit.String(), "not enough mana!") {
+				// 		ColorPrint.PrintYellow(userName, "Insufficient stamina, entering a rest state of inactivity for 1 hour...")
+				// 		time.Sleep(1 * time.Hour)
+				// 		enoughMana = false
+				// 		continue
+				// 	} else if strings.Contains(reFit.String(), "decoded message was invalid") {
+				// 		CookiesStatus = false
+				// 		ColorPrint.PrintRed(userName, "Cookies Error, Restarting...")
+				// 		break
+				// 	} else if strings.Contains(reFit.String(), "totalDmg") && strings.Contains(reFit.String(), "points") {
+				// 		ColorPrint.PrintGreen(userName, "Battle was successful!")
+				// 		var fitReturnData = SpStruct.FitReturnData{}
+				// 		json.Unmarshal(reFit.Bytes(), &fitReturnData)
+				// 		if showForgeReward {
+				// 			ColorPrint.PrintCyan(userName, fmt.Sprintf("You made battle damage %s, battle points %s, reward Forgium %0.3f, reward Electrum %0.2f.", strconv.Itoa(fitReturnData.TotalDmg), strconv.Itoa(fitReturnData.Points), fitReturnData.Rewards[0].Qty, fitReturnData.Rewards[1].Qty))
+				// 		}
+				// 		if shareBattleLog {
+				// 			go func() {
+				// 				var ShareLog = SpStruct.ShareCDPFitReturnData{}
+				// 				json.Unmarshal(reFit.Bytes(), &ShareLog)
+				// 				RequestFunc.ShareLogToApi(ShareLog, bossName, BossAbilities, BossRandomAbilities, BossLeague, resHeroName, fitReturnData.TotalDmg)
+				// 			}()
+				// 		}
+				// 		time.Sleep(5 * time.Second)
+				// 		if showAccountDetails {
+				// 			LogFunc.PrintAccountDetails(userName, name, key, splinterforgeAPIEndpoint)
+				// 		}
+				// 		enoughMana = true
+				// 		continue
+				// 	} else {
+				// 		fmt.Println(reFit.String())
+				// 		Unexpected = true
+				// 		ColorPrint.PrintRed(userName, "Unexpected Error, Restarting...")
+				// 		break
+				// 	}
+				// } else {
+				// 	ColorPrint.PrintRed(userName, "Game server API error, Restarting...")
+				// 	Unexpected = true
+				// 	break
+				// }
+				// }
+				// if !CookiesStatus || Unexpected {
+				// 	AccountRestartCoroutine(accountLists, false, userName, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, s, w)
+				// 	s.Done()
+				// }
 
 				// }()
-				if closeDriverDuringSleep{
-					go	AccountRestartCoroutine(accountLists, false, userName, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, closeDriverDuringSleep, battlex2, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, randomBosses, s, w)
+				if closeDriverDuringSleep {
+					go AccountRestartCoroutine(accountLists, false, userName, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, closeDriverDuringSleep, battlex2, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, randomBosses, s, w)
 					return
 				}
 				wait = false
@@ -509,13 +509,13 @@ func AccountBattle(wait bool, wd selenium.WebDriver, closeDriverDuringSleep bool
 					wd.Close()
 					ColorPrint.PrintYellow(userName, "Insufficient stamina, entering a rest state of inactivity for 1 hour...")
 					time.Sleep(1 * time.Hour)
-					go	AccountRestartCoroutine(accountLists, false, userName, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, closeDriverDuringSleep, battlex2, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, randomBosses, s, w)
+					go AccountRestartCoroutine(accountLists, false, userName, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, closeDriverDuringSleep, battlex2, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, randomBosses, s, w)
 					return
 				} else if manaused < 30 {
 					wd.Close()
 					ColorPrint.PrintYellow(userName, "Card Selected not meet 30 mana requirements, restarting...")
-					go	AccountRestartCoroutine(accountLists, false, userName, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, closeDriverDuringSleep, battlex2, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, randomBosses, s, w)
-					return				
+					go AccountRestartCoroutine(accountLists, false, userName, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, closeDriverDuringSleep, battlex2, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, randomBosses, s, w)
+					return
 				}
 			}
 		} else {
@@ -525,7 +525,7 @@ func AccountBattle(wait bool, wd selenium.WebDriver, closeDriverDuringSleep bool
 			wd.Close()
 			ColorPrint.PrintYellow(userName, "Boss is dead, trying in 30 minutes...")
 			time.Sleep(30 * time.Minute)
-			go	AccountRestartCoroutine(accountLists, false, userName, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, closeDriverDuringSleep, battlex2, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, randomBosses, s, w)
+			go AccountRestartCoroutine(accountLists, false, userName, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, closeDriverDuringSleep, battlex2, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, randomBosses, s, w)
 			return
 		}
 	}
@@ -609,9 +609,9 @@ func InitializeDriver(wait bool, userData SpStruct.UserData, headless bool, show
 	}
 	loginResult := AccountLogin(userData.UserName, userData.PostingKey, driver, headless)
 	if loginResult {
-        // time.Sleep(1 * time.Second)
-        GameFunc.CheckPopUp(driver, 600, true, userData.UserName)
-        AccountBattle(wait, driver, closeDriverDuringSleep, userData.UserName, userData.BossID, headless, userData.HeroesType, userData.TimeSleepInMinute, userData.CardSelection, autoSelectHero, autoSelectCard, autoSelectSleepTime, splinterlandAPIEndpoint, publicAPIEndpoint, splinterforgeAPIEndpoint, showForgeReward, showAccountDetails, waitForBossRespawn, shareBattleLog, unwantedAbilities, battlex2, randomBosses, s, w, accountLists)
+		// time.Sleep(1 * time.Second)
+		GameFunc.CheckPopUp(driver, 600, true, userData.UserName)
+		AccountBattle(wait, driver, closeDriverDuringSleep, userData.UserName, userData.BossID, headless, userData.HeroesType, userData.TimeSleepInMinute, userData.CardSelection, autoSelectHero, autoSelectCard, autoSelectSleepTime, splinterlandAPIEndpoint, publicAPIEndpoint, splinterforgeAPIEndpoint, showForgeReward, showAccountDetails, waitForBossRespawn, shareBattleLog, unwantedAbilities, battlex2, randomBosses, s, w, accountLists)
 	} else {
 		driver.Close()
 		if wait == true {
