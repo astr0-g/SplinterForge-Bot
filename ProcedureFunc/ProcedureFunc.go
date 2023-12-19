@@ -283,8 +283,7 @@ func AccountBattle(wait bool, wd selenium.WebDriver, closeDriverDuringSleep bool
 					if battlex2 {
 						battleDiv = "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[1]/div[2]/button[2]"
 					} else {
-						battleDiv = "/html/body/app/div[1]/slcards/div[5]/button[1]/div[1]/span"
-
+						battleDiv = "/html/body/app/div[1]/slcards/div[5]/button[1]/div[1]/span[contains(., 'Battle')]"
 					}
 					el, err := wd.FindElement(selenium.ByXPATH, battleDiv)
 					if err == nil {
@@ -336,6 +335,7 @@ func AccountBattle(wait bool, wd selenium.WebDriver, closeDriverDuringSleep bool
 					}
 
 				}
+				time.Sleep(1 * time.Second)
 				checkTime := 0
 				if postJsonResult == false && showForgeReward == true {
 					err := DriverAction.DriverElementWaitAndClick(wd, "/html/body/app/div[1]/slcards/div[4]/div[2]/button[2]")
