@@ -242,6 +242,20 @@ func AccountBattle(wait bool, wd selenium.WebDriver, closeDriverDuringSleep bool
 			bossLeague, bossAbilities, bossRandomAbilities := RequestFunc.FetchBossAbilities(userName, key.(string), bossName, splinterforgeAPIEndpoint, unwantedAbilities)
 			time.Sleep(5 * time.Second)
 			heroTypechoosed := GameFunc.SelectHero(heroesType, name.(string), key.(string), bossRandomAbilities, wd, autoSelectHero, publicAPIEndpoint, bossName, splinterforgeAPIEndpoint)
+			// Workaround for bug in game not showing all sumoners
+			firstSummonerXpath := "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[2]/div[1]/div[1]/div/slcard-selector/div/img"
+			succes, _ := DriverAction.DriverwaitForElement(wd, firstSummonerXpath)
+			if succes {
+				el, err := wd.FindElement(selenium.ByXPATH, firstSummonerXpath)
+				if err == nil {
+					el.MoveTo(0, 0)
+					el.Click()
+					time.Sleep(300 * time.Millisecond)
+					el.Click()
+					time.Sleep(300 * time.Millisecond)
+				}
+			}
+			// End of workaround
 			for _, selection := range cardSelection {
 				for i, playingSummoner := range selection.PlayingSummoners {
 					result := GameFunc.SelectSummoners(userName, seletedNumOfSummoners, playingSummoner.PlayingSummonersDiv, wd)
