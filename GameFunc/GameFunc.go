@@ -30,12 +30,9 @@ func CheckPopUp(wd selenium.WebDriver, millisecond int, claim bool, username str
 		ColorPrint.PrintWhite(
 			username, fmt.Sprintf("checking daily reward up to 10 seconds..."))
 		for {
-			if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/daily-modal/section/div[1]/h1/span/button"); err == nil {
-				if err = element.Click(); err == nil {
-					ClaimDaily(wd, millisecond, username)
-					break
-				}
-
+			if _, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/daily-modal/section/div[1]"); err == nil {
+				ClaimDaily(wd, millisecond, username)
+				break
 			}
 			time.Sleep(500 * time.Millisecond)
 			if time.Since(startTime) > 10*time.Second {
@@ -161,8 +158,9 @@ func SelectHero(heroesType string, userName string, userKey string, randomAbilit
 	bossXpath := "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/section/div"
 	el, _ := wd.FindElement(selenium.ByXPATH, bossXpath)
 	el.Click()
-	bossSelectXpath := fmt.Sprintf("%s/ul/li[%s]", bossXpath, heroesType)
+	bossSelectXpath := fmt.Sprintf("%s/ul/li[%s]/span", bossXpath, heroesType)
 	el, _ = wd.FindElement(selenium.ByXPATH, bossSelectXpath)
+	el.MoveTo(0, 0)
 	el.Click()
 	// ColorPrint.PrintWhite(userName, fmt.Sprintf("Selected hero type: %s", hero_type))
 	return hero_type
@@ -297,6 +295,10 @@ func SelectMonsters(userName string, seletedNumOfMonsters int, cardDiv string, w
 
 func ClaimDaily(wd selenium.WebDriver, millisecond int, username string) {
 	time.Sleep(1 * time.Second)
+	if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/daily-modal/section/div[1]/h1/span/button[contains(., '30 Day Rewards')]"); err == nil {
+		if err = element.Click(); err == nil {
+		}
+	}
 
 	if element, err := wd.FindElement(selenium.ByXPATH, "//div/div/div/button[contains(., 'Claim')]"); err == nil {
 		element.MoveTo(0, 0)
@@ -319,12 +321,7 @@ func OpenQuest(wd selenium.WebDriver, millisecond int, username string) {
 	if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[1]/a[7]/div[1]/img"); err == nil {
 		if err = element.Click(); err == nil {
 			time.Sleep(1 * time.Second)
-			if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/daily-modal/section/div[1]/h1/span/button"); err == nil {
-				if err = element.Click(); err == nil {
-
-					ClaimDaily(wd, millisecond, username)
-				}
-			}
+			ClaimDaily(wd, millisecond, username)
 		}
 	}
 }
