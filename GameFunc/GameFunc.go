@@ -19,30 +19,28 @@ func CheckPopUp(wd selenium.WebDriver, millisecond int, claim bool, username str
 	defer func() {
 	}()
 	x := 100
-    y := 200
-    script := fmt.Sprintf("var el = document.elementFromPoint(%d, %d); el.dispatchEvent(new MouseEvent('click'));", x, y)
-    if _, err := wd.ExecuteScript(script, nil); err != nil {
-    }
+	y := 200
+	script := fmt.Sprintf("var el = document.elementFromPoint(%d, %d); el.dispatchEvent(new MouseEvent('click'));", x, y)
+	if _, err := wd.ExecuteScript(script, nil); err != nil {
+	}
 	wd.SetImplicitWaitTimeout(time.Duration(millisecond) * time.Millisecond)
 
 	if claim {
 		startTime := time.Now()
 		ColorPrint.PrintWhite(
 			username, fmt.Sprintf("checking daily reward up to 10 seconds..."))
-        for {
-            if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/daily-modal/section/div[1]/h1/span/button"); err == nil {
-                if err = element.Click(); err == nil {
-                    ClaimDaily(wd, millisecond, username)
-                    break
-                }
-
-            }
-            time.Sleep(500 * time.Millisecond)
-            if time.Since(startTime) > 10*time.Second {
-                break
-            }
-        }
-    }
+		for {
+			if _, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/daily-modal/section/div[1]"); err == nil {
+				ClaimDaily(wd, millisecond, username)
+				break
+			}
+			time.Sleep(500 * time.Millisecond)
+			if time.Since(startTime) > 10*time.Second {
+				OpenQuest(wd, millisecond, username)
+				break
+			}
+		}
+	}
 
 	if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[4]/h1"); err == nil {
 		if err = element.Click(); err != nil {
@@ -131,7 +129,7 @@ func SelectCards(cardSelection []SpStruct.CardSelection, bossName string, userNa
 }
 
 func SelectHero(heroesType string, userName string, userKey string, randomAbilities []string, wd selenium.WebDriver, auto_select_hero bool, publicAPIEndpoint string, bossName string, splinterforgeAPIEndpoint string) string {
-	heroTypes := [3]string{"Warrior", "Wizard", "Ranger"}
+	heroTypes := [3]string{"Ranger", "Warrior", "Wizard"}
 	index, _ := strconv.Atoi(heroesType)
 	heroTypePreferred := heroTypes[index-1]
 	if auto_select_hero {
@@ -160,8 +158,9 @@ func SelectHero(heroesType string, userName string, userKey string, randomAbilit
 	bossXpath := "/html/body/app/div[1]/slcards/div[5]/section[1]/div/div[1]/div[2]/section/div"
 	el, _ := wd.FindElement(selenium.ByXPATH, bossXpath)
 	el.Click()
-	bossSelectXpath := fmt.Sprintf("%s/ul/li[%s]", bossXpath, heroesType)
+	bossSelectXpath := fmt.Sprintf("%s/ul/li[%s]/span", bossXpath, heroesType)
 	el, _ = wd.FindElement(selenium.ByXPATH, bossSelectXpath)
+	el.MoveTo(0, 0)
 	el.Click()
 	// ColorPrint.PrintWhite(userName, fmt.Sprintf("Selected hero type: %s", hero_type))
 	return hero_type
@@ -187,7 +186,7 @@ func SelectBoss(userName string, bossIdToSelect string, waitForBossRespawn bool,
 						bossName, _ := element.Text()
 						return bossName, bossIdToSelect, nil
 					}
-				} else if waitForBossRespawn{
+				} else if waitForBossRespawn {
 					return "", "", fmt.Errorf("boss is dead and wait...")
 				} else {
 					ColorPrint.PrintRed(userName, "The selected boss has been defeated, selecting another one automatically...")
@@ -295,18 +294,34 @@ func SelectMonsters(userName string, seletedNumOfMonsters int, cardDiv string, w
 }
 
 func ClaimDaily(wd selenium.WebDriver, millisecond int, username string) {
-    if element, err := wd.FindElement(selenium.ByXPATH, "//div/div/div/button[contains(., 'Claim')]"); err == nil {
-        if err = element.Click(); err == nil {
-            //fmt.Println("Claimed daily")
-            ColorPrint.PrintGreen(username, "Claimed daily")
-        }
-    } else {
-        //fmt.Println("No daily to claim")
-        ColorPrint.PrintGold(username, "No daily to claim")
-    }
-    if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/daily-modal/section/div[1]/div[2]"); err == nil {
-        if err = element.Click(); err != nil {
+	time.Sleep(1 * time.Second)
+	if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/daily-modal/section/div[1]/h1/span/button[contains(., '30 Day Rewards')]"); err == nil {
+		if err = element.Click(); err == nil {
+		}
+	}
 
-        }
-    }
+	if element, err := wd.FindElement(selenium.ByXPATH, "//div/div/div/button[contains(., 'Claim')]"); err == nil {
+		element.MoveTo(0, 0)
+		if err = element.Click(); err == nil {
+			//fmt.Println("Claimed daily")
+			ColorPrint.PrintGreen(username, "Claimed daily")
+		}
+	} else {
+		//fmt.Println("No daily to claim")
+		ColorPrint.PrintGold(username, "No daily to claim")
+	}
+	if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/daily-modal/section/div[1]/div[2]"); err == nil {
+		if err = element.Click(); err != nil {
+
+		}
+	}
+}
+
+func OpenQuest(wd selenium.WebDriver, millisecond int, username string) {
+	if element, err := wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/div[1]/app-header/section/div[4]/div[2]/div[1]/a[7]/div[1]/img"); err == nil {
+		if err = element.Click(); err == nil {
+			time.Sleep(1 * time.Second)
+			ClaimDaily(wd, millisecond, username)
+		}
+	}
 }

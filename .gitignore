@@ -18,3 +18,6 @@ rsrc -manifest manifest.xml -ico ICO/dual_gold_new.ico
 /Splinterforge -MAC Version
 /Splinterforge
 .DS_Store
+Splinterforge.exe
+accounts copy.txt
+cardSettings copy.txt
