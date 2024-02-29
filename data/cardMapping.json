@@ -1,558 +1,1949 @@
 [
-  { "1": "Goblin Shaman[Fire]" },
-  { "2": "Giant Roc[Fire]" },
-  { "3": "Kobold Miner[Fire]" },
-  { "4": "Fire Beetle[Fire]" },
-  { "5": "Malric Inferno[Fire]" },
-  { "6": "Serpentine Soldier[Fire]" },
-  { "7": "Pit Ogre[Fire]" },
-  { "8": "Cerberus[Fire]" },
-  { "9": "Fire Demon[Fire]" },
-  { "10": "Serpent of the Flame[Fire]" },
-  { "11": "Elemental Phoenix[Fire]" },
-  { "12": "Pirate Captain[Water]" },
-  { "13": "Spineback Turtle[Water]" },
-  { "14": "Crustacean King[Water]" },
-  { "15": "Sabre Shark[Water]" },
-  { "16": "Alric Stormbringer[Water]" },
-  { "17": "Medusa[Water]" },
-  { "18": "Water Elemental[Water]" },
-  { "19": "Frozen Soldier[Water]" },
-  { "20": "Mischievous Mermaid[Water]" },
-  { "21": "Naga Warrior[Water]" },
-  { "22": "Frost Giant[Water]" },
-  { "23": "Flesh Golem[Earth]" },
-  { "24": "Goblin Sorcerer[Earth]" },
-  { "25": "Rexxie[Earth]" },
-  { "26": "Minotaur Warrior[Earth]" },
-  { "27": "Lyanna Natura[Earth]" },
-  { "28": "Earth Elemental[Earth]" },
-  { "29": "Stone Golem[Earth]" },
-  { "30": "Stonesplitter Orc[Earth]" },
-  { "31": "Magi of the Forest[Earth]" },
-  { "32": "Swamp Thing[Earth]" },
-  { "33": "Spirit of the Forest[Earth]" },
-  { "34": "Divine Healer[White]" },
-  { "35": "Feral Spirit[White]" },
-  { "36": "Silvershield Knight[White]" },
-  { "37": "Silvershield Warrior[White]" },
-  { "38": "Tyrus Paladium[White]" },
-  { "39": "Peacebringer[White]" },
-  { "40": "Silvershield Paladin[White]" },
-  { "41": "Clay Golem[White]" },
-  { "42": "Defender of Truth[White]" },
-  { "43": "Air Elemental[White]" },
-  { "44": "Angel of Light[White]" },
-  { "45": "Animated Corpse[Death]" },
-  { "46": "Haunted Spider[Death]" },
-  { "47": "Skeleton Assassin[Death]" },
-  { "48": "Spineback Wolf[Death]" },
-  { "49": "Zintar Mortalis[Death]" },
-  { "50": "Haunted Spirit[Death]" },
-  { "51": "Twisted Jester[Death]" },
-  { "52": "Undead Priest[Death]" },
-  { "53": "Dark Enchantress[Death]" },
-  { "54": "Screaming Banshee[Death]" },
-  { "55": "Lord of Darkness[Death]" },
-  { "56": "Selenia Sky[Gold]" },
-  { "57": "Lightning Dragon[Gold]" },
-  { "58": "Chromatic Dragon[Gold]" },
-  { "59": "Gold Dragon[Gold]" },
-  { "60": "Peaceful Giant[Neutral]" },
-  { "61": "Grumpy Dwarf[Neutral]" },
-  { "62": "Elven Cutthroat[Neutral]" },
-  { "63": "Centaur[Neutral]" },
-  { "64": "Cocatrice[Neutral]" },
-  { "65": "Cyclops[Neutral]" },
-  { "66": "Enchanted Pixie[Neutral]" },
-  { "67": "Raging Impaler[Neutral]" },
-  { "68": "Magi Sphinx[Neutral]" },
-  { "69": "Hydra[Neutral]" },
-  { "70": "Talia Firestorm[Fire]" },
-  { "71": "Xia Seachan[Water]" },
-  { "72": "Xander Foxwood[Earth]" },
-  { "73": "Kiara Lightbringer[White]" },
-  { "74": "Jarlax the Undead[Death]" },
-  { "75": "Dragon Whelp[Gold]" },
-  { "76": "Royal Dragon Archer[Gold]" },
-  { "77": "Shin-Lo[Gold]" },
-  { "78": "Neb Seni[Gold]" },
-  { "79": "Highland Archer[Neutral]" },
-  { "80": "Rusty Android[Neutral]" },
-  { "81": "Hobgoblin[Neutral]" },
-  { "82": "Lord Arianthus[Neutral]" },
-  { "83": "Sea Genie[Water]" },
-  { "84": "Divine Sorceress[White]" },
-  { "85": "Mushroom Seer[Earth]" },
-  { "86": "Vampire[Death]" },
-  { "87": "Flame Imp[Fire]" },
-  { "88": "Daria Dragonscale[Gold]" },
-  { "89": "Sacred Unicorn[White]" },
-  { "90": "Wood Nymph[Earth]" },
-  { "91": "Creeping Ooze[Neutral]" },
-  { "92": "Phantom Soldier[Death]" },
-  { "93": "Pirate Archer[Water]" },
-  { "94": "Naga Fire Wizard[Fire]" },
-  { "95": "Brownie[Earth]" },
-  { "96": "Silvershield Archers[White]" },
-  { "97": "Goblin Mech[Neutral]" },
-  { "98": "Ruler of the Seas[Water]" },
-  { "99": "Skeletal Warrior[Death]" },
-  { "100": "Imp Bowman[Fire]" },
-  { "101": "Crystal Werewolf[White]" },
-  { "102": "Javelin Thrower[Earth]" },
-  { "103": "Sea Monster[Water]" },
-  { "104": "Prismatic Energy[Neutral]" },
-  { "105": "Undead Minotaur[Death]" },
-  { "106": "Exploding Dwarf[Fire]" },
-  { "107": "Manticore[Gold]" },
-  { "108": "Black Dragon[Gold]" },
-  { "109": "Crypt Mancer[Death]" },
-  { "110": "Plado Emberstorm[Fire]" },
-  { "111": "Valnamor[Water]" },
-  { "112": "Prince Rennyn[Earth]" },
-  { "113": "The Peakrider[White]" },
-  { "114": "Delwyn Dragonscale[Gold]" },
-  { "115": "Dragonling Bowman[Gold]" },
-  { "116": "Fiendish Harpy[Gold]" },
-  { "117": "Red Dragon[Gold]" },
-  { "118": "Armorsmith[White]" },
-  { "119": "Silvershield Bard[White]" },
-  { "120": "Goblin Chef[Earth]" },
-  { "121": "Minotaur Warlord[Earth]" },
-  { "122": "Electric Eels[Water]" },
-  { "123": "Mermaid Healer[Water]" },
-  { "124": "Undead Archer[Death]" },
-  { "125": "Corrupted Pegasus[Death]" },
-  { "126": "Molten Ogre[Fire]" },
-  { "127": "Lord of Fire[Fire]" },
-  { "128": "Enchanted Defender[Neutral]" },
-  { "129": "Dwarven Wizard[Neutral]" },
-  { "130": "Archmage Arius[Gold]" },
-  { "131": "Furious Chicken[Neutral]" },
-  { "132": "Fallen Specter[Death]" },
-  { "133": "Beetle Queen[Fire]" },
-  { "134": "Naga Windmaster[Water]" },
-  { "135": "Maggots[Death]" },
-  { "136": "Cursed Slimeball[Death]" },
-  { "137": "Giant Scorpion[Death]" },
-  { "138": "Undead Badger[Death]" },
-  { "139": "Dark Astronomer[Death]" },
-  { "140": "Bone Golem[Death]" },
-  { "141": "Death Elemental[Death]" },
-  { "142": "Soulstorm[Death]" },
-  { "143": "Darkest Mage[Death]" },
-  { "144": "Dark Ha'on[Death]" },
-  { "145": "Contessa L'ament[Death]" },
-  { "146": "Cave Slug[White]" },
-  { "147": "Crystal Jaguar[White]" },
-  { "148": "Lone Boatman[White]" },
-  { "149": "Herbalist[White]" },
-  { "150": "Truthspeaker[White]" },
-  { "151": "Luminous Eagle[White]" },
-  { "152": "Shieldbearer[White]" },
-  { "153": "Light Elemental[White]" },
-  { "154": "Thunderbird[White]" },
-  { "155": "High Priest Darius[White]" },
-  { "156": "Mother Khala[White]" },
-  { "157": "Kobold Bruiser[Fire]" },
-  { "158": "Serpentine Spy[Fire]" },
-  { "159": "Magma Troll[Fire]" },
-  { "160": "Goblin Fireballer[Fire]" },
-  { "161": "Fire Elemental[Fire]" },
-  { "162": "Living Lava[Fire]" },
-  { "163": "Spark Pixies[Fire]" },
-  { "164": "Ferexia General[Fire]" },
-  { "165": "Pyromaniac[Fire]" },
-  { "166": "Magnor[Fire]" },
-  { "167": "Pyre[Fire]" },
-  { "168": "Feasting Seaweed[Water]" },
-  { "169": "Albatross[Water]" },
-  { "170": "Tortisian Fighter[Water]" },
-  { "171": "Sniping Narwhal[Water]" },
-  { "172": "Ice Pixie[Water]" },
-  { "173": "Giant Squid[Water]" },
-  { "174": "Serpent of Eld[Water]" },
-  { "175": "Coral Wraith[Water]" },
-  { "176": "Azmare Harpoonist[Water]" },
-  { "177": "Phantom of the Abyss[Water]" },
-  { "178": "Bortus[Water]" },
-  { "179": "Goblin Thief[Earth]" },
-  { "180": "Failed Summoner[Earth]" },
-  { "181": "Biceratops[Earth]" },
-  { "182": "Orc Sergeant[Earth]" },
-  { "183": "Khmer Princess[Earth]" },
-  { "184": "Unicorn Mustang[Earth]" },
-  { "185": "Child of the Forest[Earth]" },
-  { "186": "Mitica Headhunter[Earth]" },
-  { "187": "Sporcerer[Earth]" },
-  { "188": "Kron the Undying[Earth]" },
-  { "189": "Wizard of Eastwood[Earth]" },
-  { "190": "Elven Defender[Neutral]" },
-  { "191": "Horny Toad[Neutral]" },
-  { "192": "Mantoid[Neutral]" },
-  { "193": "Parasitic Growth[Neutral]" },
-  { "194": "Elven Mystic[Neutral]" },
-  { "195": "Goblin Chariot[Neutral]" },
-  { "196": "Tower Griffin[Neutral]" },
-  { "197": "War Chaang[Neutral]" },
-  { "198": "Tortisian Chief[Neutral]" },
-  { "199": "Cornealus[Neutral]" },
-  { "200": "Camila Sungazer[Gold]" },
-  { "201": "The Vigilator[Gold]" },
-  { "202": "Scale Doctor[Gold]" },
-  { "203": "Dragon Jumper[Gold]" },
-  { "204": "Gloridax Magus[Gold]" },
-  { "205": "Prince Julian[Gold]" },
-  { "206": "Boogeyman[Death]" },
-  { "207": "Spirit Miner[Neutral]" },
-  { "208": "Battle Orca[Water]" },
-  { "209": "Chain Golem[Neutral]" },
-  { "210": "Diamond Dragon[Gold]" },
-  { "211": "Gloridax Guardian[Gold]" },
-  { "212": "Fire Spitter[Gold]" },
-  { "213": "The Kraken[Water]" },
-  { "214": "Ettin Spearman[Fire]" },
-  { "215": "Octopider[Death]" },
-  { "216": "Silvershield Assassin[White]" },
-  { "217": "Baby Unicorn[White]" },
-  { "218": "Gelatinous Cube[Neutral]" },
-  { "219": "Gremlin Blaster[Neutral]" },
-  { "220": "Screeching Vulture[Earth]" },
-  { "221": "Spirit Shaman[Earth]" },
-  { "222": "Zalran Efreet[Fire]" },
-  { "223": "Serpentine Mystic[Gold]" },
-  { "224": "Drake of Arnak[Gold]" },
-  { "225": "Barking Spider[Earth]" },
-  { "226": "Nectar Queen[Earth]" },
-  { "227": "Flame Monkey[Fire]" },
-  { "228": "Pyromancer[Fire]" },
-  { "229": "Undead Rexx[Death]" },
-  { "230": "Shadowy Presence[Death]" },
-  { "231": "Torhilo the Frozen[Water]" },
-  { "232": "Wave Runner[Water]" },
-  { "233": "Warrior of Peace[White]" },
-  { "234": "Evangelist[White]" },
-  { "235": "Mimosa Nightshade[Death]" },
-  { "236": "Yodin Zaku[Fire]" },
-  { "237": "Halfling Alchemist[Neutral]" },
-  { "238": "Mighty Dricken[Gold]" },
-  { "239": "Chanseus the Great[White]" },
-  { "240": "Kretch Tallevor[Gold]" },
-  { "241": "Onyx Sentinel[Neutral]" },
-  { "242": "Sand Worm[Neutral]" },
-  { "243": "Silvershield Sheriff[White]" },
-  { "244": "Bila the Radiant[White]" },
-  { "245": "Grim Reaper[Death]" },
-  { "246": "Phantasm[Death]" },
-  { "247": "Fineas Rage[Fire]" },
-  { "248": "Ant Miners[Fire]" },
-  { "249": "Spirit Druid Grog[Earth]" },
-  { "250": "Captain's Ghost[Water]" },
-  { "251": "Kelp Initiate[Water]" },
-  { "252": "Gloridax Soldier[Gold]" },
-  { "253": "Centauri Mage[Earth]" },
-  { "254": "Lir Deepswimmer[Water]" },
-  { "255": "Robo-Dragon Knight[Gold]" },
-  { "256": "Ancient Lich[Death]" },
-  { "257": "Vera Salacia[Water]" },
-  { "258": "Owster Rotwell[Death]" },
-  { "259": "Mylor Crowling[Earth]" },
-  { "260": "Qid Yuff[Fire]" },
-  { "261": "Lorna Shine[White]" },
-  { "262": "Brighton Bloom[Gold]" },
-  { "263": "Poseidon[Water]" },
-  { "264": "Frost Lion[Water]" },
-  { "265": "Caladuum[Fire]" },
-  { "266": "Flamesmith[Fire]" },
-  { "267": "Cthulhu[Death]" },
-  { "268": "Marrow's Ghost[Death]" },
-  { "269": "Kralus[White]" },
-  { "270": "Lunakari Mistress[White]" },
-  { "271": "Oaken Behemoth[Earth]" },
-  { "272": "Goblin Dartling[Earth]" },
-  { "273": "Battering Ram[Neutral]" },
-  { "274": "Naga Brute[Gold]" },
-  { "275": "Dragon Spirit[Gold]" },
-  { "276": "Grenadier[Neutral]" },
-  { "277": "Lensmaster[White]" },
-  { "278": "Scarred Llama Mage[Earth]" },
-  { "279": "Beatrix Ironhand[Earth]" },
-  { "280": "Axemaster[Water]" },
-  { "281": "Charlok Minotaur[Fire]" },
-  { "282": "Dark Ferryman[Death]" },
-  { "283": "Chain Spinner[White]" },
-  { "284": "Harvester[Earth]" },
-  { "285": "Nightmare[Death]" },
-  { "286": "Almo Cambio[Neutral]" },
-  { "287": "Demented Shark[Water]" },
-  { "288": "Temple Priest[White]" },
-  { "289": "Efreet Elder[Fire]" },
-  { "290": "Theorosa Nightshade[Death]" },
-  { "291": "Byzantine Kitty[Gold]" },
-  { "292": "Goblin Firemage[Fire]" },
-  { "293": "Lobstradamus[Water]" },
-  { "294": "The Gorlodon[Death]" },
-  { "295": "Hero of Beyond[White]" },
-  { "296": "Two Gun Pete[Water]" },
-  { "297": "Epona[Earth]" },
-  { "298": "Aganju[Fire]" },
-  { "299": "Chimney Wallstop[Fire]" },
-  { "300": "Krash Wanderford[Fire]" },
-  { "301": "Orella Abadon[Fire]" },
-  { "302": "Sarius[Fire]" },
-  { "303": "Gorth[Fire]" },
-  { "304": "Fina Voxom[Fire]" },
-  { "305": "Alva the Crusher[Water]" },
-  { "306": "Isgald Vorst[Water]" },
-  { "307": "Alfredo[Water]" },
-  { "308": "Relenor Cleaver[Water]" },
-  { "309": "Edith Emberstar[Water]" },
-  { "310": "Flagulon Reine[Water]" },
-  { "311": "Bertrol Gobson[Earth]" },
-  { "312": "Katrelba Gobson[Earth]" },
-  { "313": "Cutter Brieze[Earth]" },
-  { "314": "Palidon Rakk[Earth]" },
-  { "315": "Quora Towershead[Earth]" },
-  { "316": "Jini Guise[Earth]" },
-  { "317": "Helmet Kharafax[White]" },
-  { "318": "Hugo Strongsword[White]" },
-  { "319": "Ajax Lightfoot[White]" },
-  { "320": "Captain Katie[White]" },
-  { "321": "Marisol Contuma[White]" },
-  { "322": "Sola Ranjell[White]" },
-  { "323": "Whistling Damon[Death]" },
-  { "324": "Witch of Warwick[Death]" },
-  { "325": "Kotriphus Bayne[Death]" },
-  { "326": "Liza Fox[Death]" },
-  { "327": "Trapp Falloway[Death]" },
-  { "328": "Xulax Nightwind[Death]" },
-  { "329": "Larissa Kerato[Gold]" },
-  { "330": "Tatiana Blayde[Neutral]" },
-  { "331": "Venari Heatsmith[Fire]" },
-  { "332": "Exploding Rats[Fire]" },
-  { "333": "Lava Launcher[Fire]" },
-  { "334": "Pelacor Mercenary[Earth]" },
-  { "335": "Venari Seedsmith[Earth]" },
-  { "336": "Djinn Biljka[Earth]" },
-  { "337": "Pelacor Bandit[Water]" },
-  { "338": "Venari Wavesmith[Water]" },
-  { "339": "Djinn Oshannus[Water]" },
-  { "340": "Pelacor Deceiver[Death]" },
-  { "341": "Venari Bonesmith[Death]" },
-  { "342": "Harklaw[Death]" },
-  { "343": "Pelacor Conjurer[White]" },
-  { "344": "Venari Crystalsmith[White]" },
-  { "345": "Djinn Renova[White]" },
-  { "346": "Naga Assassin[Gold]" },
-  { "347": "Twilight Basilisk[Gold]" },
-  { "348": "Djinn Chwala[Gold]" },
-  { "349": "Gargoya Lion[Neutral]" },
-  { "350": "Gargoya Devil[Neutral]" },
-  { "351": "Uraeus[Neutral]" },
-  { "352": "Doctor Blight[Neutral]" },
-  { "353": "Carrion Shade[Death]" },
-  { "354": "Riftwing[Death]" },
-  { "355": "Shadow Snitch[Death]" },
-  { "356": "Crypt Beetle[Death]" },
-  { "357": "Silent Sha-vi[Death]" },
-  { "358": "Soul Strangler[Death]" },
-  { "359": "Life Sapper[Death]" },
-  { "360": "Dhampir Stalker[Death]" },
-  { "361": "Cursed Windeku[Death]" },
-  { "362": "Magi Necrosi[Death]" },
-  { "363": "Insidious Warlock[Death]" },
-  { "364": "Weirding Warrior[Death]" },
-  { "365": "Djinn Muirat[Death]" },
-  { "366": "Corpse Fiend[Death]" },
-  { "367": "Mycelic Morphoid[Earth]" },
-  { "368": "Venari Knifer[Earth]" },
-  { "369": "Venari Scout[Earth]" },
-  { "370": "Hill Giant[Earth]" },
-  { "371": "Goblin Psychic[Earth]" },
-  { "372": "Mycelic Slipspawn[Earth]" },
-  { "373": "Regal Peryton[Earth]" },
-  { "374": "Goblin Tower[Earth]" },
-  { "375": "Mycelic Infantry[Earth]" },
-  { "376": "Grund[Earth]" },
-  { "377": "Hunter Jarx[Earth]" },
-  { "378": "Acid Shooter[Earth]" },
-  { "379": "Queen Mycelia[Earth]" },
-  { "380": "Fungus Fiend[Earth]" },
-  { "381": "Hardy Stonefish[Water]" },
-  { "382": "Kulu Swimhunter[Water]" },
-  { "383": "Cruel Sethropod[Water]" },
-  { "384": "Flying Squid[Water]" },
-  { "385": "Deeplurker[Water]" },
-  { "386": "Angelic Mandarin[Water]" },
-  { "387": "Merdaali Guardian[Water]" },
-  { "388": "Diemonshark[Water]" },
-  { "389": "River Nymph[Water]" },
-  { "390": "Nerissa Tridawn[Water]" },
-  { "391": "Wave Brood[Water]" },
-  { "392": "Igor Darkspear[Water]" },
-  { "393": "River Hellondale[Water]" },
-  { "394": "Torrent Fiend[Water]" },
-  { "395": "Radiated Scorcher[Fire]" },
-  { "396": "Lava Spider[Fire]" },
-  { "397": "Radiated Brute[Fire]" },
-  { "398": "Scavo Chemist[Fire]" },
-  { "399": "Antoid Platoon[Fire]" },
-  { "400": "Scavo Firebolt[Fire]" },
-  { "401": "Tenyii Striker[Fire]" },
-  { "402": "Djinn Apprentice[Fire]" },
-  { "403": "Molten Ash Golem[Fire]" },
-  { "404": "Forgotten One[Fire]" },
-  { "405": "Tusk the Wide[Fire]" },
-  { "406": "Djinn Inferni[Fire]" },
-  { "407": "Ifrit Rising[Fire]" },
-  { "408": "Scorch Fiend[Fire]" },
-  { "409": "Gargoya Scrapper[White]" },
-  { "410": "Sunkai Harvester[White]" },
-  { "411": "Stitch Leech[White]" },
-  { "412": "Blinding Reflector[White]" },
-  { "413": "Chaos Knight[White]" },
-  { "414": "Celestial Harpy[White]" },
-  { "415": "Time Mage[White]" },
-  { "416": "Portal Spinner[White]" },
-  { "417": "Pelacor Arbalest[White]" },
-  { "418": "Temporal Master[White]" },
-  { "419": "Prismologist[White]" },
-  { "420": "Dax Paragon[White]" },
-  { "421": "Adelade Brightwing[White]" },
-  { "422": "Soul Fiend[White]" },
-  { "423": "Supply Runner[Neutral]" },
-  { "424": "Scavo Hireling[Neutral]" },
-  { "425": "Disintegrator[Neutral]" },
-  { "426": "Chaos Agent[Neutral]" },
-  { "427": "Xenith Archer[Neutral]" },
-  { "428": "Xenith Monk[Neutral]" },
-  { "429": "Venari Spellsmith[Neutral]" },
-  { "430": "Magi of Chaos[Neutral]" },
-  { "431": "Gem Meteor[Neutral]" },
-  { "432": "Legionnaire Alvar[Neutral]" },
-  { "433": "Chaos Dragon[Gold]" },
-  { "434": "Desert Dragon[Gold]" },
-  { "435": "Zyvax Vuul[Gold]" },
-  { "436": "Void Dragon[Gold]" },
-  { "437": "Kelya Frendul[Water]" },
-  { "438": "Thaddius Brood[Death]" },
-  { "439": "Obsidian[Earth]" },
-  { "440": "Tarsa[Fire]" },
-  { "441": "General Sloan[White]" },
-  { "442": "Quix the Devious[Gold]" },
-  { "443": "Baakjira[Water]" },
-  { "444": "Uriel the Purifier[White]" },
-  { "445": "Lira the Dark[Death]" },
-  { "446": "Iza the Fanged[Earth]" },
-  { "447": "Grum Flameblade[Fire]" },
-  { "448": "Spirit Hoarder[Neutral]" },
-  { "449": "Waka Spiritblade[Death]" },
-  { "450": "Carnage Titan[Gold]" },
-  { "451": "Vampire Bat[Earth]" },
-  { "452": "Merdhampir[Water]" },
-  { "453": "Ever-Hungry Skull[Death]" },
-  { "454": "Blood Maker[Fire]" },
-  { "455": "Vulguine[White]" },
-  { "456": "Vampiric Blossom[Earth]" },
-  { "457": "Dhampir Infiltrator[Gold]" },
-  { "458": "Revealer[Death]" },
-  { "459": "Tide Biter[Water]" },
-  { "460": "Jared Scar[White]" },
-  { "461": "Countess Sinash[Fire]" },
-  { "462": "Venator Kinjo[Neutral]" },
-  { "463": "Grandmaster Rathe[White]" },
-  { "464": "Conqueror Jacek[Fire]" },
-  { "465": "Bramble Pixie[Earth]" },
-  { "466": "Lichen Beast[Earth]" },
-  { "467": "Uloth Dhampir[Earth]" },
-  { "468": "Suidae Shaman[Earth]" },
-  { "469": "Runemancer Florre[Earth]" },
-  { "470": "Coastal Nymph[Water]" },
-  { "471": "Lemell Refugee[Water]" },
-  { "472": "Sea Stalker[Water]" },
-  { "473": "Water Caller[Water]" },
-  { "474": "Runemancer Kye[Water]" },
-  { "475": "Night Ghoul[Death]" },
-  { "476": "Arachne Thug[Death]" },
-  { "477": "Cabalist[Death]" },
-  { "478": "Queen of Crows[Death]" },
-  { "479": "Raa[Death]" },
-  { "480": "Ash Mirage[Fire]" },
-  { "481": "Septic Slime[Fire]" },
-  { "482": "Tinderlock[Fire]" },
-  { "483": "Technowizologist[Fire]" },
-  { "484": "Mordeus[Fire]" },
-  { "485": "Dumacke Exile[White]" },
-  { "486": "Time Meddler[White]" },
-  { "487": "Runeslinger[White]" },
-  { "488": "Corsair Bosun[White]" },
-  { "489": "Runemancer Atuat[White]" },
-  { "490": "Whelp Herder[Gold]" },
-  { "491": "Runic Skyclaw[Gold]" },
-  { "492": "Agor Longtail[Gold]" },
-  { "493": "Oshuur Constantia[Gold]" },
-  { "494": "Rune Crafter[Neutral]" },
-  { "495": "Junker[Neutral]" },
-  { "496": "Scavo Technomancer[Neutral]" },
-  { "497": "Coeurl Lurker[Neutral]" },
-  { "498": "Aquatus[Water]" },
-  { "499": "Dallan[Death]" },
-  { "500": "Fernheart[Earth]" },
-  { "501": "Skargore[Fire]" },
-  { "502": "Ilthain[White]" },
-  { "503": "Sthispa[Gold]" },
-  { "504": "Kain Hace[Death]" },
-  { "505": "Runi[Neutral]" },
-  { "506": "Lux Vega[Neutral]" },
-  { "507": "Possibilus the Wise[Water]" },
-  { "508": "Arkemis the Bear[Neutral]" },
-  { "509": "Immortalis[Earth]" },
-  { "510": "Ava the Undaunted[Earth]" },
-  { "511": "Terraceous Hulk[Earth]" },
-  { "512": "Thane Newsong[Earth]" },
-  { "513": "Madcap Magus[Earth]" },
-  { "514": "Fungus Flinger[Earth]" },
-  { "515": "Terraceous Grunt[Earth]" },
-  { "516": "Kulu Mastermind[Water]" },
-  { "517": "Musa Saline[Water]" },
-  { "518": "Noa the Just[Water]" },
-  { "519": "Riverboat Captain[Water]" },
-  { "520": "Swamp Spitter[Water]" },
-  { "521": "Coastal Sentry[Water]" },
-  { "522": "Skok Duskblight[Death]" },
-  { "523": "Usut[Death]" },
-  { "524": "Will-o-Wisp[Death]" },
-  { "525": "Ravenhood Warden[Death]" },
-  { "526": "Possessed Puppet[Death]" },
-  { "527": "Wily Coyotian[Death]" },
-  { "528": "Aves Sturgis[White]" },
-  { "529": "Iziar[White]" },
-  { "530": "Evelyn Auvera[White]" },
-  { "531": "War Pegasus[White]" },
-  { "532": "Imperial Knight[White]" },
-  { "533": "Drybone Barbarian[White]" },
-  { "534": "Ferexian Hero[Fire]" },
-  { "535": "Sorriel the Bale[Fire]" },
-  { "536": "Iidri Fyre[Fire]" },
-  { "537": "Pyrewatch Devil[Fire]" },
-  { "538": "Ferox Defender[Fire]" },
-  { "539": "Firecaller[Fire]" },
-  { "540": "Drybone Raider[Neutral]" },
-  { "541": "Clockwork Aide[Neutral]" },
-  { "542": "Venari Marksrat[Neutral]" },
-  { "543": "Gobson Bomber[Neutral]" },
-  { "544": "Dumacke Orc[Neutral]" },
-  { "545": "Berix Snakeye[Gold]" },
-  { "546": "Kra'ar Xoc[Gold]" },
-  { "547": "Pembrook Nymph[Water]" },
-  { "548": "Octavia Shadowmeld[Death]" },
-  { "549": "Lobb Lowland[Earth]" },
-  { "550": "Eternan Brune[Fire]" },
-  { "551": "Franz Ruffmane[White]" },
-  { "552": "Helios Matriarch[Gold]" },
-  { "553": "Astral Entity[Death]" },
-  { "554": "Lily Shieldpaw[Gold]" },
-  { "555": "Vruz[Gold]" },
-  { "556": "Ancient Redwood[Earth]" }
+ {
+  "1": "Goblin Shaman[Fire]"
+ },
+ {
+  "2": "Giant Roc[Fire]"
+ },
+ {
+  "3": "Kobold Miner[Fire]"
+ },
+ {
+  "4": "Fire Beetle[Fire]"
+ },
+ {
+  "5": "Malric Inferno[Fire]"
+ },
+ {
+  "6": "Serpentine Soldier[Fire]"
+ },
+ {
+  "7": "Pit Ogre[Fire]"
+ },
+ {
+  "8": "Cerberus[Fire]"
+ },
+ {
+  "9": "Fire Demon[Fire]"
+ },
+ {
+  "10": "Serpent of the Flame[Fire]"
+ },
+ {
+  "11": "Elemental Phoenix[Fire]"
+ },
+ {
+  "12": "Pirate Captain[Water]"
+ },
+ {
+  "13": "Spineback Turtle[Water]"
+ },
+ {
+  "14": "Crustacean King[Water]"
+ },
+ {
+  "15": "Sabre Shark[Water]"
+ },
+ {
+  "16": "Alric Stormbringer[Water]"
+ },
+ {
+  "17": "Medusa[Water]"
+ },
+ {
+  "18": "Water Elemental[Water]"
+ },
+ {
+  "19": "Frozen Soldier[Water]"
+ },
+ {
+  "20": "Mischievous Mermaid[Water]"
+ },
+ {
+  "21": "Naga Warrior[Water]"
+ },
+ {
+  "22": "Frost Giant[Water]"
+ },
+ {
+  "23": "Flesh Golem[Earth]"
+ },
+ {
+  "24": "Goblin Sorcerer[Earth]"
+ },
+ {
+  "25": "Rexxie[Earth]"
+ },
+ {
+  "26": "Minotaur Warrior[Earth]"
+ },
+ {
+  "27": "Lyanna Natura[Earth]"
+ },
+ {
+  "28": "Earth Elemental[Earth]"
+ },
+ {
+  "29": "Stone Golem[Earth]"
+ },
+ {
+  "30": "Stonesplitter Orc[Earth]"
+ },
+ {
+  "31": "Magi of the Forest[Earth]"
+ },
+ {
+  "32": "Swamp Thing[Earth]"
+ },
+ {
+  "33": "Spirit of the Forest[Earth]"
+ },
+ {
+  "34": "Divine Healer[White]"
+ },
+ {
+  "35": "Feral Spirit[White]"
+ },
+ {
+  "36": "Silvershield Knight[White]"
+ },
+ {
+  "37": "Silvershield Warrior[White]"
+ },
+ {
+  "38": "Tyrus Paladium[White]"
+ },
+ {
+  "39": "Peacebringer[White]"
+ },
+ {
+  "40": "Silvershield Paladin[White]"
+ },
+ {
+  "41": "Clay Golem[White]"
+ },
+ {
+  "42": "Defender of Truth[White]"
+ },
+ {
+  "43": "Air Elemental[White]"
+ },
+ {
+  "44": "Angel of Light[White]"
+ },
+ {
+  "45": "Animated Corpse[Death]"
+ },
+ {
+  "46": "Haunted Spider[Death]"
+ },
+ {
+  "47": "Skeleton Assassin[Death]"
+ },
+ {
+  "48": "Spineback Wolf[Death]"
+ },
+ {
+  "49": "Zintar Mortalis[Death]"
+ },
+ {
+  "50": "Haunted Spirit[Death]"
+ },
+ {
+  "51": "Twisted Jester[Death]"
+ },
+ {
+  "52": "Undead Priest[Death]"
+ },
+ {
+  "53": "Dark Enchantress[Death]"
+ },
+ {
+  "54": "Screaming Banshee[Death]"
+ },
+ {
+  "55": "Lord of Darkness[Death]"
+ },
+ {
+  "56": "Selenia Sky[Gold]"
+ },
+ {
+  "57": "Lightning Dragon[Gold]"
+ },
+ {
+  "58": "Chromatic Dragon[Gold]"
+ },
+ {
+  "59": "Gold Dragon[Gold]"
+ },
+ {
+  "60": "Peaceful Giant[Neutral]"
+ },
+ {
+  "61": "Grumpy Dwarf[Neutral]"
+ },
+ {
+  "62": "Elven Cutthroat[Neutral]"
+ },
+ {
+  "63": "Centaur[Neutral]"
+ },
+ {
+  "64": "Cocatrice[Neutral]"
+ },
+ {
+  "65": "Cyclops[Neutral]"
+ },
+ {
+  "66": "Enchanted Pixie[Neutral]"
+ },
+ {
+  "67": "Raging Impaler[Neutral]"
+ },
+ {
+  "68": "Magi Sphinx[Neutral]"
+ },
+ {
+  "69": "Hydra[Neutral]"
+ },
+ {
+  "70": "Talia Firestorm[Fire]"
+ },
+ {
+  "71": "Xia Seachan[Water]"
+ },
+ {
+  "72": "Xander Foxwood[Earth]"
+ },
+ {
+  "73": "Kiara Lightbringer[White]"
+ },
+ {
+  "74": "Jarlax the Undead[Death]"
+ },
+ {
+  "75": "Dragon Whelp[Gold]"
+ },
+ {
+  "76": "Royal Dragon Archer[Gold]"
+ },
+ {
+  "77": "Shin-Lo[Gold]"
+ },
+ {
+  "78": "Neb Seni[Gold]"
+ },
+ {
+  "79": "Highland Archer[Neutral]"
+ },
+ {
+  "80": "Rusty Android[Neutral]"
+ },
+ {
+  "81": "Hobgoblin[Neutral]"
+ },
+ {
+  "82": "Lord Arianthus[Neutral]"
+ },
+ {
+  "83": "Sea Genie[Water]"
+ },
+ {
+  "84": "Divine Sorceress[White]"
+ },
+ {
+  "85": "Mushroom Seer[Earth]"
+ },
+ {
+  "86": "Vampire[Death]"
+ },
+ {
+  "87": "Flame Imp[Fire]"
+ },
+ {
+  "88": "Daria Dragonscale[Gold]"
+ },
+ {
+  "89": "Sacred Unicorn[White]"
+ },
+ {
+  "90": "Wood Nymph[Earth]"
+ },
+ {
+  "91": "Creeping Ooze[Neutral]"
+ },
+ {
+  "92": "Phantom Soldier[Death]"
+ },
+ {
+  "93": "Pirate Archer[Water]"
+ },
+ {
+  "94": "Naga Fire Wizard[Fire]"
+ },
+ {
+  "95": "Brownie[Earth]"
+ },
+ {
+  "96": "Silvershield Archers[White]"
+ },
+ {
+  "97": "Goblin Mech[Neutral]"
+ },
+ {
+  "98": "Ruler of the Seas[Water]"
+ },
+ {
+  "99": "Skeletal Warrior[Death]"
+ },
+ {
+  "100": "Imp Bowman[Fire]"
+ },
+ {
+  "101": "Crystal Werewolf[White]"
+ },
+ {
+  "102": "Javelin Thrower[Earth]"
+ },
+ {
+  "103": "Sea Monster[Water]"
+ },
+ {
+  "104": "Prismatic Energy[Neutral]"
+ },
+ {
+  "105": "Undead Minotaur[Death]"
+ },
+ {
+  "106": "Exploding Dwarf[Fire]"
+ },
+ {
+  "107": "Manticore[Gold]"
+ },
+ {
+  "108": "Black Dragon[Gold]"
+ },
+ {
+  "109": "Crypt Mancer[Death]"
+ },
+ {
+  "110": "Plado Emberstorm[Fire]"
+ },
+ {
+  "111": "Valnamor[Water]"
+ },
+ {
+  "112": "Prince Rennyn[Earth]"
+ },
+ {
+  "113": "The Peakrider[White]"
+ },
+ {
+  "114": "Delwyn Dragonscale[Gold]"
+ },
+ {
+  "115": "Dragonling Bowman[Gold]"
+ },
+ {
+  "116": "Fiendish Harpy[Gold]"
+ },
+ {
+  "117": "Red Dragon[Gold]"
+ },
+ {
+  "118": "Armorsmith[White]"
+ },
+ {
+  "119": "Silvershield Bard[White]"
+ },
+ {
+  "120": "Goblin Chef[Earth]"
+ },
+ {
+  "121": "Minotaur Warlord[Earth]"
+ },
+ {
+  "122": "Electric Eels[Water]"
+ },
+ {
+  "123": "Mermaid Healer[Water]"
+ },
+ {
+  "124": "Undead Archer[Death]"
+ },
+ {
+  "125": "Corrupted Pegasus[Death]"
+ },
+ {
+  "126": "Molten Ogre[Fire]"
+ },
+ {
+  "127": "Lord of Fire[Fire]"
+ },
+ {
+  "128": "Enchanted Defender[Neutral]"
+ },
+ {
+  "129": "Dwarven Wizard[Neutral]"
+ },
+ {
+  "130": "Archmage Arius[Gold]"
+ },
+ {
+  "131": "Furious Chicken[Neutral]"
+ },
+ {
+  "132": "Fallen Specter[Death]"
+ },
+ {
+  "133": "Beetle Queen[Fire]"
+ },
+ {
+  "134": "Naga Windmaster[Water]"
+ },
+ {
+  "135": "Maggots[Death]"
+ },
+ {
+  "136": "Cursed Slimeball[Death]"
+ },
+ {
+  "137": "Giant Scorpion[Death]"
+ },
+ {
+  "138": "Undead Badger[Death]"
+ },
+ {
+  "139": "Dark Astronomer[Death]"
+ },
+ {
+  "140": "Bone Golem[Death]"
+ },
+ {
+  "141": "Death Elemental[Death]"
+ },
+ {
+  "142": "Soulstorm[Death]"
+ },
+ {
+  "143": "Darkest Mage[Death]"
+ },
+ {
+  "144": "Dark Ha'on[Death]"
+ },
+ {
+  "145": "Contessa L'ament[Death]"
+ },
+ {
+  "146": "Cave Slug[White]"
+ },
+ {
+  "147": "Crystal Jaguar[White]"
+ },
+ {
+  "148": "Lone Boatman[White]"
+ },
+ {
+  "149": "Herbalist[White]"
+ },
+ {
+  "150": "Truthspeaker[White]"
+ },
+ {
+  "151": "Luminous Eagle[White]"
+ },
+ {
+  "152": "Shieldbearer[White]"
+ },
+ {
+  "153": "Light Elemental[White]"
+ },
+ {
+  "154": "Thunderbird[White]"
+ },
+ {
+  "155": "High Priest Darius[White]"
+ },
+ {
+  "156": "Mother Khala[White]"
+ },
+ {
+  "157": "Kobold Bruiser[Fire]"
+ },
+ {
+  "158": "Serpentine Spy[Fire]"
+ },
+ {
+  "159": "Magma Troll[Fire]"
+ },
+ {
+  "160": "Goblin Fireballer[Fire]"
+ },
+ {
+  "161": "Fire Elemental[Fire]"
+ },
+ {
+  "162": "Living Lava[Fire]"
+ },
+ {
+  "163": "Spark Pixies[Fire]"
+ },
+ {
+  "164": "Ferexia General[Fire]"
+ },
+ {
+  "165": "Pyromaniac[Fire]"
+ },
+ {
+  "166": "Magnor[Fire]"
+ },
+ {
+  "167": "Pyre[Fire]"
+ },
+ {
+  "168": "Feasting Seaweed[Water]"
+ },
+ {
+  "169": "Albatross[Water]"
+ },
+ {
+  "170": "Tortisian Fighter[Water]"
+ },
+ {
+  "171": "Sniping Narwhal[Water]"
+ },
+ {
+  "172": "Ice Pixie[Water]"
+ },
+ {
+  "173": "Giant Squid[Water]"
+ },
+ {
+  "174": "Serpent of Eld[Water]"
+ },
+ {
+  "175": "Coral Wraith[Water]"
+ },
+ {
+  "176": "Azmare Harpoonist[Water]"
+ },
+ {
+  "177": "Phantom of the Abyss[Water]"
+ },
+ {
+  "178": "Bortus[Water]"
+ },
+ {
+  "179": "Goblin Thief[Earth]"
+ },
+ {
+  "180": "Failed Summoner[Earth]"
+ },
+ {
+  "181": "Biceratops[Earth]"
+ },
+ {
+  "182": "Orc Sergeant[Earth]"
+ },
+ {
+  "183": "Khmer Princess[Earth]"
+ },
+ {
+  "184": "Unicorn Mustang[Earth]"
+ },
+ {
+  "185": "Child of the Forest[Earth]"
+ },
+ {
+  "186": "Mitica Headhunter[Earth]"
+ },
+ {
+  "187": "Sporcerer[Earth]"
+ },
+ {
+  "188": "Kron the Undying[Earth]"
+ },
+ {
+  "189": "Wizard of Eastwood[Earth]"
+ },
+ {
+  "190": "Elven Defender[Neutral]"
+ },
+ {
+  "191": "Horny Toad[Neutral]"
+ },
+ {
+  "192": "Mantoid[Neutral]"
+ },
+ {
+  "193": "Parasitic Growth[Neutral]"
+ },
+ {
+  "194": "Elven Mystic[Neutral]"
+ },
+ {
+  "195": "Goblin Chariot[Neutral]"
+ },
+ {
+  "196": "Tower Griffin[Neutral]"
+ },
+ {
+  "197": "War Chaang[Neutral]"
+ },
+ {
+  "198": "Tortisian Chief[Neutral]"
+ },
+ {
+  "199": "Cornealus[Neutral]"
+ },
+ {
+  "200": "Camila Sungazer[Gold]"
+ },
+ {
+  "201": "The Vigilator[Gold]"
+ },
+ {
+  "202": "Scale Doctor[Gold]"
+ },
+ {
+  "203": "Dragon Jumper[Gold]"
+ },
+ {
+  "204": "Gloridax Magus[Gold]"
+ },
+ {
+  "205": "Prince Julian[Gold]"
+ },
+ {
+  "206": "Boogeyman[Death]"
+ },
+ {
+  "207": "Spirit Miner[Neutral]"
+ },
+ {
+  "208": "Battle Orca[Water]"
+ },
+ {
+  "209": "Chain Golem[Neutral]"
+ },
+ {
+  "210": "Diamond Dragon[Gold]"
+ },
+ {
+  "211": "Gloridax Guardian[Gold]"
+ },
+ {
+  "212": "Fire Spitter[Gold]"
+ },
+ {
+  "213": "The Kraken[Water]"
+ },
+ {
+  "214": "Ettin Spearman[Fire]"
+ },
+ {
+  "215": "Octopider[Death]"
+ },
+ {
+  "216": "Silvershield Assassin[White]"
+ },
+ {
+  "217": "Baby Unicorn[White]"
+ },
+ {
+  "218": "Gelatinous Cube[Neutral]"
+ },
+ {
+  "219": "Gremlin Blaster[Neutral]"
+ },
+ {
+  "220": "Screeching Vulture[Earth]"
+ },
+ {
+  "221": "Spirit Shaman[Earth]"
+ },
+ {
+  "222": "Zalran Efreet[Fire]"
+ },
+ {
+  "223": "Serpentine Mystic[Gold]"
+ },
+ {
+  "224": "Drake of Arnak[Gold]"
+ },
+ {
+  "225": "Barking Spider[Earth]"
+ },
+ {
+  "226": "Nectar Queen[Earth]"
+ },
+ {
+  "227": "Flame Monkey[Fire]"
+ },
+ {
+  "228": "Pyromancer[Fire]"
+ },
+ {
+  "229": "Undead Rexx[Death]"
+ },
+ {
+  "230": "Shadowy Presence[Death]"
+ },
+ {
+  "231": "Torhilo the Frozen[Water]"
+ },
+ {
+  "232": "Wave Runner[Water]"
+ },
+ {
+  "233": "Warrior of Peace[White]"
+ },
+ {
+  "234": "Evangelist[White]"
+ },
+ {
+  "235": "Mimosa Nightshade[Death]"
+ },
+ {
+  "236": "Yodin Zaku[Fire]"
+ },
+ {
+  "237": "Halfling Alchemist[Neutral]"
+ },
+ {
+  "238": "Mighty Dricken[Gold]"
+ },
+ {
+  "239": "Chanseus the Great[White]"
+ },
+ {
+  "240": "Kretch Tallevor[Gold]"
+ },
+ {
+  "241": "Onyx Sentinel[Neutral]"
+ },
+ {
+  "242": "Sand Worm[Neutral]"
+ },
+ {
+  "243": "Silvershield Sheriff[White]"
+ },
+ {
+  "244": "Bila the Radiant[White]"
+ },
+ {
+  "245": "Grim Reaper[Death]"
+ },
+ {
+  "246": "Phantasm[Death]"
+ },
+ {
+  "247": "Fineas Rage[Fire]"
+ },
+ {
+  "248": "Ant Miners[Fire]"
+ },
+ {
+  "249": "Spirit Druid Grog[Earth]"
+ },
+ {
+  "250": "Captain's Ghost[Water]"
+ },
+ {
+  "251": "Kelp Initiate[Water]"
+ },
+ {
+  "252": "Gloridax Soldier[Gold]"
+ },
+ {
+  "253": "Centauri Mage[Earth]"
+ },
+ {
+  "254": "Lir Deepswimmer[Water]"
+ },
+ {
+  "255": "Robo-Dragon Knight[Gold]"
+ },
+ {
+  "256": "Ancient Lich[Death]"
+ },
+ {
+  "257": "Vera Salacia[Water]"
+ },
+ {
+  "258": "Owster Rotwell[Death]"
+ },
+ {
+  "259": "Mylor Crowling[Earth]"
+ },
+ {
+  "260": "Qid Yuff[Fire]"
+ },
+ {
+  "261": "Lorna Shine[White]"
+ },
+ {
+  "262": "Brighton Bloom[Gold]"
+ },
+ {
+  "263": "Poseidon[Water]"
+ },
+ {
+  "264": "Frost Lion[Water]"
+ },
+ {
+  "265": "Caladuum[Fire]"
+ },
+ {
+  "266": "Flamesmith[Fire]"
+ },
+ {
+  "267": "Cthulhu[Death]"
+ },
+ {
+  "268": "Marrow's Ghost[Death]"
+ },
+ {
+  "269": "Kralus[White]"
+ },
+ {
+  "270": "Lunakari Mistress[White]"
+ },
+ {
+  "271": "Oaken Behemoth[Earth]"
+ },
+ {
+  "272": "Goblin Dartling[Earth]"
+ },
+ {
+  "273": "Battering Ram[Neutral]"
+ },
+ {
+  "274": "Naga Brute[Gold]"
+ },
+ {
+  "275": "Dragon Spirit[Gold]"
+ },
+ {
+  "276": "Grenadier[Neutral]"
+ },
+ {
+  "277": "Lensmaster[White]"
+ },
+ {
+  "278": "Scarred Llama Mage[Earth]"
+ },
+ {
+  "279": "Beatrix Ironhand[Earth]"
+ },
+ {
+  "280": "Axemaster[Water]"
+ },
+ {
+  "281": "Charlok Minotaur[Fire]"
+ },
+ {
+  "282": "Dark Ferryman[Death]"
+ },
+ {
+  "283": "Chain Spinner[White]"
+ },
+ {
+  "284": "Harvester[Earth]"
+ },
+ {
+  "285": "Nightmare[Death]"
+ },
+ {
+  "286": "Almo Cambio[Neutral]"
+ },
+ {
+  "287": "Demented Shark[Water]"
+ },
+ {
+  "288": "Temple Priest[White]"
+ },
+ {
+  "289": "Efreet Elder[Fire]"
+ },
+ {
+  "290": "Theorosa Nightshade[Death]"
+ },
+ {
+  "291": "Byzantine Kitty[Gold]"
+ },
+ {
+  "292": "Goblin Firemage[Fire]"
+ },
+ {
+  "293": "Lobstradamus[Water]"
+ },
+ {
+  "294": "The Gorlodon[Death]"
+ },
+ {
+  "295": "Hero of Beyond[White]"
+ },
+ {
+  "296": "Two Gun Pete[Water]"
+ },
+ {
+  "297": "Epona[Earth]"
+ },
+ {
+  "298": "Aganju[Fire]"
+ },
+ {
+  "299": "Chimney Wallstop[Fire]"
+ },
+ {
+  "300": "Krash Wanderford[Fire]"
+ },
+ {
+  "301": "Orella Abadon[Fire]"
+ },
+ {
+  "302": "Sarius[Fire]"
+ },
+ {
+  "303": "Gorth[Fire]"
+ },
+ {
+  "304": "Fina Voxom[Fire]"
+ },
+ {
+  "305": "Alva the Crusher[Water]"
+ },
+ {
+  "306": "Isgald Vorst[Water]"
+ },
+ {
+  "307": "Alfredo[Water]"
+ },
+ {
+  "308": "Relenor Cleaver[Water]"
+ },
+ {
+  "309": "Edith Emberstar[Water]"
+ },
+ {
+  "310": "Flagulon Reine[Water]"
+ },
+ {
+  "311": "Bertrol Gobson[Earth]"
+ },
+ {
+  "312": "Katrelba Gobson[Earth]"
+ },
+ {
+  "313": "Cutter Brieze[Earth]"
+ },
+ {
+  "314": "Palidon Rakk[Earth]"
+ },
+ {
+  "315": "Quora Towershead[Earth]"
+ },
+ {
+  "316": "Jini Guise[Earth]"
+ },
+ {
+  "317": "Helmet Kharafax[White]"
+ },
+ {
+  "318": "Hugo Strongsword[White]"
+ },
+ {
+  "319": "Ajax Lightfoot[White]"
+ },
+ {
+  "320": "Captain Katie[White]"
+ },
+ {
+  "321": "Marisol Contuma[White]"
+ },
+ {
+  "322": "Sola Ranjell[White]"
+ },
+ {
+  "323": "Whistling Damon[Death]"
+ },
+ {
+  "324": "Witch of Warwick[Death]"
+ },
+ {
+  "325": "Kotriphus Bayne[Death]"
+ },
+ {
+  "326": "Liza Fox[Death]"
+ },
+ {
+  "327": "Trapp Falloway[Death]"
+ },
+ {
+  "328": "Xulax Nightwind[Death]"
+ },
+ {
+  "329": "Larissa Kerato[Gold]"
+ },
+ {
+  "330": "Tatiana Blayde[Neutral]"
+ },
+ {
+  "331": "Venari Heatsmith[Fire]"
+ },
+ {
+  "332": "Exploding Rats[Fire]"
+ },
+ {
+  "333": "Lava Launcher[Fire]"
+ },
+ {
+  "334": "Pelacor Mercenary[Earth]"
+ },
+ {
+  "335": "Venari Seedsmith[Earth]"
+ },
+ {
+  "336": "Djinn Biljka[Earth]"
+ },
+ {
+  "337": "Pelacor Bandit[Water]"
+ },
+ {
+  "338": "Venari Wavesmith[Water]"
+ },
+ {
+  "339": "Djinn Oshannus[Water]"
+ },
+ {
+  "340": "Pelacor Deceiver[Death]"
+ },
+ {
+  "341": "Venari Bonesmith[Death]"
+ },
+ {
+  "342": "Harklaw[Death]"
+ },
+ {
+  "343": "Pelacor Conjurer[White]"
+ },
+ {
+  "344": "Venari Crystalsmith[White]"
+ },
+ {
+  "345": "Djinn Renova[White]"
+ },
+ {
+  "346": "Naga Assassin[Gold]"
+ },
+ {
+  "347": "Twilight Basilisk[Gold]"
+ },
+ {
+  "348": "Djinn Chwala[Gold]"
+ },
+ {
+  "349": "Gargoya Lion[Neutral]"
+ },
+ {
+  "350": "Gargoya Devil[Neutral]"
+ },
+ {
+  "351": "Uraeus[Neutral]"
+ },
+ {
+  "352": "Doctor Blight[Neutral]"
+ },
+ {
+  "353": "Carrion Shade[Death]"
+ },
+ {
+  "354": "Riftwing[Death]"
+ },
+ {
+  "355": "Shadow Snitch[Death]"
+ },
+ {
+  "356": "Crypt Beetle[Death]"
+ },
+ {
+  "357": "Silent Sha-vi[Death]"
+ },
+ {
+  "358": "Soul Strangler[Death]"
+ },
+ {
+  "359": "Life Sapper[Death]"
+ },
+ {
+  "360": "Dhampir Stalker[Death]"
+ },
+ {
+  "361": "Cursed Windeku[Death]"
+ },
+ {
+  "362": "Magi Necrosi[Death]"
+ },
+ {
+  "363": "Insidious Warlock[Death]"
+ },
+ {
+  "364": "Weirding Warrior[Death]"
+ },
+ {
+  "365": "Djinn Muirat[Death]"
+ },
+ {
+  "366": "Corpse Fiend[Death]"
+ },
+ {
+  "367": "Mycelic Morphoid[Earth]"
+ },
+ {
+  "368": "Venari Knifer[Earth]"
+ },
+ {
+  "369": "Venari Scout[Earth]"
+ },
+ {
+  "370": "Hill Giant[Earth]"
+ },
+ {
+  "371": "Goblin Psychic[Earth]"
+ },
+ {
+  "372": "Mycelic Slipspawn[Earth]"
+ },
+ {
+  "373": "Regal Peryton[Earth]"
+ },
+ {
+  "374": "Goblin Tower[Earth]"
+ },
+ {
+  "375": "Mycelic Infantry[Earth]"
+ },
+ {
+  "376": "Grund[Earth]"
+ },
+ {
+  "377": "Hunter Jarx[Earth]"
+ },
+ {
+  "378": "Acid Shooter[Earth]"
+ },
+ {
+  "379": "Queen Mycelia[Earth]"
+ },
+ {
+  "380": "Fungus Fiend[Earth]"
+ },
+ {
+  "381": "Hardy Stonefish[Water]"
+ },
+ {
+  "382": "Kulu Swimhunter[Water]"
+ },
+ {
+  "383": "Cruel Sethropod[Water]"
+ },
+ {
+  "384": "Flying Squid[Water]"
+ },
+ {
+  "385": "Deeplurker[Water]"
+ },
+ {
+  "386": "Angelic Mandarin[Water]"
+ },
+ {
+  "387": "Merdaali Guardian[Water]"
+ },
+ {
+  "388": "Diemonshark[Water]"
+ },
+ {
+  "389": "River Nymph[Water]"
+ },
+ {
+  "390": "Nerissa Tridawn[Water]"
+ },
+ {
+  "391": "Wave Brood[Water]"
+ },
+ {
+  "392": "Igor Darkspear[Water]"
+ },
+ {
+  "393": "River Hellondale[Water]"
+ },
+ {
+  "394": "Torrent Fiend[Water]"
+ },
+ {
+  "395": "Radiated Scorcher[Fire]"
+ },
+ {
+  "396": "Lava Spider[Fire]"
+ },
+ {
+  "397": "Radiated Brute[Fire]"
+ },
+ {
+  "398": "Scavo Chemist[Fire]"
+ },
+ {
+  "399": "Antoid Platoon[Fire]"
+ },
+ {
+  "400": "Scavo Firebolt[Fire]"
+ },
+ {
+  "401": "Tenyii Striker[Fire]"
+ },
+ {
+  "402": "Djinn Apprentice[Fire]"
+ },
+ {
+  "403": "Molten Ash Golem[Fire]"
+ },
+ {
+  "404": "Forgotten One[Fire]"
+ },
+ {
+  "405": "Tusk the Wide[Fire]"
+ },
+ {
+  "406": "Djinn Inferni[Fire]"
+ },
+ {
+  "407": "Ifrit Rising[Fire]"
+ },
+ {
+  "408": "Scorch Fiend[Fire]"
+ },
+ {
+  "409": "Gargoya Scrapper[White]"
+ },
+ {
+  "410": "Sunkai Harvester[White]"
+ },
+ {
+  "411": "Stitch Leech[White]"
+ },
+ {
+  "412": "Blinding Reflector[White]"
+ },
+ {
+  "413": "Chaos Knight[White]"
+ },
+ {
+  "414": "Celestial Harpy[White]"
+ },
+ {
+  "415": "Time Mage[White]"
+ },
+ {
+  "416": "Portal Spinner[White]"
+ },
+ {
+  "417": "Pelacor Arbalest[White]"
+ },
+ {
+  "418": "Temporal Master[White]"
+ },
+ {
+  "419": "Prismologist[White]"
+ },
+ {
+  "420": "Dax Paragon[White]"
+ },
+ {
+  "421": "Adelade Brightwing[White]"
+ },
+ {
+  "422": "Soul Fiend[White]"
+ },
+ {
+  "423": "Supply Runner[Neutral]"
+ },
+ {
+  "424": "Scavo Hireling[Neutral]"
+ },
+ {
+  "425": "Disintegrator[Neutral]"
+ },
+ {
+  "426": "Chaos Agent[Neutral]"
+ },
+ {
+  "427": "Xenith Archer[Neutral]"
+ },
+ {
+  "428": "Xenith Monk[Neutral]"
+ },
+ {
+  "429": "Venari Spellsmith[Neutral]"
+ },
+ {
+  "430": "Magi of Chaos[Neutral]"
+ },
+ {
+  "431": "Gem Meteor[Neutral]"
+ },
+ {
+  "432": "Legionnaire Alvar[Neutral]"
+ },
+ {
+  "433": "Chaos Dragon[Gold]"
+ },
+ {
+  "434": "Desert Dragon[Gold]"
+ },
+ {
+  "435": "Zyvax Vuul[Gold]"
+ },
+ {
+  "436": "Void Dragon[Gold]"
+ },
+ {
+  "437": "Kelya Frendul[Water]"
+ },
+ {
+  "438": "Thaddius Brood[Death]"
+ },
+ {
+  "439": "Obsidian[Earth]"
+ },
+ {
+  "440": "Tarsa[Fire]"
+ },
+ {
+  "441": "General Sloan[White]"
+ },
+ {
+  "442": "Quix the Devious[Gold]"
+ },
+ {
+  "443": "Baakjira[Water]"
+ },
+ {
+  "444": "Uriel the Purifier[White]"
+ },
+ {
+  "445": "Lira the Dark[Death]"
+ },
+ {
+  "446": "Iza the Fanged[Earth]"
+ },
+ {
+  "447": "Grum Flameblade[Fire]"
+ },
+ {
+  "448": "Spirit Hoarder[Neutral]"
+ },
+ {
+  "449": "Waka Spiritblade[Death]"
+ },
+ {
+  "450": "Carnage Titan[Gold]"
+ },
+ {
+  "451": "Vampire Bat[Earth]"
+ },
+ {
+  "452": "Merdhampir[Water]"
+ },
+ {
+  "453": "Ever-Hungry Skull[Death]"
+ },
+ {
+  "454": "Blood Maker[Fire]"
+ },
+ {
+  "455": "Vulguine[White]"
+ },
+ {
+  "456": "Vampiric Blossom[Earth]"
+ },
+ {
+  "457": "Dhampir Infiltrator[Gold]"
+ },
+ {
+  "458": "Revealer[Death]"
+ },
+ {
+  "459": "Tide Biter[Water]"
+ },
+ {
+  "460": "Jared Scar[White]"
+ },
+ {
+  "461": "Countess Sinash[Fire]"
+ },
+ {
+  "462": "Venator Kinjo[Neutral]"
+ },
+ {
+  "463": "Grandmaster Rathe[White]"
+ },
+ {
+  "464": "Conqueror Jacek[Fire]"
+ },
+ {
+  "465": "Bramble Pixie[Earth]"
+ },
+ {
+  "466": "Lichen Beast[Earth]"
+ },
+ {
+  "467": "Uloth Dhampir[Earth]"
+ },
+ {
+  "468": "Suidae Shaman[Earth]"
+ },
+ {
+  "469": "Runemancer Florre[Earth]"
+ },
+ {
+  "470": "Coastal Nymph[Water]"
+ },
+ {
+  "471": "Lemell Refugee[Water]"
+ },
+ {
+  "472": "Sea Stalker[Water]"
+ },
+ {
+  "473": "Water Caller[Water]"
+ },
+ {
+  "474": "Runemancer Kye[Water]"
+ },
+ {
+  "475": "Night Ghoul[Death]"
+ },
+ {
+  "476": "Arachne Thug[Death]"
+ },
+ {
+  "477": "Cabalist[Death]"
+ },
+ {
+  "478": "Queen of Crows[Death]"
+ },
+ {
+  "479": "Raa[Death]"
+ },
+ {
+  "480": "Ash Mirage[Fire]"
+ },
+ {
+  "481": "Septic Slime[Fire]"
+ },
+ {
+  "482": "Tinderlock[Fire]"
+ },
+ {
+  "483": "Technowizologist[Fire]"
+ },
+ {
+  "484": "Mordeus[Fire]"
+ },
+ {
+  "485": "Dumacke Exile[White]"
+ },
+ {
+  "486": "Time Meddler[White]"
+ },
+ {
+  "487": "Runeslinger[White]"
+ },
+ {
+  "488": "Corsair Bosun[White]"
+ },
+ {
+  "489": "Runemancer Atuat[White]"
+ },
+ {
+  "490": "Whelp Herder[Gold]"
+ },
+ {
+  "491": "Runic Skyclaw[Gold]"
+ },
+ {
+  "492": "Agor Longtail[Gold]"
+ },
+ {
+  "493": "Oshuur Constantia[Gold]"
+ },
+ {
+  "494": "Rune Crafter[Neutral]"
+ },
+ {
+  "495": "Junker[Neutral]"
+ },
+ {
+  "496": "Scavo Technomancer[Neutral]"
+ },
+ {
+  "497": "Coeurl Lurker[Neutral]"
+ },
+ {
+  "498": "Aquatus[Water]"
+ },
+ {
+  "499": "Dallan[Death]"
+ },
+ {
+  "500": "Fernheart[Earth]"
+ },
+ {
+  "501": "Skargore[Fire]"
+ },
+ {
+  "502": "Ilthain[White]"
+ },
+ {
+  "503": "Sthispa[Gold]"
+ },
+ {
+  "504": "Kain Hace[Death]"
+ },
+ {
+  "505": "Runi[Neutral]"
+ },
+ {
+  "506": "Lux Vega[Neutral]"
+ },
+ {
+  "507": "Possibilus the Wise[Water]"
+ },
+ {
+  "508": "Arkemis the Bear[Neutral]"
+ },
+ {
+  "509": "Immortalis[Earth]"
+ },
+ {
+  "510": "Ava the Undaunted[Earth]"
+ },
+ {
+  "511": "Terraceous Hulk[Earth]"
+ },
+ {
+  "512": "Thane Newsong[Earth]"
+ },
+ {
+  "513": "Madcap Magus[Earth]"
+ },
+ {
+  "514": "Fungus Flinger[Earth]"
+ },
+ {
+  "515": "Terraceous Grunt[Earth]"
+ },
+ {
+  "516": "Kulu Mastermind[Water]"
+ },
+ {
+  "517": "Musa Saline[Water]"
+ },
+ {
+  "518": "Noa the Just[Water]"
+ },
+ {
+  "519": "Riverboat Captain[Water]"
+ },
+ {
+  "520": "Swamp Spitter[Water]"
+ },
+ {
+  "521": "Coastal Sentry[Water]"
+ },
+ {
+  "522": "Skok Duskblight[Death]"
+ },
+ {
+  "523": "Usut[Death]"
+ },
+ {
+  "524": "Will-o-Wisp[Death]"
+ },
+ {
+  "525": "Ravenhood Warden[Death]"
+ },
+ {
+  "526": "Possessed Puppet[Death]"
+ },
+ {
+  "527": "Wily Coyotian[Death]"
+ },
+ {
+  "528": "Aves Sturgis[White]"
+ },
+ {
+  "529": "Iziar[White]"
+ },
+ {
+  "530": "Evelyn Auvera[White]"
+ },
+ {
+  "531": "War Pegasus[White]"
+ },
+ {
+  "532": "Imperial Knight[White]"
+ },
+ {
+  "533": "Drybone Barbarian[White]"
+ },
+ {
+  "534": "Ferexian Hero[Fire]"
+ },
+ {
+  "535": "Sorriel the Bale[Fire]"
+ },
+ {
+  "536": "Iidri Fyre[Fire]"
+ },
+ {
+  "537": "Pyrewatch Devil[Fire]"
+ },
+ {
+  "538": "Ferox Defender[Fire]"
+ },
+ {
+  "539": "Firecaller[Fire]"
+ },
+ {
+  "540": "Drybone Raider[Neutral]"
+ },
+ {
+  "541": "Clockwork Aide[Neutral]"
+ },
+ {
+  "542": "Venari Marksrat[Neutral]"
+ },
+ {
+  "543": "Gobson Bomber[Neutral]"
+ },
+ {
+  "544": "Dumacke Orc[Neutral]"
+ },
+ {
+  "545": "Berix Snakeye[Gold]"
+ },
+ {
+  "546": "Kra'ar Xoc[Gold]"
+ },
+ {
+  "547": "Pembrook Nymph[Water]"
+ },
+ {
+  "548": "Octavia Shadowmeld[Death]"
+ },
+ {
+  "549": "Lobb Lowland[Earth]"
+ },
+ {
+  "550": "Eternan Brune[Fire]"
+ },
+ {
+  "551": "Franz Ruffmane[White]"
+ },
+ {
+  "552": "Helios Matriarch[Gold]"
+ },
+ {
+  "553": "Astral Entity[Death]"
+ },
+ {
+  "554": "Lily Shieldpaw[Gold]"
+ },
+ {
+  "555": "Vruz[Gold]"
+ },
+ {
+  "556": "Ancient Redwood[Earth]"
+ },
+ {
+  "557": "Zyriel[White]"
+ },
+ {
+  "558": "Sea Wreck[Water]"
+ },
+ {
+  "559": "Immolation[Fire]"
+ },
+ {
+  "560": "Inevitable[White]"
+ },
+ {
+  "561": "Lurking Puffer[Earth]"
+ },
+ {
+  "562": "Blackmoor Trickster[Earth]"
+ },
+ {
+  "563": "Endless Ape[Earth]"
+ },
+ {
+  "564": "Ujurak Mystic[Earth]"
+ },
+ {
+  "565": "Gobson Sniper[Earth]"
+ },
+ {
+  "566": "Blackmoor Nymph[Earth]"
+ },
+ {
+  "567": "Swell Spore Beast[Earth]"
+ },
+ {
+  "568": "Lioceros[Earth]"
+ },
+ {
+  "569": "Croire[Earth]"
+ },
+ {
+  "570": "Satha Toledo[Earth]"
+ },
+ {
+  "571": "Zebajin[Earth]"
+ },
+ {
+  "572": "Lord Thanalor[Earth]"
+ },
+ {
+  "573": "Chaos Rear Guard[Water]"
+ },
+ {
+  "574": "Daigendark Surveyor[Water]"
+ },
+ {
+  "575": "Mar Toren Seeker[Water]"
+ },
+ {
+  "576": "Sultry Barmaid[Water]"
+ },
+ {
+  "577": "Anasth Soothsayer[Water]"
+ },
+ {
+  "578": "Pirate of Eight[Water]"
+ },
+ {
+  "579": "Sea Dog of Eight[Water]"
+ },
+ {
+  "580": "Argarux Magus[Water]"
+ },
+ {
+  "581": "Thanalorian Scion[Water]"
+ },
+ {
+  "582": "Captain Fellblade[Water]"
+ },
+ {
+  "583": "Endura Brune[Water]"
+ },
+ {
+  "584": "Daarg Deadblast[Water]"
+ },
+ {
+  "585": "Chaos Animator[Death]"
+ },
+ {
+  "586": "Ahna-Chei Botanist[Death]"
+ },
+ {
+  "587": "New Sskah Drudge[Death]"
+ },
+ {
+  "588": "Fenmoor Haunt[Death]"
+ },
+ {
+  "589": "Daigendark Hunter[Death]"
+ },
+ {
+  "590": "Wailing Wraith[Death]"
+ },
+ {
+  "591": "Helheim Demon[Death]"
+ },
+ {
+  "592": "Chaos Jailer[Death]"
+ },
+ {
+  "593": "Executioner Kraan[Death]"
+ },
+ {
+  "594": "Avarisdeus[Death]"
+ },
+ {
+  "595": "Demise Archon Faust[Death]"
+ },
+ {
+  "596": "Barashkukor[Death]"
+ },
+ {
+  "597": "Aria Bandit[White]"
+ },
+ {
+  "598": "Albahoo Forester[White]"
+ },
+ {
+  "599": "Skyspire Yak[White]"
+ },
+ {
+  "600": "Meriput Magician[White]"
+ },
+ {
+  "601": "Anachron Bolter[White]"
+ },
+ {
+  "602": "Thanalorian Archer[White]"
+ },
+ {
+  "603": "Silverblade Fighter[White]"
+ },
+ {
+  "604": "Ulundin Regulator[White]"
+ },
+ {
+  "605": "Harbinger of Chaos[White]"
+ },
+ {
+  "606": "Karst Harpy[White]"
+ },
+ {
+  "607": "Bera Dallin[White]"
+ },
+ {
+  "608": "Commander Goff[White]"
+ },
+ {
+  "609": "Gobalano Soldier[Fire]"
+ },
+ {
+  "610": "Nimbledook Scout[Fire]"
+ },
+ {
+  "611": "Kha'zi Fire Mage[Fire]"
+ },
+ {
+  "612": "Chaos Orc[Fire]"
+ },
+ {
+  "613": "Torch Myrmidon[Fire]"
+ },
+ {
+  "614": "Flame Mephit[Fire]"
+ },
+ {
+  "615": "Torch Vizier[Fire]"
+ },
+ {
+  "616": "Muspelheim Demon[Fire]"
+ },
+ {
+  "617": "Dalthin Ironhood[Fire]"
+ },
+ {
+  "618": "Infernal Firestorm[Fire]"
+ },
+ {
+  "619": "Chaos Golem[Fire]"
+ },
+ {
+  "620": "Rush Townsend[Fire]"
+ },
+ {
+  "621": "Redwyrm Hatchling[Gold]"
+ },
+ {
+  "622": "Redwyrm Dragon[Gold]"
+ },
+ {
+  "623": "Runeseer Sevaya[Gold]"
+ },
+ {
+  "624": "Solace Ashinach[Gold]"
+ },
+ {
+  "625": "Grimbardun Fighter[Neutral]"
+ },
+ {
+  "626": "Nimbledook Ranger[Neutral]"
+ },
+ {
+  "627": "Ulundin Overseer[Neutral]"
+ },
+ {
+  "628": "Chaos Lackey[Neutral]"
+ },
+ {
+  "629": "Moxian Rebel[Neutral]"
+ },
+ {
+  "630": "Mad Ogre Anarchist[Neutral]"
+ },
+ {
+  "631": "Drybone Bowdog[Neutral]"
+ },
+ {
+  "632": "Pallus[Neutral]"
+ },
+ {
+  "633": "Grimbardun Smith[Neutral]"
+ },
+ {
+  "634": "Great Porcupine[Neutral]"
+ },
+ {
+  "635": "Mantaroth[Neutral]"
+ },
+ {
+  "636": "Nalara Geinek[Neutral]"
+ },
+ {
+  "637": "Dolfar Darflak[Death]"
+ },
+ {
+  "638": "Zeddica[Water]"
+ },
+ {
+  "639": "Chuul Jujinchi[Earth]"
+ },
+ {
+  "640": "Prunda Undervesch[White]"
+ },
+ {
+  "641": "Brewmaster Abraxas[Fire]"
+ },
+ {
+  "642": "Underboss Fabino[Earth]"
+ },
+ {
+  "643": "Reklah[Death]"
+ },
+ {
+  "644": "Avina of the Wolf[White]"
+ },
+ {
+  "645": "Prophet Rosa[Water]"
+ },
+ {
+  "646": "Nomos[Fire]"
+ },
+ {
+  "647": "Akane[Gold]"
+ },
+ {
+  "648": "Rage[Gold]"
+ },
+ {
+  "649": "Kei[Gold]"
+ }
 ]
