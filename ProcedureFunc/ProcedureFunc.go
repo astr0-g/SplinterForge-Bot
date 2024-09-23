@@ -18,6 +18,7 @@ import (
 
 	"github.com/tebeka/selenium"
 	"github.com/tebeka/selenium/chrome"
+
 	"github.com/tebeka/selenium/log"
 
 	"splinterforge/ColorPrint"
@@ -280,7 +281,8 @@ func AccountBattle(wait bool, wd selenium.WebDriver, closeDriverDuringSleep bool
 			el, _ = wd.FindElement(selenium.ByXPATH, "/html/body/app/div[1]/slcards/div[5]/div[2]/div[1]/div[1]/button/span")
 			mana, _ := el.Text()
 			manaused, _ := strconv.Atoi(mana)
-			CurrentStamina := ReadFunc.GetAccountDetails(name, key, splinterforgeAPIEndpoint)
+			//CurrentStamina := ReadFunc.GetAccountDetails(name, key, splinterforgeAPIEndpoint)
+			CurrentStamina := 20
 			if CurrentStamina > manaused && manaused >= 30 {
 				LogFunc.PrintResultBox(userName, printData, selectResult, bossName, bossLeague, heroTypechoosed, bossAbilities, bossRandomAbilities)
 				battletimestamp := time.Now().Unix()
@@ -522,7 +524,7 @@ func AccountBattle(wait bool, wd selenium.WebDriver, closeDriverDuringSleep bool
 				if CurrentStamina < manaused {
 					wd.Close()
 					ColorPrint.PrintYellow(userName, "Insufficient stamina, entering a rest state of inactivity for 1 hour...")
-					time.Sleep(1 * time.Hour)
+					time.Sleep(1 * time.Minute)
 					go AccountRestartCoroutine(accountLists, false, userName, headless, showForgeReward, showAccountDetails, autoSelectCard, autoSelectHero, autoSelectSleepTime, waitForBossRespawn, shareBattleLog, unwantedAbilities, closeDriverDuringSleep, battlex2, splinterforgeAPIEndpoint, splinterlandAPIEndpoint, publicAPIEndpoint, randomBosses, s, w)
 					return
 				} else if manaused < 30 {
@@ -572,9 +574,9 @@ func InitializeDriver(wait bool, userData SpStruct.UserData, headless bool, show
 			// "--disable-gpu",
 			"--disable-blink-features=AutomationControlled",
 			"--mute-audio",
-			"--ignore-certificate-errors",
 			"--allow-running-insecure-content",
 			"--window-size=300,600",
+			"--disable-search-engine-choice-screen",
 		},
 
 		Extensions: []string{extensionBase64},
@@ -597,7 +599,7 @@ func InitializeDriver(wait bool, userData SpStruct.UserData, headless bool, show
 	if headless {
 		chromeOptions.Args = append(chromeOptions.Args, "--headless=new")
 	}
-	caps := selenium.Capabilities{}
+	caps := selenium.Capabilities{"browserName": "chrome", "acceptInsecureCerts": true}
 	caps.AddChrome(chromeOptions)
 	caps.SetLogLevel(log.Performance, log.All)
 
