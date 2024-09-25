@@ -99,37 +99,37 @@
   "33": "Spirit of the Forest[Earth]"
  },
  {
-  "34": "Divine Healer[White]"
+  "34": "Divine Healer[Life]"
  },
  {
-  "35": "Feral Spirit[White]"
+  "35": "Feral Spirit[Life]"
  },
  {
-  "36": "Silvershield Knight[White]"
+  "36": "Silvershield Knight[Life]"
  },
  {
-  "37": "Silvershield Warrior[White]"
+  "37": "Silvershield Warrior[Life]"
  },
  {
-  "38": "Tyrus Paladium[White]"
+  "38": "Tyrus Paladium[Life]"
  },
  {
-  "39": "Peacebringer[White]"
+  "39": "Peacebringer[Life]"
  },
  {
-  "40": "Silvershield Paladin[White]"
+  "40": "Silvershield Paladin[Life]"
  },
  {
-  "41": "Clay Golem[White]"
+  "41": "Clay Golem[Life]"
  },
  {
-  "42": "Defender of Truth[White]"
+  "42": "Defender of Truth[Life]"
  },
  {
-  "43": "Air Elemental[White]"
+  "43": "Air Elemental[Life]"
  },
  {
-  "44": "Angel of Light[White]"
+  "44": "Angel of Light[Life]"
  },
  {
   "45": "Animated Corpse[Death]"
@@ -165,16 +165,16 @@
   "55": "Lord of Darkness[Death]"
  },
  {
-  "56": "Selenia Sky[Gold]"
+  "56": "Selenia Sky[Dragon]"
  },
  {
-  "57": "Lightning Dragon[Gold]"
+  "57": "Lightning Dragon[Dragon]"
  },
  {
-  "58": "Chromatic Dragon[Gold]"
+  "58": "Chromatic Dragon[Dragon]"
  },
  {
-  "59": "Gold Dragon[Gold]"
+  "59": "Gold Dragon[Dragon]"
  },
  {
   "60": "Peaceful Giant[Neutral]"
@@ -216,22 +216,22 @@
   "72": "Xander Foxwood[Earth]"
  },
  {
-  "73": "Kiara Lightbringer[White]"
+  "73": "Kiara Lightbringer[Life]"
  },
  {
   "74": "Jarlax the Undead[Death]"
  },
  {
-  "75": "Dragon Whelp[Gold]"
+  "75": "Dragon Whelp[Dragon]"
  },
  {
-  "76": "Royal Dragon Archer[Gold]"
+  "76": "Royal Dragon Archer[Dragon]"
  },
  {
-  "77": "Shin-Lo[Gold]"
+  "77": "Shin-Lo[Dragon]"
  },
  {
-  "78": "Neb Seni[Gold]"
+  "78": "Neb Seni[Dragon]"
  },
  {
   "79": "Highland Archer[Neutral]"
@@ -249,7 +249,7 @@
   "83": "Sea Genie[Water]"
  },
  {
-  "84": "Divine Sorceress[White]"
+  "84": "Divine Sorceress[Life]"
  },
  {
   "85": "Mushroom Seer[Earth]"
@@ -261,10 +261,10 @@
   "87": "Flame Imp[Fire]"
  },
  {
-  "88": "Daria Dragonscale[Gold]"
+  "88": "Daria Dragonscale[Dragon]"
  },
  {
-  "89": "Sacred Unicorn[White]"
+  "89": "Sacred Unicorn[Life]"
  },
  {
   "90": "Wood Nymph[Earth]"
@@ -285,7 +285,7 @@
   "95": "Brownie[Earth]"
  },
  {
-  "96": "Silvershield Archers[White]"
+  "96": "Silvershield Archers[Life]"
  },
  {
   "97": "Goblin Mech[Neutral]"
@@ -300,7 +300,7 @@
   "100": "Imp Bowman[Fire]"
  },
  {
-  "101": "Crystal Werewolf[White]"
+  "101": "Crystal Werewolf[Life]"
  },
  {
   "102": "Javelin Thrower[Earth]"
@@ -318,10 +318,10 @@
   "106": "Exploding Dwarf[Fire]"
  },
  {
-  "107": "Manticore[Gold]"
+  "107": "Manticore[Dragon]"
  },
  {
-  "108": "Black Dragon[Gold]"
+  "108": "Black Dragon[Dragon]"
  },
  {
   "109": "Crypt Mancer[Death]"
@@ -336,25 +336,25 @@
   "112": "Prince Rennyn[Earth]"
  },
  {
-  "113": "The Peakrider[White]"
+  "113": "The Peakrider[Life]"
  },
  {
-  "114": "Delwyn Dragonscale[Gold]"
+  "114": "Delwyn Dragonscale[Dragon]"
  },
  {
-  "115": "Dragonling Bowman[Gold]"
+  "115": "Dragonling Bowman[Dragon]"
  },
  {
-  "116": "Fiendish Harpy[Gold]"
+  "116": "Fiendish Harpy[Dragon]"
  },
  {
-  "117": "Red Dragon[Gold]"
+  "117": "Red Dragon[Dragon]"
  },
  {
-  "118": "Armorsmith[White]"
+  "118": "Armorsmith[Life]"
  },
  {
-  "119": "Silvershield Bard[White]"
+  "119": "Silvershield Bard[Life]"
  },
  {
   "120": "Goblin Chef[Earth]"
@@ -387,7 +387,7 @@
   "129": "Dwarven Wizard[Neutral]"
  },
  {
-  "130": "Archmage Arius[Gold]"
+  "130": "Archmage Arius[Dragon]"
  },
  {
   "131": "Furious Chicken[Neutral]"
@@ -435,37 +435,37 @@
   "145": "Contessa L'ament[Death]"
  },
  {
-  "146": "Cave Slug[White]"
+  "146": "Cave Slug[Life]"
  },
  {
-  "147": "Crystal Jaguar[White]"
+  "147": "Crystal Jaguar[Life]"
  },
  {
-  "148": "Lone Boatman[White]"
+  "148": "Lone Boatman[Life]"
  },
  {
-  "149": "Herbalist[White]"
+  "149": "Herbalist[Life]"
  },
  {
-  "150": "Truthspeaker[White]"
+  "150": "Truthspeaker[Life]"
  },
  {
-  "151": "Luminous Eagle[White]"
+  "151": "Luminous Eagle[Life]"
  },
  {
-  "152": "Shieldbearer[White]"
+  "152": "Shieldbearer[Life]"
  },
  {
-  "153": "Light Elemental[White]"
+  "153": "Light Elemental[Life]"
  },
  {
-  "154": "Thunderbird[White]"
+  "154": "Thunderbird[Life]"
  },
  {
-  "155": "High Priest Darius[White]"
+  "155": "High Priest Darius[Life]"
  },
  {
-  "156": "Mother Khala[White]"
+  "156": "Mother Khala[Life]"
  },
  {
   "157": "Kobold Bruiser[Fire]"
@@ -597,22 +597,22 @@
   "199": "Cornealus[Neutral]"
  },
  {
-  "200": "Camila Sungazer[Gold]"
+  "200": "Camila Sungazer[Dragon]"
  },
  {
-  "201": "The Vigilator[Gold]"
+  "201": "The Vigilator[Dragon]"
  },
  {
-  "202": "Scale Doctor[Gold]"
+  "202": "Scale Doctor[Dragon]"
  },
  {
-  "203": "Dragon Jumper[Gold]"
+  "203": "Dragon Jumper[Dragon]"
  },
  {
-  "204": "Gloridax Magus[Gold]"
+  "204": "Gloridax Magus[Dragon]"
  },
  {
-  "205": "Prince Julian[Gold]"
+  "205": "Prince Julian[Dragon]"
  },
  {
   "206": "Boogeyman[Death]"
@@ -627,13 +627,13 @@
   "209": "Chain Golem[Neutral]"
  },
  {
-  "210": "Diamond Dragon[Gold]"
+  "210": "Diamond Dragon[Dragon]"
  },
  {
-  "211": "Gloridax Guardian[Gold]"
+  "211": "Gloridax Guardian[Dragon]"
  },
  {
-  "212": "Fire Spitter[Gold]"
+  "212": "Fire Spitter[Dragon]"
  },
  {
   "213": "The Kraken[Water]"
@@ -645,10 +645,10 @@
   "215": "Octopider[Death]"
  },
  {
-  "216": "Silvershield Assassin[White]"
+  "216": "Silvershield Assassin[Life]"
  },
  {
-  "217": "Baby Unicorn[White]"
+  "217": "Baby Unicorn[Life]"
  },
  {
   "218": "Gelatinous Cube[Neutral]"
@@ -666,10 +666,10 @@
   "222": "Zalran Efreet[Fire]"
  },
  {
-  "223": "Serpentine Mystic[Gold]"
+  "223": "Serpentine Mystic[Dragon]"
  },
  {
-  "224": "Drake of Arnak[Gold]"
+  "224": "Drake of Arnak[Dragon]"
  },
  {
   "225": "Barking Spider[Earth]"
@@ -696,10 +696,10 @@
   "232": "Wave Runner[Water]"
  },
  {
-  "233": "Warrior of Peace[White]"
+  "233": "Warrior of Peace[Life]"
  },
  {
-  "234": "Evangelist[White]"
+  "234": "Evangelist[Life]"
  },
  {
   "235": "Mimosa Nightshade[Death]"
@@ -711,13 +711,13 @@
   "237": "Halfling Alchemist[Neutral]"
  },
  {
-  "238": "Mighty Dricken[Gold]"
+  "238": "Mighty Dricken[Dragon]"
  },
  {
-  "239": "Chanseus the Great[White]"
+  "239": "Chanseus the Great[Life]"
  },
  {
-  "240": "Kretch Tallevor[Gold]"
+  "240": "Kretch Tallevor[Dragon]"
  },
  {
   "241": "Onyx Sentinel[Neutral]"
@@ -726,10 +726,10 @@
   "242": "Sand Worm[Neutral]"
  },
  {
-  "243": "Silvershield Sheriff[White]"
+  "243": "Silvershield Sheriff[Life]"
  },
  {
-  "244": "Bila the Radiant[White]"
+  "244": "Bila the Radiant[Life]"
  },
  {
   "245": "Grim Reaper[Death]"
@@ -753,7 +753,7 @@
   "251": "Kelp Initiate[Water]"
  },
  {
-  "252": "Gloridax Soldier[Gold]"
+  "252": "Gloridax Soldier[Dragon]"
  },
  {
   "253": "Centauri Mage[Earth]"
@@ -762,7 +762,7 @@
   "254": "Lir Deepswimmer[Water]"
  },
  {
-  "255": "Robo-Dragon Knight[Gold]"
+  "255": "Robo-Dragon Knight[Dragon]"
  },
  {
   "256": "Ancient Lich[Death]"
@@ -780,10 +780,10 @@
   "260": "Qid Yuff[Fire]"
  },
  {
-  "261": "Lorna Shine[White]"
+  "261": "Lorna Shine[Life]"
  },
  {
-  "262": "Brighton Bloom[Gold]"
+  "262": "Brighton Bloom[Dragon]"
  },
  {
   "263": "Poseidon[Water]"
@@ -804,10 +804,10 @@
   "268": "Marrow's Ghost[Death]"
  },
  {
-  "269": "Kralus[White]"
+  "269": "Kralus[Life]"
  },
  {
-  "270": "Lunakari Mistress[White]"
+  "270": "Lunakari Mistress[Life]"
  },
  {
   "271": "Oaken Behemoth[Earth]"
@@ -819,16 +819,16 @@
   "273": "Battering Ram[Neutral]"
  },
  {
-  "274": "Naga Brute[Gold]"
+  "274": "Naga Brute[Dragon]"
  },
  {
-  "275": "Dragon Spirit[Gold]"
+  "275": "Dragon Spirit[Dragon]"
  },
  {
   "276": "Grenadier[Neutral]"
  },
  {
-  "277": "Lensmaster[White]"
+  "277": "Lensmaster[Life]"
  },
  {
   "278": "Scarred Llama Mage[Earth]"
@@ -846,7 +846,7 @@
   "282": "Dark Ferryman[Death]"
  },
  {
-  "283": "Chain Spinner[White]"
+  "283": "Chain Spinner[Life]"
  },
  {
   "284": "Harvester[Earth]"
@@ -861,7 +861,7 @@
   "287": "Demented Shark[Water]"
  },
  {
-  "288": "Temple Priest[White]"
+  "288": "Temple Priest[Life]"
  },
  {
   "289": "Efreet Elder[Fire]"
@@ -870,7 +870,7 @@
   "290": "Theorosa Nightshade[Death]"
  },
  {
-  "291": "Byzantine Kitty[Gold]"
+  "291": "Byzantine Kitty[Dragon]"
  },
  {
   "292": "Goblin Firemage[Fire]"
@@ -882,7 +882,7 @@
   "294": "The Gorlodon[Death]"
  },
  {
-  "295": "Hero of Beyond[White]"
+  "295": "Hero of Beyond[Life]"
  },
  {
   "296": "Two Gun Pete[Water]"
@@ -948,22 +948,22 @@
   "316": "Jini Guise[Earth]"
  },
  {
-  "317": "Helmet Kharafax[White]"
+  "317": "Helmet Kharafax[Life]"
  },
  {
-  "318": "Hugo Strongsword[White]"
+  "318": "Hugo Strongsword[Life]"
  },
  {
-  "319": "Ajax Lightfoot[White]"
+  "319": "Ajax Lightfoot[Life]"
  },
  {
-  "320": "Captain Katie[White]"
+  "320": "Captain Katie[Life]"
  },
  {
-  "321": "Marisol Contuma[White]"
+  "321": "Marisol Contuma[Life]"
  },
  {
-  "322": "Sola Ranjell[White]"
+  "322": "Sola Ranjell[Life]"
  },
  {
   "323": "Whistling Damon[Death]"
@@ -984,7 +984,7 @@
   "328": "Xulax Nightwind[Death]"
  },
  {
-  "329": "Larissa Kerato[Gold]"
+  "329": "Larissa Kerato[Dragon]"
  },
  {
   "330": "Tatiana Blayde[Neutral]"
@@ -1026,22 +1026,22 @@
   "342": "Harklaw[Death]"
  },
  {
-  "343": "Pelacor Conjurer[White]"
+  "343": "Pelacor Conjurer[Life]"
  },
  {
-  "344": "Venari Crystalsmith[White]"
+  "344": "Venari Crystalsmith[Life]"
  },
  {
-  "345": "Djinn Renova[White]"
+  "345": "Djinn Renova[Life]"
  },
  {
-  "346": "Naga Assassin[Gold]"
+  "346": "Naga Assassin[Dragon]"
  },
  {
-  "347": "Twilight Basilisk[Gold]"
+  "347": "Twilight Basilisk[Dragon]"
  },
  {
-  "348": "Djinn Chwala[Gold]"
+  "348": "Djinn Chwala[Dragon]"
  },
  {
   "349": "Gargoya Lion[Neutral]"
@@ -1224,46 +1224,46 @@
   "408": "Scorch Fiend[Fire]"
  },
  {
-  "409": "Gargoya Scrapper[White]"
+  "409": "Gargoya Scrapper[Life]"
  },
  {
-  "410": "Sunkai Harvester[White]"
+  "410": "Sunkai Harvester[Life]"
  },
  {
-  "411": "Stitch Leech[White]"
+  "411": "Stitch Leech[Life]"
  },
  {
-  "412": "Blinding Reflector[White]"
+  "412": "Blinding Reflector[Life]"
  },
  {
-  "413": "Chaos Knight[White]"
+  "413": "Chaos Knight[Life]"
  },
  {
-  "414": "Celestial Harpy[White]"
+  "414": "Celestial Harpy[Life]"
  },
  {
-  "415": "Time Mage[White]"
+  "415": "Time Mage[Life]"
  },
  {
-  "416": "Portal Spinner[White]"
+  "416": "Portal Spinner[Life]"
  },
  {
-  "417": "Pelacor Arbalest[White]"
+  "417": "Pelacor Arbalest[Life]"
  },
  {
-  "418": "Temporal Master[White]"
+  "418": "Temporal Master[Life]"
  },
  {
-  "419": "Prismologist[White]"
+  "419": "Prismologist[Life]"
  },
  {
-  "420": "Dax Paragon[White]"
+  "420": "Dax Paragon[Life]"
  },
  {
-  "421": "Adelade Brightwing[White]"
+  "421": "Adelade Brightwing[Life]"
  },
  {
-  "422": "Soul Fiend[White]"
+  "422": "Soul Fiend[Life]"
  },
  {
   "423": "Supply Runner[Neutral]"
@@ -1296,16 +1296,16 @@
   "432": "Legionnaire Alvar[Neutral]"
  },
  {
-  "433": "Chaos Dragon[Gold]"
+  "433": "Chaos Dragon[Dragon]"
  },
  {
-  "434": "Desert Dragon[Gold]"
+  "434": "Desert Dragon[Dragon]"
  },
  {
-  "435": "Zyvax Vuul[Gold]"
+  "435": "Zyvax Vuul[Dragon]"
  },
  {
-  "436": "Void Dragon[Gold]"
+  "436": "Void Dragon[Dragon]"
  },
  {
   "437": "Kelya Frendul[Water]"
@@ -1320,16 +1320,16 @@
   "440": "Tarsa[Fire]"
  },
  {
-  "441": "General Sloan[White]"
+  "441": "General Sloan[Life]"
  },
  {
-  "442": "Quix the Devious[Gold]"
+  "442": "Quix the Devious[Dragon]"
  },
  {
   "443": "Baakjira[Water]"
  },
  {
-  "444": "Uriel the Purifier[White]"
+  "444": "Uriel the Purifier[Life]"
  },
  {
   "445": "Lira the Dark[Death]"
@@ -1347,7 +1347,7 @@
   "449": "Waka Spiritblade[Death]"
  },
  {
-  "450": "Carnage Titan[Gold]"
+  "450": "Carnage Titan[Dragon]"
  },
  {
   "451": "Vampire Bat[Earth]"
@@ -1362,13 +1362,13 @@
   "454": "Blood Maker[Fire]"
  },
  {
-  "455": "Vulguine[White]"
+  "455": "Vulguine[Life]"
  },
  {
   "456": "Vampiric Blossom[Earth]"
  },
  {
-  "457": "Dhampir Infiltrator[Gold]"
+  "457": "Dhampir Infiltrator[Dragon]"
  },
  {
   "458": "Revealer[Death]"
@@ -1377,7 +1377,7 @@
   "459": "Tide Biter[Water]"
  },
  {
-  "460": "Jared Scar[White]"
+  "460": "Jared Scar[Life]"
  },
  {
   "461": "Countess Sinash[Fire]"
@@ -1386,7 +1386,7 @@
   "462": "Venator Kinjo[Neutral]"
  },
  {
-  "463": "Grandmaster Rathe[White]"
+  "463": "Grandmaster Rathe[Life]"
  },
  {
   "464": "Conqueror Jacek[Fire]"
@@ -1452,31 +1452,31 @@
   "484": "Mordeus[Fire]"
  },
  {
-  "485": "Dumacke Exile[White]"
+  "485": "Dumacke Exile[Life]"
  },
  {
-  "486": "Time Meddler[White]"
+  "486": "Time Meddler[Life]"
  },
  {
-  "487": "Runeslinger[White]"
+  "487": "Runeslinger[Life]"
  },
  {
-  "488": "Corsair Bosun[White]"
+  "488": "Corsair Bosun[Life]"
  },
  {
-  "489": "Runemancer Atuat[White]"
+  "489": "Runemancer Atuat[Life]"
  },
  {
-  "490": "Whelp Herder[Gold]"
+  "490": "Whelp Herder[Dragon]"
  },
  {
-  "491": "Runic Skyclaw[Gold]"
+  "491": "Runic Skyclaw[Dragon]"
  },
  {
-  "492": "Agor Longtail[Gold]"
+  "492": "Agor Longtail[Dragon]"
  },
  {
-  "493": "Oshuur Constantia[Gold]"
+  "493": "Oshuur Constantia[Dragon]"
  },
  {
   "494": "Rune Crafter[Neutral]"
@@ -1503,10 +1503,10 @@
   "501": "Skargore[Fire]"
  },
  {
-  "502": "Ilthain[White]"
+  "502": "Ilthain[Life]"
  },
  {
-  "503": "Sthispa[Gold]"
+  "503": "Sthispa[Dragon]"
  },
  {
   "504": "Kain Hace[Death]"
@@ -1581,22 +1581,22 @@
   "527": "Wily Coyotian[Death]"
  },
  {
-  "528": "Aves Sturgis[White]"
+  "528": "Aves Sturgis[Life]"
  },
  {
-  "529": "Iziar[White]"
+  "529": "Iziar[Life]"
  },
  {
-  "530": "Evelyn Auvera[White]"
+  "530": "Evelyn Auvera[Life]"
  },
  {
-  "531": "War Pegasus[White]"
+  "531": "War Pegasus[Life]"
  },
  {
-  "532": "Imperial Knight[White]"
+  "532": "Imperial Knight[Life]"
  },
  {
-  "533": "Drybone Barbarian[White]"
+  "533": "Drybone Barbarian[Life]"
  },
  {
   "534": "Ferexian Hero[Fire]"
@@ -1632,10 +1632,10 @@
   "544": "Dumacke Orc[Neutral]"
  },
  {
-  "545": "Berix Snakeye[Gold]"
+  "545": "Berix Snakeye[Dragon]"
  },
  {
-  "546": "Kra'ar Xoc[Gold]"
+  "546": "Kra'ar Xoc[Dragon]"
  },
  {
   "547": "Pembrook Nymph[Water]"
@@ -1650,25 +1650,25 @@
   "550": "Eternan Brune[Fire]"
  },
  {
-  "551": "Franz Ruffmane[White]"
+  "551": "Franz Ruffmane[Life]"
  },
  {
-  "552": "Helios Matriarch[Gold]"
+  "552": "Helios Matriarch[Dragon]"
  },
  {
   "553": "Astral Entity[Death]"
  },
  {
-  "554": "Lily Shieldpaw[Gold]"
+  "554": "Lily Shieldpaw[Dragon]"
  },
  {
-  "555": "Vruz[Gold]"
+  "555": "Vruz[Dragon]"
  },
  {
   "556": "Ancient Redwood[Earth]"
  },
  {
-  "557": "Zyriel[White]"
+  "557": "Zyriel[Life]"
  },
  {
   "558": "Sea Wreck[Water]"
@@ -1677,7 +1677,7 @@
   "559": "Immolation[Fire]"
  },
  {
-  "560": "Inevitable[White]"
+  "560": "Inevitable[Life]"
  },
  {
   "561": "Lurking Puffer[Earth]"
@@ -1788,40 +1788,40 @@
   "596": "Barashkukor[Death]"
  },
  {
-  "597": "Aria Bandit[White]"
+  "597": "Aria Bandit[Life]"
  },
  {
-  "598": "Albahoo Forester[White]"
+  "598": "Albahoo Forester[Life]"
  },
  {
-  "599": "Skyspire Yak[White]"
+  "599": "Skyspire Yak[Life]"
  },
  {
-  "600": "Meriput Magician[White]"
+  "600": "Meriput Magician[Life]"
  },
  {
-  "601": "Anachron Bolter[White]"
+  "601": "Anachron Bolter[Life]"
  },
  {
-  "602": "Thanalorian Archer[White]"
+  "602": "Thanalorian Archer[Life]"
  },
  {
-  "603": "Silverblade Fighter[White]"
+  "603": "Silverblade Fighter[Life]"
  },
  {
-  "604": "Ulundin Regulator[White]"
+  "604": "Ulundin Regulator[Life]"
  },
  {
-  "605": "Harbinger of Chaos[White]"
+  "605": "Harbinger of Chaos[Life]"
  },
  {
-  "606": "Karst Harpy[White]"
+  "606": "Karst Harpy[Life]"
  },
  {
-  "607": "Bera Dallin[White]"
+  "607": "Bera Dallin[Life]"
  },
  {
-  "608": "Commander Goff[White]"
+  "608": "Commander Goff[Life]"
  },
  {
   "609": "Gobalano Soldier[Fire]"
@@ -1860,16 +1860,16 @@
   "620": "Rush Townsend[Fire]"
  },
  {
-  "621": "Redwyrm Hatchling[Gold]"
+  "621": "Redwyrm Hatchling[Dragon]"
  },
  {
-  "622": "Redwyrm Dragon[Gold]"
+  "622": "Redwyrm Dragon[Dragon]"
  },
  {
-  "623": "Runeseer Sevaya[Gold]"
+  "623": "Runeseer Sevaya[Dragon]"
  },
  {
-  "624": "Solace Ashinach[Gold]"
+  "624": "Solace Ashinach[Dragon]"
  },
  {
   "625": "Grimbardun Fighter[Neutral]"
@@ -1917,7 +1917,7 @@
   "639": "Chuul Jujinchi[Earth]"
  },
  {
-  "640": "Prunda Undervesch[White]"
+  "640": "Prunda Undervesch[Life]"
  },
  {
   "641": "Brewmaster Abraxas[Fire]"
@@ -1929,7 +1929,7 @@
   "643": "Reklah[Death]"
  },
  {
-  "644": "Avina of the Wolf[White]"
+  "644": "Avina of the Wolf[Life]"
  },
  {
   "645": "Prophet Rosa[Water]"
@@ -1938,12 +1938,177 @@
   "646": "Nomos[Fire]"
  },
  {
-  "647": "Akane[Gold]"
+  "647": "Akane[Dragon]"
  },
  {
-  "648": "Rage[Gold]"
+  "648": "Rage[Dragon]"
  },
  {
-  "649": "Kei[Gold]"
+  "649": "Kei[Dragon]"
+ },
+ {
+  "650": "Venka the Vile[Neutral]"
+ },
+ {
+  "651": "Henchling Enforcer[Life]"
+ },
+ {
+  "652": "Baron Fyatt[Death]"
+ },
+ {
+  "653": "Lorkus[Death]"
+ },
+ {
+  "654": "Cryptic[Water]"
+ },
+ {
+  "655": "Risqruel Drath[Fire]"
+ },
+ {
+  "656": "Eternal Tofu[Earth]"
+ },
+ {
+  "657": "Elias Max Pruitt[Life]"
+ },
+ {
+  "658": "Nidhoggr[Dragon]"
+ },
+ {
+  "659": "Halaran Huntress[Earth]"
+ },
+ {
+  "660": "Blackmoor Wild Elf[Earth]"
+ },
+ {
+  "661": "Thunderhoof Nomad[Earth]"
+ },
+ {
+  "662": "Quilliun Legionary[Earth]"
+ },
+ {
+  "663": "Thanalorian Blade[Earth]"
+ },
+ {
+  "664": "Blackmoor Jinx[Earth]"
+ },
+ {
+  "665": "Warborn Chieftain[Earth]"
+ },
+ {
+  "666": "Giant Alpine Skink[Water]"
+ },
+ {
+  "667": "Mar Toren Trader[Water]"
+ },
+ {
+  "668": "Commander Slade[Water]"
+ },
+ {
+  "669": "Razorhound[Water]"
+ },
+ {
+  "670": "Shock Trooper[Water]"
+ },
+ {
+  "671": "Endless Gibbon[Water]"
+ },
+ {
+  "672": "Sergeant Grauzral[Water]"
+ },
+ {
+  "673": "Broken Earth Thug[Death]"
+ },
+ {
+  "674": "Ujurak Brave[Death]"
+ },
+ {
+  "675": "Meriput Slinger[Death]"
+ },
+ {
+  "676": "Dark Arborist[Death]"
+ },
+ {
+  "677": "Arachne Weaver[Death]"
+ },
+ {
+  "678": "Grifzi[Death]"
+ },
+ {
+  "679": "Death Ranger[Death]"
+ },
+ {
+  "680": "Nimbledook Explorer[Life]"
+ },
+ {
+  "681": "Luceheim Demon[Life]"
+ },
+ {
+  "682": "Janni Rebel[Life]"
+ },
+ {
+  "683": "Skyspire Leopard[Life]"
+ },
+ {
+  "684": "Olivia of the Brook[Life]"
+ },
+ {
+  "685": "Frigid Wolf[Life]"
+ },
+ {
+  "686": "Gallicus[Life]"
+ },
+ {
+  "687": "Drybone Hobgoblin[Fire]"
+ },
+ {
+  "688": "Chaos Evoker[Fire]"
+ },
+ {
+  "689": "Drybone Megalodon[Fire]"
+ },
+ {
+  "690": "Continuum Seer[Fire]"
+ },
+ {
+  "691": "Kha'zi Conjurer[Fire]"
+ },
+ {
+  "692": "Surly Drunk[Fire]"
+ },
+ {
+  "693": "Emberguard[Fire]"
+ },
+ {
+  "694": "Dragon Egg Forager[Dragon]"
+ },
+ {
+  "695": "Night Reaper[Dragon]"
+ },
+ {
+  "696": "Syrenth[Dragon]"
+ },
+ {
+  "697": "Tokatag Conscript[Neutral]"
+ },
+ {
+  "698": "Ujurak Elder[Neutral]"
+ },
+ {
+  "699": "Chaos Adjutant[Neutral]"
+ },
+ {
+  "700": "Halfling Refugee[Neutral]"
+ },
+ {
+  "701": "Chaos Battle Mage[Neutral]"
+ },
+ {
+  "702": "Elanor Bravefoot[Neutral]"
+ },
+ {
+  "703": "Sanctus Vicar[Water]"
+ },
+ {
+  "704": "Mana Warden[Fire]"
  }
 ]

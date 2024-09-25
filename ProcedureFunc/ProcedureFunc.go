@@ -18,6 +18,7 @@ import (
 
 	"github.com/tebeka/selenium"
 	"github.com/tebeka/selenium/chrome"
+
 	"github.com/tebeka/selenium/log"
 
 	"splinterforge/ColorPrint"
@@ -572,9 +573,9 @@ func InitializeDriver(wait bool, userData SpStruct.UserData, headless bool, show
 			// "--disable-gpu",
 			"--disable-blink-features=AutomationControlled",
 			"--mute-audio",
-			"--ignore-certificate-errors",
 			"--allow-running-insecure-content",
 			"--window-size=300,600",
+			"--disable-search-engine-choice-screen",
 		},
 
 		Extensions: []string{extensionBase64},
@@ -597,7 +598,7 @@ func InitializeDriver(wait bool, userData SpStruct.UserData, headless bool, show
 	if headless {
 		chromeOptions.Args = append(chromeOptions.Args, "--headless=new")
 	}
-	caps := selenium.Capabilities{}
+	caps := selenium.Capabilities{"browserName": "chrome", "acceptInsecureCerts": true}
 	caps.AddChrome(chromeOptions)
 	caps.SetLogLevel(log.Performance, log.All)
 
